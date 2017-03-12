@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    android:padding="4dp"
+    android:layout_margin="2dp"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="#89e8f1"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_logo" />
+
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_toLeftOf="@+id/imgFavorite"
+            android:layout_toRightOf="@+id/imgLogo"
+            android:text="Agribank Hoa Khanh"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rating: "
+            android:layout_alignLeft="@+id/tvName"
+            android:layout_below="@+id/tvName"
+            android:textStyle="bold"/>
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rating="3"
+            android:stepSize="0.5"
+            android:numStars="5"
+            style="?android:attr/ratingBarStyleSmall"
+            android:clickable="false"
+            android:isIndicator="true"
+            android:progressTint="@color/colorAccent"
+            android:layout_toRightOf="@id/tvRating"
+            android:layout_below="@+id/tvName"
+            android:layout_alignBottom="@id/tvRating"/>
+
+        <TextView
+            android:id="@+id/tvAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvRating"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/imgLogo"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="54 Nguyen Luong Bang" />
+
+        <ImageView
+            android:id="@+id/imgFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="10dp"
+            android:background="@mipmap/ic_like" />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>
