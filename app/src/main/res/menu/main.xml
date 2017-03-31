@@ -1,34 +1,29 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+    tools:context=".activities.MainActivity1">
     <item
         android:id="@+id/search"
-        android:orderInCategory="1"
-        app:showAsAction="always"
-        android:title="search"
         android:icon="@mipmap/ic_search_white"
-        app:actionViewClass="android.support.v7.widget.SearchView"/>
+        android:orderInCategory="1"
+        android:title="search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always" />
 
     <item
-        android:id="@+id/imgFavorite"
+        android:id="@+id/home"
         android:orderInCategory="0"
-        app:showAsAction="never"
+        android:title="Home"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/favorite"
+        android:orderInCategory="0"
         android:title="Favorite"
-        />
-
-    <item
-        android:id="@+id/about"
-        android:orderInCategory="0"
-        app:showAsAction="never"
-        android:title="About"
-        />
-
+        app:showAsAction="never" />
     <item
         android:id="@+id/setting"
         android:orderInCategory="0"
-        app:showAsAction="never"
         android:title="Setting"
-        />
+        app:showAsAction="never" />
 
 </menu>
