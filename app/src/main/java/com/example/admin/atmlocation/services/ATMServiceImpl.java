@@ -1,6 +1,7 @@
 package com.example.admin.atmlocation.services;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.admin.atmlocation.configs.ConfigRetrofit;
@@ -32,6 +33,22 @@ public class ATMServiceImpl {
         ATMService service = ConfigRetrofit.getClient().create(ATMService.class);
         Call<APIResponse> arrs = service.getATM(atm, API_KEY);
         arrs.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                callBack.next(response.body().getAtms());
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void getNearATM(String loaction, String radius, String type, final CallBack<ArrayList<ATM>> callBack) {
+        ATMService service = ConfigRetrofit.getClient().create(ATMService.class);
+        Call<APIResponse> nearATMs = service.getNearATM(loaction, radius, type, API_KEY);
+        nearATMs.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
                 callBack.next(response.body().getAtms());

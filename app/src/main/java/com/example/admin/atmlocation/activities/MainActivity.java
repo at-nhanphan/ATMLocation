@@ -1,19 +1,23 @@
 package com.example.admin.atmlocation.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
 
 /**
- *
+ * Main class
  * Created by naunem on 24/03/2017.
  */
 
@@ -25,10 +29,17 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // Declare component
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+
         setSupportActionBar(toolbar);
-        toolbar.setTitle("Home");
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+//        toolbar.setTitle("Home");
+//        Spinner spinner = (Spinner) findViewById(R.id.spinner);
+
+        String[] areas = new String[]{"hjhj", "jhjhjh", "hjhj", "jhjhjh", "hjhj", "jhjhjh"};
+        ArrayAdapter<String> mang = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas);
+//        spinner.setAdapter(mang);
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         final TabLayout.Tab home = mTabLayout.newTab();
@@ -97,13 +108,16 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        Log.d("dfdfdf", "onCreateOptionsMenu: ");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.search:
+//                Intent intent  = new Intent(this, SearchActivity.class);
+//                startActivity(intent);
                 break;
             case R.id.home:
                 break;

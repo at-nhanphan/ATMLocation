@@ -45,6 +45,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         holder.mTvAddress.setText(atm.getAddress());
         if (atm.getRating() == null) {
             holder.mRatingBar.setRating(3.0f);
+            atm.setRating("3.0f");
         } else {
             holder.mRatingBar.setRating(Float.parseFloat(atm.getRating()));
         }
