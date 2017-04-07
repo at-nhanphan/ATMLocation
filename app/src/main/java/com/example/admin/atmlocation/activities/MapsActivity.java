@@ -18,12 +18,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
- *
  * Created by naunem on 30/03/2017.
  */
 
@@ -50,7 +51,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng location = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(location).title(atm.getName()).snippet(latitude + ", " + longitude)).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(10));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         mMap.addPolyline(new PolylineOptions().clickable(true));
         mMap.setTrafficEnabled(true);
         // Check permission location
@@ -72,7 +73,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(myLocation).title("My Locations").snippet("ahihihi")).showInfoWindow();
+        MarkerOptions marker = new MarkerOptions()
+                .position(myLocation)
+                .title("My Locations")
+                .snippet("ahihihi")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_on));
+        mMap.addMarker(marker).showInfoWindow();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
         return true;
     }
 }

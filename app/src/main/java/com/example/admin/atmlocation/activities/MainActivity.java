@@ -1,20 +1,18 @@
 package com.example.admin.atmlocation.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
+import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
 /**
  * Main class
@@ -24,6 +22,8 @@ import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     private ViewPager mViewPager;
+    private OnQueryTextChange mOnQueryTextChange;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,15 +37,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 //        toolbar.setTitle("Home");
 //        Spinner spinner = (Spinner) findViewById(R.id.spinner);
 
-        String[] areas = new String[]{"hjhj", "jhjhjh", "hjhj", "jhjhjh", "hjhj", "jhjhjh"};
-        ArrayAdapter<String> mang = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas);
+//        String[] areas = new String[]{"hjhj", "jhjhjh", "hjhj", "jhjhjh", "hjhj", "jhjhjh"};
+//        ArrayAdapter<String> mang = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas);
 //        spinner.setAdapter(mang);
         TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
         mViewPager = (ViewPager) findViewById(R.id.viewPager);
         final TabLayout.Tab home = mTabLayout.newTab();
         final TabLayout.Tab favorite = mTabLayout.newTab();
         final TabLayout.Tab setting = mTabLayout.newTab();
-        home.setIcon(R.drawable.ic_home_white_36dp);
+        home.setIcon(R.drawable.ic_home);
         favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
         setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
 
@@ -67,19 +67,19 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        home.setIcon(R.drawable.ic_home_white_36dp);
+                        home.setIcon(R.drawable.ic_home);
                         favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                         setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                         break;
                     case 1:
                         home.setIcon(R.drawable.ic_home_brown_200_36dp);
-                        favorite.setIcon(R.drawable.ic_favorite_white_36dp);
+                        favorite.setIcon(R.drawable.ic_favorite);
                         setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                         break;
                     case 2:
                         home.setIcon(R.drawable.ic_home_brown_200_36dp);
                         favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-                        setting.setIcon(R.drawable.ic_settings_white_36dp);
+                        setting.setIcon(R.drawable.ic_settings);
                 }
             }
 
@@ -108,7 +108,22 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        Log.d("dfdfdf", "onCreateOptionsMenu: ");
+        SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setQueryHint("Type your keyword here");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mOnQueryTextChange.onTextChange(newText);
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -127,5 +142,9 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 break;
         }
         return false;
+    }
+
+    public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
+        this.mOnQueryTextChange = onQueryTextChange;
     }
 }

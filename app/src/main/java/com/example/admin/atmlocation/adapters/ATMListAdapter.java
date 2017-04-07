@@ -2,9 +2,12 @@ package com.example.admin.atmlocation.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -20,15 +23,18 @@ import java.util.ArrayList;
  * Created by Admin on 3/3/2017.
  */
 
-public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> {
+public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> implements Filterable {
     private ArrayList<ATM> mAtms;
     private final Context mContext;
     private MyOnClickListener mMyOnClickListener;
+    private ValueFilter mValueFilter;
+    private ArrayList<ATM> mAtmsFilter;
 
     public ATMListAdapter(Context context, ArrayList<ATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
         this.mContext = context;
         this.mMyOnClickListener = myOnClickListener;
+        this.mAtmsFilter = atms;
     }
 
     @Override
@@ -87,5 +93,46 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
 
     public void setMyOnClickListener(MyOnClickListener myOnClickListener) {
         this.mMyOnClickListener = myOnClickListener;
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (mValueFilter == null) {
+            mValueFilter = new ValueFilter();
+        }
+        return mValueFilter;
+    }
+
+    private class ValueFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+
+            if (constraint != null && constraint.length() > 0) {
+                ArrayList<ATM> filterList = new ArrayList();
+                for (int i = 0; i < mAtmsFilter.size(); i++) {
+                    if ((mAtmsFilter.get(i).getName().toUpperCase()).contains(constraint.toString().toUpperCase())) {
+                        {
+                            Log.d("ffffff", "perform: " + mAtmsFilter.get(i).getName());
+                            filterList.add(mAtmsFilter.get(i));
+                        }
+                    }
+
+                }
+                results.count = filterList.size();
+                results.values = filterList;
+            } else {
+                results.count = mAtmsFilter.size();
+                results.values = mAtmsFilter;
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mAtms = (ArrayList<ATM>) results.values;
+            notifyDataSetChanged();
+        }
     }
 }
