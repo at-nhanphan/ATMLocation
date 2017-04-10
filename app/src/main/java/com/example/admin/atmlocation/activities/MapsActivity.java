@@ -3,6 +3,7 @@ package com.example.admin.atmlocation.activities;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -20,17 +21,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
+ * MapsActivity class
  * Created by naunem on 30/03/2017.
  */
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener {
 
     private GoogleMap mMap;
+    private PolylineOptions mPolylineOptions = new PolylineOptions();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +51,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         float latitude = Float.parseFloat(atmLocations.getLat());
         float longitude = Float.parseFloat(atmLocations.getLng());
         LatLng location = new LatLng(latitude, longitude);
+
+        mPolylineOptions.add(location);
+
         mMap.addMarker(new MarkerOptions().position(location).title(atm.getName()).snippet(latitude + ", " + longitude)).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
@@ -77,9 +82,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .position(myLocation)
                 .title("My Locations")
                 .snippet("ahihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_location_on));
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
         mMap.addMarker(marker).showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
+        mPolylineOptions.add(myLocation);
+        mPolylineOptions.width(12);
+        mPolylineOptions.color(Color.RED);
+        mPolylineOptions.geodesic(true);
+
+        mMap.addPolyline(mPolylineOptions);
         return true;
     }
 }

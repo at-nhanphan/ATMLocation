@@ -2,7 +2,6 @@ package com.example.admin.atmlocation.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.example.admin.atmlocation.models.ATM;
 import java.util.ArrayList;
 
 /**
- *
+ * ATMListAdapter class
  * Created by Admin on 3/3/2017.
  */
 
@@ -55,6 +54,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         } else {
             holder.mRatingBar.setRating(Float.parseFloat(atm.getRating()));
         }
+        holder.mImgFavorite.setSelected(atm.isFavorite());
     }
 
     @Override
@@ -85,15 +85,16 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             mImgFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    mAtms.get(getLayoutPosition()).setFavorite(!mAtms.get(getLayoutPosition()).isFavorite());
+                    notifyDataSetChanged();
                 }
             });
         }
     }
 
-    public void setMyOnClickListener(MyOnClickListener myOnClickListener) {
-        this.mMyOnClickListener = myOnClickListener;
-    }
+//    public void setMyOnClickListener(MyOnClickListener myOnClickListener) {
+//        this.mMyOnClickListener = myOnClickListener;
+//    }
 
     @Override
     public Filter getFilter() {
@@ -113,12 +114,8 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
                 ArrayList<ATM> filterList = new ArrayList();
                 for (int i = 0; i < mAtmsFilter.size(); i++) {
                     if ((mAtmsFilter.get(i).getName().toUpperCase()).contains(constraint.toString().toUpperCase())) {
-                        {
-                            Log.d("ffffff", "perform: " + mAtmsFilter.get(i).getName());
-                            filterList.add(mAtmsFilter.get(i));
-                        }
+                        filterList.add(mAtmsFilter.get(i));
                     }
-
                 }
                 results.count = filterList.size();
                 results.values = filterList;

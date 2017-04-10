@@ -42,7 +42,7 @@ public class ATM implements Parcelable {
         this.geometry = geometry;
     }
 
-    protected ATM(Parcel in) {
+    private ATM(Parcel in) {
         name = in.readString();
         address = in.readString();
         icon = in.readString();

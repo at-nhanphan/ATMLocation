@@ -1,18 +1,23 @@
 package com.example.admin.atmlocation.activities;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
+
+import java.util.ArrayList;
 
 /**
  * Main class
@@ -108,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        SearchView searchView = (SearchView)menu.findItem(R.id.search).getActionView();
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setMaxWidth(Integer.MAX_VALUE);
         searchView.setQueryHint("Type your keyword here");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -135,8 +140,51 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 //                startActivity(intent);
                 break;
             case R.id.home:
+                new AlertDialog.Builder(this)
+                        .setTitle("Title")
+                        .setMessage("Message")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).show();
                 break;
             case R.id.favorite:
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                ArrayList<String> items = new ArrayList<>();
+                items.add("Red");
+                items.add("Blue");
+                items.add("Green");
+
+                final ArrayAdapter<String> arrayAdapterItems = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, items);
+
+                dialog.setTitle("aaaa")
+                        .setSingleChoiceItems(arrayAdapterItems, -1,  new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                dialog.create().show();
                 break;
             case R.id.setting:
                 break;

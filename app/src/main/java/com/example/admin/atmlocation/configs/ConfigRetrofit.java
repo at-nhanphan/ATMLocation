@@ -20,7 +20,7 @@ public class ConfigRetrofit {
             String base_Url = "https://maps.googleapis.com/maps/api/";
             retrofit = new Retrofit.Builder()
                     .baseUrl(base_Url)
-                    .addConverterFactory(GsonConverterFactory.create(createGson()))
+                    .addConverterFactory(GsonConverterFactory.create())
                     .build();
         }
         return retrofit;
