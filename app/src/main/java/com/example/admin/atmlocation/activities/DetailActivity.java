@@ -16,7 +16,7 @@ import com.example.admin.atmlocation.models.ATM;
 import com.example.admin.atmlocation.models.Locations;
 
 /**
- *
+ * DetailActivity class
  * Created by naunem on 25/03/2017.
  */
 

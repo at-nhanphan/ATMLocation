@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,18 +87,29 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         }
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, mLocationListener);
         Location locations = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        latitude = (float) locations.getLatitude();
-        longitude = (float) locations.getLongitude();
-        String location = latitude + "," + longitude;
-        String radius = "1000";
-        String types = "ATM";
-        mAtmService.getNearATM(location, radius, types, new CallBack<ArrayList<ATM>>() {
-            @Override
-            public void next(ArrayList<ATM> atm) {
-                mAtms.addAll(atm);
-                mAdapter.notifyDataSetChanged();
-            }
-        });
+        if (locations != null) {
+            latitude = (float) locations.getLatitude();
+            longitude = (float) locations.getLongitude();
+            String location = latitude + "," + longitude;
+            String radius = "1000";
+            String types = "ATM";
+            mAtmService.getNearATM(location, radius, types, new CallBack<ArrayList<ATM>>() {
+                @Override
+                public void next(ArrayList<ATM> atm) {
+                    mAtms.addAll(atm);
+                    mAdapter.notifyDataSetChanged();
+                }
+            });
+//            mAtmService.getATM("ATM+hoa+khanh", new CallBack<ArrayList<ATM>>() {
+//                @Override
+//                public void next(ArrayList<ATM> atms) {
+//                    mAtms.addAll(atms);
+//                    mAdapter.notifyDataSetChanged();
+//                }
+//            });
+        } else {
+            Log.e("location null", "onCreateView: ");
+        }
         mRecyclerView.setAdapter(mAdapter);
         return view;
     }
@@ -111,7 +123,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         intent.putExtra("data", bundle);
         startActivity(intent);
     }
-
     @Override
     public void onTextChange(String newText) {
         mAdapter.getFilter().filter(newText);

@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         // Declare component
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolBar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);

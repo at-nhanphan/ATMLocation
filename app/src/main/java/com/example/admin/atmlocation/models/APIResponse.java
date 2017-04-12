@@ -1,4 +1,4 @@
-package com.example.admin.atmlocation.services;
+package com.example.admin.atmlocation.models;
 
 import com.example.admin.atmlocation.models.ATM;
 import com.google.gson.annotations.SerializedName;

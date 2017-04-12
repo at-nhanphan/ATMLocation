@@ -2,4 +2,9 @@
     <string name="app_name">ATM Location</string>
     <string name="searchView.text.queryHint">Type your keyword here</string>
     <string name="search_hint">search</string>
+    <string name="textView.text.start">start</string>
+    <string name="textView.text.end">end</string>
+    <string name="button.text.find">find</string>
+    <string name="textView.text.defaultDistance">0 km</string>
+    <string name="textView.text.defaultDuration">0 min</string>
 </resources>

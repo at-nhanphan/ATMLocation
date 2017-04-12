@@ -12,18 +12,13 @@ import com.google.gson.annotations.SerializedName;
 
 public class Locations implements Parcelable {
     @SerializedName("lat")
-    String lat;
+    private double lat;
     @SerializedName("lng")
-    String lng;
-
-    public Locations(String lat, String lng) {
-        this.lat = lat;
-        this.lng = lng;
-    }
+    private double lng;
 
     protected Locations(Parcel in) {
-        lat = in.readString();
-        lng = in.readString();
+        lat = in.readDouble();
+        lng = in.readDouble();
     }
 
     public static final Creator<Locations> CREATOR = new Creator<Locations>() {
@@ -38,22 +33,6 @@ public class Locations implements Parcelable {
         }
     };
 
-    public String getLat() {
-        return lat;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public String getLng() {
-        return lng;
-    }
-
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -61,7 +40,27 @@ public class Locations implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(lat);
-        dest.writeString(lng);
+        dest.writeDouble(lat);
+        dest.writeDouble(lng);
+    }
+
+    public double getLat() {
+        return lat;
+    }
+
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public double getLng() {
+        return lng;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public static Creator<Locations> getCREATOR() {
+        return CREATOR;
     }
 }
