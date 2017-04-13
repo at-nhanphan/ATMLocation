@@ -1,9 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.admin.atmlocation.activities.MapsActivity" />
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:background="@color/colorPrimary"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <android.support.v7.widget.SearchView
+            android:id="@+id/searchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:defaultQueryHint="@string/searchView.text.queryHint" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/edtStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/textView.text.start" />
+
+    <EditText
+        android:id="@+id/edtEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/textView.text.end" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btnFind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/button.text.find"
+            android:textAllCaps="false" />
+
+        <ImageView
+            android:id="@+id/imgDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_distance"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"/>
+
+        <TextView
+            android:id="@+id/tvDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="20dp"
+            android:text="@string/textView.text.defaultDistance" />
+
+        <ImageView
+            android:id="@+id/imgDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_clock"
+            android:layout_gravity="center"
+            android:layout_marginLeft="50dp"/>
+
+        <TextView
+            android:id="@+id/tvDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/textView.text.defaultDuration"
+            android:layout_marginLeft="20dp"/>
+    </LinearLayout>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.admin.atmlocation.activities.MapsActivity" />
+
+</LinearLayout>
 

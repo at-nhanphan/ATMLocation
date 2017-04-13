@@ -22,6 +22,8 @@ public class ATM implements Parcelable {
     private String place_id;
     @SerializedName("rating")
     private String rating;
+    @SerializedName("geometry")
+    private Geometry geometry;
     private boolean isFavorite;
 
     public ATM(String name, String address, String rating, boolean isFavorite) {
@@ -31,15 +33,16 @@ public class ATM implements Parcelable {
         this.isFavorite = isFavorite;
     }
 
-    public ATM(String name, String address, String icon, String place_id, String rating) {
+    public ATM(String name, String address, String icon, String place_id, String rating, Geometry geometry) {
         this.name = name;
         this.address = address;
         this.icon = icon;
         this.place_id = place_id;
         this.rating = rating;
+        this.geometry = geometry;
     }
 
-    protected ATM(Parcel in) {
+    private ATM(Parcel in) {
         name = in.readString();
         address = in.readString();
         icon = in.readString();
@@ -100,6 +103,14 @@ public class ATM implements Parcelable {
         this.rating = rating;
     }
 
+    public Geometry getGeometry() {
+        return geometry;
+    }
+
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+
     public boolean isFavorite() {
         return isFavorite;
     }
@@ -107,6 +118,7 @@ public class ATM implements Parcelable {
     public void setFavorite(boolean favorite) {
         isFavorite = favorite;
     }
+
 
     @Override
     public int describeContents() {

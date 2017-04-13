@@ -1,5 +1,8 @@
 package com.example.admin.atmlocation.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -7,19 +10,43 @@ import com.google.gson.annotations.SerializedName;
  * Created by Admin on 3/11/2017.
  */
 
-public class Geometry {
+public class Geometry implements Parcelable {
     @SerializedName("location")
-    Location location;
+    Locations location;
 
-    public Geometry(Location location) {
+    public Geometry(Locations location) {
         this.location = location;
     }
 
-    public Location getLocation() {
+    protected Geometry(Parcel in) {
+    }
+
+    public static final Creator<Geometry> CREATOR = new Creator<Geometry>() {
+        @Override
+        public Geometry createFromParcel(Parcel in) {
+            return new Geometry(in);
+        }
+
+        @Override
+        public Geometry[] newArray(int size) {
+            return new Geometry[size];
+        }
+    };
+
+    public Locations getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(Locations location) {
         this.location = location;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
     }
 }
