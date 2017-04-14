@@ -6,27 +6,27 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
+import com.example.admin.atmlocation.adapters.StepAdapter;
 import com.example.admin.atmlocation.interfaces.ATMService;
 import com.example.admin.atmlocation.models.ATM;
 import com.example.admin.atmlocation.models.DirectionResult;
 import com.example.admin.atmlocation.models.Distance;
 import com.example.admin.atmlocation.models.Duration;
-import com.example.admin.atmlocation.models.Locations;
+import com.example.admin.atmlocation.models.Leg;
+import com.example.admin.atmlocation.models.MyLocation;
+import com.example.admin.atmlocation.models.Route;
 import com.example.admin.atmlocation.models.RouteDecode;
-import com.example.admin.atmlocation.models.Routes;
-import com.example.admin.atmlocation.models.Steps;
+import com.example.admin.atmlocation.models.Step;
 import com.example.admin.atmlocation.services.ApiUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -34,11 +34,20 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.PageScrollStateChanged;
+import org.androidannotations.annotations.PageSelected;
+import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.StringRes;
+
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -48,53 +57,60 @@ import retrofit2.Response;
  * MapsActivity class
  * Created by naunem on 30/03/2017.
  */
+@EActivity(R.layout.acitivity_maps)
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener {
 
-
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, View.OnClickListener {
-
-    private static final String KEY_DIRECTIONS = "AIzaSyDjJotwDoyLtG6RLKbXhsi56-c9dbjByOg";
-    private GoogleMap mMap;
-    private PolylineOptions mPolylineOptions = new PolylineOptions();
+    @ViewById(R.id.toolbar)
     Toolbar mToolbar;
+    @ViewById(R.id.searchView)
     SearchView mSearchView;
-    EditText mEdtStart;
-    EditText mEdtEnd;
-    Button mBtnFind;
+    @ViewById(R.id.tvDistance)
     TextView mTvDistance;
+    @ViewById(R.id.tvDuration)
     TextView mTvDuration;
+    @StringRes(R.string.direction_key)
+    String KEY_DIRECTIONS;
+    @ViewById(R.id.viewPager)
+    ViewPager mViewPager;
+    private GoogleMap mMap;
+    private PolylineOptions mPolylineOptions;
     private ATMService mService;
-    SupportMapFragment mMapFragment;
+    @Extra
+    ATM mAtm;
+    @Extra
+    MyLocation mAtmMyLocation;
+    private ArrayList<Step> mSteps;
+    private ArrayList<Leg> mLegs;
+    private double mAtmLatitude;
+    private double mAtmLongitude;
+    private LatLng mLocation;
+    private int mCurrentPage;
+    private final ArrayList<Marker> mMarkers = new ArrayList<>();
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.acitivity_maps);
+    @AfterViews
+    void init() {
         setSupportActionBar(mToolbar);
-        mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mMapFragment.getMapAsync(this);
+        mViewPager.setPageMargin(20);
         mService = ApiUtils.getService();
-        mEdtStart = (EditText) findViewById(R.id.edtStart);
-        mEdtEnd = (EditText) findViewById(R.id.edtEnd);
-        mBtnFind = (Button) findViewById(R.id.btnFind);
-        mBtnFind.setOnClickListener(this);
-        mTvDistance = (TextView) findViewById(R.id.tvDistance);
-        mTvDuration = (TextView) findViewById(R.id.tvDuration);
-
+        mPolylineOptions = new PolylineOptions();
+        SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mMapFragment.getMapAsync(this);
+        mAtmLatitude = mAtmMyLocation.getLat();
+        mAtmLongitude = mAtmMyLocation.getLng();
+        mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
     }
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
-        ATM atm = getIntent().getBundleExtra("data").getParcelable("object");
-        Locations atmLocations = getIntent().getBundleExtra("data").getParcelable("location");
-        double latitude = atmLocations.getLat();
-        double longitude = atmLocations.getLng();
-        LatLng location = new LatLng(latitude, longitude);
-
-        mPolylineOptions.add(location);
-
-        mMap.addMarker(new MarkerOptions().position(location).title(atm.getName()).snippet(latitude + ", " + longitude)).showInfoWindow();
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(location));
+        mPolylineOptions.add(mLocation);
+        mMap.addMarker(new MarkerOptions()
+                .position(mLocation)
+                .title(mAtm.getName())
+                .snippet(mAtmLatitude + ", " + mAtmLongitude)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)))
+                .showInfoWindow();
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         mMap.addPolyline(new PolylineOptions().clickable(true));
         mMap.setTrafficEnabled(true);
@@ -107,89 +123,169 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMarkerClickListener(this);
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return true;
-        }
-        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        LatLng myLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
         MarkerOptions marker = new MarkerOptions()
                 .position(myLocation)
-                .title("My Locations")
+                .title("My MyLocation")
                 .snippet("ahihihi")
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
         mMap.addMarker(marker).showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
-        mPolylineOptions.add(myLocation);
-        mPolylineOptions.width(12);
-        mPolylineOptions.color(Color.RED);
-        mPolylineOptions.geodesic(true);
-
-        mMap.addPolyline(mPolylineOptions);
         return true;
     }
 
-    void onClickFind() {
-        mService.getData(mEdtStart.getText().toString(), mEdtEnd.getText().toString(), KEY_DIRECTIONS).enqueue(new Callback<DirectionResult>() {
-            @Override
-            public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
-                Locations toPosition = null;
-                ArrayList<LatLng> routelist = new ArrayList<>();
-                if (response.body().getRoutes().size() > 0) {
-                    ArrayList<LatLng> decodelist;
-                    Routes routeA = response.body().getRoutes().get(0);
+    private MyLocation getCurrentLocation() {
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        }
+        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        return new MyLocation(location.getLatitude(), location.getLongitude());
+    }
 
-                    if (routeA.getLegs().size() > 0) {
-                        Distance distance = routeA.getLegs().get(0).getDistance();
-                        Duration duration = routeA.getLegs().get(0).getDuration();
-                        mTvDistance.setText(distance.getText());
-                        mTvDuration.setText(duration.getText());
-                        List<Steps> steps = routeA.getLegs().get(0).getSteps();
-                        Steps step;
-                        Locations location = null;
-                        String polyline;
-                        for (int i = 0; i < steps.size(); i++) {
-                            step = steps.get(i);
-                            location = step.getStartLocation();
-                            routelist.add(new LatLng(location.getLat(), location.getLng()));
-                            polyline = step.getPolyline().getPoints();
-                            decodelist = RouteDecode.decodePoly(polyline);
-                            routelist.addAll(decodelist);
-                            location = step.getEnd_location();
-                            routelist.add(new LatLng(location.getLat(), location.getLng()));
+    private void addMarker(LatLng latLng) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
+        mMarkers.add(marker);
+    }
+
+    private void drawRoute() {
+        mService.getData(getCurrentLocation().getLat() + "," + getCurrentLocation().getLng(),
+                mAtmMyLocation.getLat() + "," + mAtmMyLocation.getLng(), KEY_DIRECTIONS)
+                .enqueue(new Callback<DirectionResult>() {
+                    @Override
+                    public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
+                        MyLocation toPosition = null;
+                        ArrayList<LatLng> routeList = new ArrayList<>();
+                        mMap.clear();
+                        if (response.body().getRoutes().size() > 0) {
+                            ArrayList<LatLng> decodeList;
+                            Route routeA = response.body().getRoutes().get(0);
+                            mLegs = routeA.getLegs();
+                            if (mLegs.size() > 0) {
+                                Distance distance = mLegs.get(0).getDistance();
+                                Duration duration = mLegs.get(0).getDuration();
+                                mTvDistance.setText(distance.getText());
+                                mTvDuration.setText(duration.getText());
+
+                                // Add start marker
+                                addMarker(new LatLng(mLegs.get(0).getStartLocation().getLat(), mLegs.get(0).getStartLocation().getLng()));
+
+                                mSteps = new ArrayList<>();
+                                mSteps = routeA.getLegs().get(0).getSteps();
+                                Step step;
+                                MyLocation location = null;
+                                String polyline;
+                                for (int i = 0; i < mSteps.size(); i++) {
+                                    step = mSteps.get(i);
+                                    location = step.getStartLocation();
+                                    routeList.add(new LatLng(location.getLat(), location.getLng()));
+                                    polyline = step.getPolyline().getPoints();
+                                    decodeList = RouteDecode.decodePoly(polyline);
+                                    routeList.addAll(decodeList);
+                                    location = step.getEndLocation();
+                                    routeList.add(new LatLng(location.getLat(), location.getLng()));
+                                    // Add step maker
+                                    addMarker(new LatLng(step.getStartLocation().getLat(), step.getStartLocation().getLng()));
+
+                                }
+                                // Add end marker
+                                addMarker(new LatLng(mLegs.get(0).getEndLocation().getLat(), mLegs.get(0).getEndLocation().getLng()));
+                                toPosition = location;
+                            }
                         }
-                        toPosition = location;
+                        if (routeList.size() > 0) {
+                            PolylineOptions rectLine = new PolylineOptions().width(10).color(Color.RED);
+
+                            for (int i = 0; i < routeList.size(); i++) {
+                                rectLine.add(routeList.get(i));
+                            }
+                            // Adding route on the map
+                            mMap.addPolyline(rectLine);
+                            mMap.animateCamera(CameraUpdateFactory
+                                    .newLatLngZoom(new LatLng(toPosition.getLat(), toPosition.getLng()), 16));
+                        }
+                        if (mLegs == null) {
+                            mViewPager.setVisibility(View.GONE);
+                            Log.d("dddd", "init: bbbbbbbbbb");
+                        } else {
+                            Log.d("dddd", "init: " + mSteps.size());
+                            mViewPager.setVisibility(View.VISIBLE);
+                            StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs);
+                            mViewPager.setAdapter(stepAdapter);
+                            mViewPager.setCurrentItem(mCurrentPage + 1);
+                        }
                     }
-                }
-                if (routelist.size() > 0) {
-                    PolylineOptions rectLine = new PolylineOptions().width(10).color(Color.RED);
 
-                    for (int i = 0; i < routelist.size(); i++) {
-                        rectLine.add(routelist.get(i));
+                    @Override
+                    public void onFailure(Call<DirectionResult> call, Throwable t) {
+
                     }
-                    // Adding route on the map
-                    mMap.addPolyline(rectLine);
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(new LatLng(toPosition.getLat(), toPosition.getLng()));
-                    markerOptions.draggable(true);
-                    mMap.addMarker(markerOptions);
-                }
-            }
+                });
+    }
 
-            @Override
-            public void onFailure(Call<DirectionResult> call, Throwable t) {
+    @Click(R.id.btnFind)
+    public void onClickFind() {
+        drawRoute();
+    }
 
+    @PageSelected(R.id.viewPager)
+    void onItemAtmSelected(int position) {
+        mCurrentPage = position;
+        double lat;
+        double lng;
+        if (position == 0) {
+            return;
+        } else if (position == 1) {
+            lat = mLegs.get(0).getStartLocation().getLat();
+            lng = mLegs.get(0).getStartLocation().getLng();
+        } else if (position >= mSteps.size() + 1) {
+            lat = mLegs.get(0).getEndLocation().getLat();
+            lng = mLegs.get(0).getEndLocation().getLng();
+        } else {
+            lat = mSteps.get(position - 1).getStartLocation().getLat();
+            lng = mSteps.get(position - 1).getStartLocation().getLng();
+        }
+        LatLng latLng = new LatLng(lat, lng);
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+
+        if (position < mMarkers.size()) {
+            mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
+        }
+        for (int i = 0; i < mMarkers.size(); i++) {
+            if (position == 1) {
+                mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
             }
-        });
+            if (i != position) {
+                mMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+            }
+        }
+    }
+
+    @PageScrollStateChanged(R.id.viewPager)
+    void onPageScrollChanged(int state) {
+        if (state == ViewPager.SCROLL_STATE_IDLE) {
+            int pageCount = mSteps.size() + 3;
+            if (mCurrentPage == 0) {
+                mViewPager.setCurrentItem(pageCount - 2, false);
+            } else if (mCurrentPage == pageCount - 1) {
+                mViewPager.setCurrentItem(1, false);
+            }
+        }
     }
 
     @Override
-    public void onClick(View v) {
-
-        onClickFind();
+    public boolean onMarkerClick(Marker marker) {
+        for (int i = 0; i < mMarkers.size(); i++) {
+            if (marker.equals(mMarkers.get(i))) {
+                mViewPager.setCurrentItem(i);
+            }
+        }
+        return true;
     }
 }

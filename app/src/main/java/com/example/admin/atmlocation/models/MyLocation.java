@@ -6,32 +6,37 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 
 /**
- *
+ * MyLocation class
  * Created by Admin on 3/11/2017.
  */
 
-public class Locations implements Parcelable {
+public class MyLocation implements Parcelable {
     @SerializedName("lat")
     private double lat;
     @SerializedName("lng")
     private double lng;
 
-    protected Locations(Parcel in) {
+    private MyLocation(Parcel in) {
         lat = in.readDouble();
         lng = in.readDouble();
     }
 
-    public static final Creator<Locations> CREATOR = new Creator<Locations>() {
+    public static final Creator<MyLocation> CREATOR = new Creator<MyLocation>() {
         @Override
-        public Locations createFromParcel(Parcel in) {
-            return new Locations(in);
+        public MyLocation createFromParcel(Parcel in) {
+            return new MyLocation(in);
         }
 
         @Override
-        public Locations[] newArray(int size) {
-            return new Locations[size];
+        public MyLocation[] newArray(int size) {
+            return new MyLocation[size];
         }
     };
+
+    public MyLocation(double latitude, double longitude) {
+        this.lat = latitude;
+        this.lng = longitude;
+    }
 
     @Override
     public int describeContents() {
@@ -60,7 +65,7 @@ public class Locations implements Parcelable {
         this.lng = lng;
     }
 
-    public static Creator<Locations> getCREATOR() {
+    public static Creator<MyLocation> getCREATOR() {
         return CREATOR;
     }
 }
