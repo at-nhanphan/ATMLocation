@@ -4,7 +4,8 @@
     <string name="search_hint">search</string>
     <string name="textView.text.start">start</string>
     <string name="textView.text.end">end</string>
-    <string name="button.text.find">find</string>
+    <string name="button.text.drawRoute">Draw Route</string>
     <string name="textView.text.defaultDistance">0 km</string>
     <string name="textView.text.defaultDuration">0 min</string>
+    <string name="direction.key">AIzaSyDjJotwDoyLtG6RLKbXhsi56-c9dbjByOg</string>
 </resources>

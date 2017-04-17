@@ -2,24 +2,24 @@ package com.example.admin.atmlocation.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
- * Routes class
+ * Route class
  * Created by naunem on 12/04/2017.
  */
 
-public class Routes {
+public class Route {
     @SerializedName("overview_polyline")
     private OverviewPolyLine overviewPolyLine;
     @SerializedName("legs")
-    private List<Legs> legs;
+    private ArrayList<Leg> legs;
 
     public OverviewPolyLine getOverviewPolyLine() {
         return overviewPolyLine;
     }
 
-    public List<Legs> getLegs() {
+    public ArrayList<Leg> getLegs() {
         return legs;
     }
 }

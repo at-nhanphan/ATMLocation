@@ -11,9 +11,9 @@ import java.util.List;
 
 public class DirectionResult {
     @SerializedName("routes")
-    private List<Routes> routes;
+    private List<Route> routes;
 
-    public List<Routes> getRoutes() {
+    public List<Route> getRoutes() {
         return routes;
     }
 

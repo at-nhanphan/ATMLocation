@@ -1,8 +1,6 @@
 package com.example.admin.atmlocation.activities;
 
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -17,40 +15,34 @@ import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
+import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.ViewById;
+
 import java.util.ArrayList;
 
 /**
- * Main class
+ * MainActivity class
  * Created by naunem on 24/03/2017.
  */
-
+@EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
-    private ViewPager mViewPager;
+    @ViewById(R.id.toolbar)
+    Toolbar toolbar;
+    @ViewById(R.id.viewPager)
+    ViewPager mViewPager;
+    @ViewById(R.id.tabLayout)
+    TabLayout mTabLayout;
     private OnQueryTextChange mOnQueryTextChange;
 
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // Declare component
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+    @AfterViews
+    void init() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-//        toolbar.setTitle("Home");
-//        Spinner spinner = (Spinner) findViewById(R.id.spinner);
-
-//        String[] areas = new String[]{"hjhj", "jhjhjh", "hjhj", "jhjhjh", "hjhj", "jhjhjh"};
-//        ArrayAdapter<String> mang = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, areas);
-//        spinner.setAdapter(mang);
-        TabLayout mTabLayout = (TabLayout) findViewById(R.id.tabLayout);
-        mViewPager = (ViewPager) findViewById(R.id.viewPager);
         final TabLayout.Tab home = mTabLayout.newTab();
         final TabLayout.Tab favorite = mTabLayout.newTab();
         final TabLayout.Tab setting = mTabLayout.newTab();
-        home.setIcon(R.drawable.ic_home);
+        home.setIcon(R.drawable.ic_home_36dp);
         favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
         setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
 
@@ -72,19 +64,19 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             public void onPageSelected(int position) {
                 switch (position) {
                     case 0:
-                        home.setIcon(R.drawable.ic_home);
+                        home.setIcon(R.drawable.ic_home_36dp);
                         favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                         setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                         break;
                     case 1:
                         home.setIcon(R.drawable.ic_home_brown_200_36dp);
-                        favorite.setIcon(R.drawable.ic_favorite);
+                        favorite.setIcon(R.drawable.ic_favorite_36dp);
                         setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                         break;
                     case 2:
                         home.setIcon(R.drawable.ic_home_brown_200_36dp);
                         favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-                        setting.setIcon(R.drawable.ic_settings);
+                        setting.setIcon(R.drawable.ic_settings_36dp);
                 }
             }
 
@@ -166,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 final ArrayAdapter<String> arrayAdapterItems = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, items);
 
                 dialog.setTitle("aaaa")
-                        .setSingleChoiceItems(arrayAdapterItems, -1,  new DialogInterface.OnClickListener() {
+                        .setSingleChoiceItems(arrayAdapterItems, -1, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 

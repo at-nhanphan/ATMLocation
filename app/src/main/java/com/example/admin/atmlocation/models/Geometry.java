@@ -12,9 +12,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Geometry implements Parcelable {
     @SerializedName("location")
-    Locations location;
+    MyLocation location;
 
-    public Geometry(Locations location) {
+    public Geometry(MyLocation location) {
         this.location = location;
     }
 
@@ -33,11 +33,11 @@ public class Geometry implements Parcelable {
         }
     };
 
-    public Locations getLocation() {
+    public MyLocation getLocation() {
         return location;
     }
 
-    public void setLocation(Locations location) {
+    public void setLocation(MyLocation location) {
         this.location = location;
     }
 

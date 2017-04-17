@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.admin.atmlocation.fragments.FavoriteFragment;
-import com.example.admin.atmlocation.fragments.HomeFragment;
+import com.example.admin.atmlocation.fragments.HomeFragment_;
 import com.example.admin.atmlocation.fragments.SettingFragment;
 
 /**
@@ -22,7 +22,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new HomeFragment();
+                return new HomeFragment_();
             case 1:
                 return new FavoriteFragment();
             case 2:
