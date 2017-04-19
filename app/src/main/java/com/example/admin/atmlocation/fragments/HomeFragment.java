@@ -1,13 +1,18 @@
 package com.example.admin.atmlocation.fragments;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,7 +36,7 @@ import java.util.ArrayList;
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
- * HomeFragment
+ * HomeFragment class
  * Created by naunem on 24/03/2017.
  */
 @EFragment(R.layout.fragment_home)
@@ -49,9 +54,55 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mAtms = new ArrayList<>();
 
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
-        ATMServiceImpl mAtmService = new ATMServiceImpl(getContext());
 
         ((MainActivity_) getContext()).setOnQueryTextChange(this);
+    }
+
+    public void checkLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+        try {
+            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ignored) {
+
+        }
+
+        try {
+            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ignored) {
+
+        }
+
+        if (!gps_enabled && !network_enabled) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+            dialog.setCancelable(false);
+            dialog.setMessage(getContext().getResources().getString(R.string.gps_network_not_enabled));
+            dialog.setPositiveButton(getResources().getString(R.string.positiveButton), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    Intent myIntent = new Intent(Settings.ACTION_SETTINGS);
+                    getContext().startActivity(myIntent);
+                    //get gps
+                }
+            });
+            dialog.setNegativeButton(getResources().getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+
+                }
+            });
+            dialog.show();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ATMServiceImpl mAtmService = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -73,7 +124,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
             }
         };
-
+        checkLocationEnabled();
         LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -116,6 +167,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                 .mMyLocation(mAtms.get(position).getGeometry().getLocation())
                 .start();
     }
+
     @Override
     public void onTextChange(String newText) {
         mAdapter.getFilter().filter(newText);

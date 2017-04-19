@@ -2,14 +2,11 @@ package com.example.admin.atmlocation.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.models.Leg;
-import com.example.admin.atmlocation.models.Step;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -20,7 +17,7 @@ import org.androidannotations.annotations.ViewById;
  * Created by naunem on 14/04/2017.
  */
 
-@EFragment(R.layout.item_start_end_location)
+@EFragment(R.layout.item_steps)
 public class ItemStartEndFragment extends Fragment {
     @ViewById(R.id.imgLogo)
     ImageView mImgLogo;

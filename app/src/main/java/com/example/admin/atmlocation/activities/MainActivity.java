@@ -17,6 +17,7 @@ import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
+import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -29,62 +30,58 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSelectedListener {
 
     @ViewById(R.id.toolbar)
-    Toolbar toolbar;
+    Toolbar mToolbar;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
     @ViewById(R.id.tabLayout)
     TabLayout mTabLayout;
     private OnQueryTextChange mOnQueryTextChange;
+    private TabLayout.Tab mHome;
+    private TabLayout.Tab mFavorite;
+    private TabLayout.Tab mSetting;
+
 
     @AfterViews
     void init() {
-        setSupportActionBar(toolbar);
-        final TabLayout.Tab home = mTabLayout.newTab();
-        final TabLayout.Tab favorite = mTabLayout.newTab();
-        final TabLayout.Tab setting = mTabLayout.newTab();
-        home.setIcon(R.drawable.ic_home_36dp);
-        favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-        setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
+        setSupportActionBar(mToolbar);
+        mHome = mTabLayout.newTab();
+        mFavorite = mTabLayout.newTab();
+        mSetting = mTabLayout.newTab();
+        mHome.setIcon(R.drawable.ic_home_36dp);
+        mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
+        mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
 
-        mTabLayout.addTab(home, 0);
-        mTabLayout.addTab(favorite, 1);
-        mTabLayout.addTab(setting, 2);
+        mTabLayout.addTab(mHome, 0);
+        mTabLayout.addTab(mFavorite, 1);
+        mTabLayout.addTab(mSetting, 2);
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(adapter);
 
         mTabLayout.addOnTabSelectedListener(this);
         mViewPager.setOffscreenPageLimit(3);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        home.setIcon(R.drawable.ic_home_36dp);
-                        favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-                        setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
-                        break;
-                    case 1:
-                        home.setIcon(R.drawable.ic_home_brown_200_36dp);
-                        favorite.setIcon(R.drawable.ic_favorite_36dp);
-                        setting.setIcon(R.drawable.ic_settings_brown_200_36dp);
-                        break;
-                    case 2:
-                        home.setIcon(R.drawable.ic_home_brown_200_36dp);
-                        favorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-                        setting.setIcon(R.drawable.ic_settings_36dp);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
+    @PageSelected(R.id.viewPager)
+    void onPageFragmentSelected(int position) {
+        switch (position) {
+            case 0:
+                mHome.setIcon(R.drawable.ic_home_36dp);
+                mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
+                mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
+                mToolbar.setTitle("Home");
+                break;
+            case 1:
+                mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
+                mFavorite.setIcon(R.drawable.ic_favorite_36dp);
+                mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
+                mToolbar.setTitle("Favorite");
+                break;
+            case 2:
+                mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
+                mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
+                mSetting.setIcon(R.drawable.ic_settings_36dp);
+                mToolbar.setTitle("Setting");
+        }
     }
 
     @Override

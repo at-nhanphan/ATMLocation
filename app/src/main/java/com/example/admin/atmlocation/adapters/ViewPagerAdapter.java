@@ -6,10 +6,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.admin.atmlocation.fragments.FavoriteFragment;
 import com.example.admin.atmlocation.fragments.HomeFragment_;
-import com.example.admin.atmlocation.fragments.SettingFragment;
+import com.example.admin.atmlocation.fragments.SettingFragment_;
 
 /**
- *
+ * ViewPagerAdapter class
  * Created by naunem on 24/03/2017.
  */
 
@@ -26,7 +26,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
             case 1:
                 return new FavoriteFragment();
             case 2:
-                return new SettingFragment();
+                return new SettingFragment_();
         }
         return null;
     }
