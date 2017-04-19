@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -33,6 +34,8 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
@@ -46,6 +49,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     RecyclerView mRecyclerView;
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
+    private SpotsDialog mDialog;
 
     @AfterViews
     void init() {
@@ -54,6 +58,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mAtms = new ArrayList<>();
 
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
+
+        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         ATMServiceImpl mAtmService = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
@@ -169,5 +176,32 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     @Override
     public void onTextChange(String newText) {
         mAdapter.getFilter().filter(newText);
+    }
+
+    private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            while (mAtms.size() <= 0) {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mDialog.dismiss();
+        }
     }
 }
