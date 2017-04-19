@@ -25,5 +25,4 @@ public interface ATMService {
 
     @GET("/maps/api/directions/json")
     Call<DirectionResult> getData(@Query("origin") String origin, @Query("destination") String destination, @Query("key") String key);
-
 }
