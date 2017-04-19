@@ -11,7 +11,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#89e8f1">
+        android:background="#89e8f1"
+        android:paddingBottom="5dp">
 
         <ImageView
             android:id="@+id/imgLogo"
@@ -26,34 +27,23 @@
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_toLeftOf="@+id/imgFavorite"
             android:layout_toRightOf="@+id/imgLogo"
-            android:text="Agribank Hoa Khanh"
-            android:maxLines="1"
+            android:layout_alignTop="@+id/imgLogo"
+            android:text="@string/app_name"
+            android:maxLines="2"
             android:ellipsize="end"
             android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tvName"
-            android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/imgLogo"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="54 Nguyen Luong Bang" />
 
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_alignLeft="@+id/tvName"
-            android:layout_below="@id/tvAddress"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_above="@id/imgCar"
             android:background="@android:color/holo_red_light" />
 
         <ImageView
@@ -61,17 +51,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tvName"
-            android:layout_below="@+id/view"
             android:layout_marginRight="10dp"
             android:src="@drawable/ic_car_pink_400_24dp"
-            android:layout_marginBottom="5dp"/>
+            android:layout_alignParentBottom="true"/>
 
         <TextView
             android:id="@+id/tvDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/view"
             android:layout_toRightOf="@+id/imgCar"
-            android:text="0 km" />
+            android:layout_alignParentBottom="true"
+            android:text="@string/textView.text.defaultDistance" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>
