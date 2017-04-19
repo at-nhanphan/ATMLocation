@@ -34,10 +34,10 @@ public class ItemStartEndFragment extends Fragment {
         Leg leg = getArguments().getParcelable("leg");
         if (position == 1 || position == (leg.getSteps().size() + 2)) {
             mTvName.setText(leg.getStartAddress());
-            mImgLogo.setImageResource(R.drawable.ic_pin_on);
+            mImgLogo.setImageResource(R.drawable.ic_flag_start);
         } else {
             mTvName.setText(leg.getEndAddress());
-            mImgLogo.setImageResource(R.drawable.ic_pin_off);
+            mImgLogo.setImageResource(R.drawable.ic_flag_end);
         }
     }
 

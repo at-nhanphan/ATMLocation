@@ -42,6 +42,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.PageScrollStateChanged;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
@@ -58,12 +60,11 @@ import retrofit2.Response;
  * Created by naunem on 30/03/2017.
  */
 @EActivity(R.layout.acitivity_maps)
+@OptionsMenu(R.menu.map_menu)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener {
 
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
-    @ViewById(R.id.searchView)
-    SearchView mSearchView;
     @ViewById(R.id.tvDistance)
     TextView mTvDistance;
     @ViewById(R.id.tvDuration)
@@ -98,6 +99,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mAtmLatitude = mAtmMyLocation.getLat();
         mAtmLongitude = mAtmMyLocation.getLng();
         mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
+    }
+
+    @OptionsItem(R.id.drawRoute)
+    void onItemdrawRoute() {
+        drawRoute();
     }
 
     @Override
@@ -155,14 +161,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void drawRoute() {
-        Call<DirectionResult> results = mService.getData(getCurrentLocation().getLat() + "," + getCurrentLocation().getLng(),
-                mAtmMyLocation.getLat() + "," + mAtmMyLocation.getLng(), KEY_DIRECTIONS);
-        Log.d("vvvv", "drawRoute: " + getCurrentLocation().getLat() + "," + getCurrentLocation().getLng() + "----------" + mAtmMyLocation.getLat() + "," + mAtmMyLocation.getLng());
+        Call<DirectionResult> results = mService.getData(getCurrentLocation().getLat() + "," +
+                getCurrentLocation().getLng(), mAtmMyLocation.getLat() + "," + mAtmMyLocation.getLng(), KEY_DIRECTIONS);
+
         results.enqueue(new Callback<DirectionResult>() {
             @Override
             public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
                 MyLocation toPosition = null;
-                Log.d("aaa", "onResponse: ");
                 ArrayList<LatLng> routeList = new ArrayList<>();
                 mMap.clear();
                 if (response.body().getRoutes().size() > 0) {
@@ -214,9 +219,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 }
                 if (mLegs == null) {
                     mViewPager.setVisibility(View.GONE);
-                    Log.d("dddd", "init: bbbbbbbbbb");
                 } else {
-                    Log.d("dddd", "init: " + mSteps.size());
                     mViewPager.setVisibility(View.VISIBLE);
                     StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs);
                     mViewPager.setAdapter(stepAdapter);
@@ -226,15 +229,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             @Override
             public void onFailure(Call<DirectionResult> call, Throwable t) {
-                Log.d("aaa", "onFailure: ");
+                Log.d("aaa", "onFailure: " + t.getMessage());
             }
         });
-    }
-
-    @Click(R.id.btnFind)
-    public void onClickFind() {
-        Log.d("dddd", "onClickFind: ");
-        drawRoute();
     }
 
     @PageSelected(R.id.viewPager)

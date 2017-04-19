@@ -1,6 +1,6 @@
 package com.example.admin.atmlocation.services;
 
-import com.example.admin.atmlocation.configs.ConfigRetrofit;
+import com.example.admin.atmlocation.configs.DirectionRetrofit;
 import com.example.admin.atmlocation.interfaces.ATMService;
 
 /**
@@ -12,6 +12,6 @@ public class ApiUtils {
     private static final String URL = "https://maps.googleapis.com/";
 
     public static ATMService getService() {
-        return ConfigRetrofit.getClient(URL).create(ATMService.class);
+        return DirectionRetrofit.getClient(URL).create(ATMService.class);
     }
 }

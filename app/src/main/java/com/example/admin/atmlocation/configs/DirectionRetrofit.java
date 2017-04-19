@@ -9,12 +9,11 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * ConfigRetrofit class
- * Created by Admin on 3/11/2017.
+ * DirectionRetrofit class
+ * Created by naunem on 19/04/2017.
  */
 
-public class ConfigRetrofit {
-
+public class DirectionRetrofit {
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient(String baseUrl) {

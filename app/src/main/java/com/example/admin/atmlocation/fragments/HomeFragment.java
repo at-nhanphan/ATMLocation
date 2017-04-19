@@ -157,12 +157,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     public void onClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAtms.get(position).getLat()),
                 Double.parseDouble(mAtms.get(position).getLng()));
