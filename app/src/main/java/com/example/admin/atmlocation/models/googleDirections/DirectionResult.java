@@ -1,8 +1,8 @@
-package com.example.admin.atmlocation.models;
+package com.example.admin.atmlocation.models.googleDirections;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * DirectionResult class
@@ -11,9 +11,9 @@ import java.util.List;
 
 public class DirectionResult {
     @SerializedName("routes")
-    private List<Route> routes;
+    private ArrayList<Route> routes;
 
-    public List<Route> getRoutes() {
+    public ArrayList<Route> getRoutes() {
         return routes;
     }
 

@@ -1,7 +1,7 @@
 package com.example.admin.atmlocation.interfaces;
 
 /**
- *
+ * CallBack interface
  * Created by Admin on 3/11/2017.
  */
 

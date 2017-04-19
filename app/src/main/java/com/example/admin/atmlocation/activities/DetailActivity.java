@@ -6,8 +6,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
-import com.example.admin.atmlocation.models.ATM;
-import com.example.admin.atmlocation.models.MyLocation;
+import com.example.admin.atmlocation.models.MyATM;
+import com.example.admin.atmlocation.models.googleDirections.MyLocation;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -31,16 +31,16 @@ public class DetailActivity extends AppCompatActivity {
     @ViewById(R.id.imgFavorite)
     ImageView mImgFavorite;
     @Extra
-    ATM mAtm;
+    MyATM mAtm;
     @Extra
     MyLocation mMyLocation;
 
     @AfterViews
     void init() {
-        mTvName.setText(mAtm.getName());
-        mTvAddress.setText(mAtm.getAddress());
-        mRatingBar.setRating(Float.parseFloat(mAtm.getRating()));
-        mImgFavorite.setSelected(mAtm.isFavorite());
+        mTvName.setText(mAtm.getTenDiaDiem());
+        mTvAddress.setText(mAtm.getDiaChi());
+//        mRatingBar.setRating(Float.parseFloat(mAtm.getRating()));
+//        mImgFavorite.setSelected(mAtm.isFavorite());
     }
 
     @Click(R.id.btnShowMap)

@@ -3,6 +3,7 @@ package com.example.admin.atmlocation.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.admin.atmlocation.models.googleDirections.Geometry;
 import com.google.gson.annotations.SerializedName;
 
 /**
