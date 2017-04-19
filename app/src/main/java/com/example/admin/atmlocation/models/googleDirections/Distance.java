@@ -1,21 +1,21 @@
-package com.example.admin.atmlocation.models;
+package com.example.admin.atmlocation.models.googleDirections;
 
 import com.google.gson.annotations.SerializedName;
 
 /**
- * Duration class
+ * Distance class
  * Created by naunem on 11/04/2017.
  */
 
-public class Duration {
+public class Distance {
     @SerializedName("text")
     private String text;
     @SerializedName("value")
     private String value;
 
-    public Duration(String text, String mValue) {
+    public Distance(String text, String value) {
         this.text = text;
-        this.value = mValue;
+        this.value = value;
     }
 
     public String getText() {

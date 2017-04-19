@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.admin.atmlocation.fragments.ItemStartEndFragment_;
 import com.example.admin.atmlocation.fragments.ItemStepFragment_;
-import com.example.admin.atmlocation.models.Leg;
+import com.example.admin.atmlocation.models.googleDirections.Leg;
 
 import java.util.ArrayList;
 

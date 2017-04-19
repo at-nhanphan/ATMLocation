@@ -18,15 +18,15 @@ import android.widget.TextView;
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.StepAdapter;
 import com.example.admin.atmlocation.interfaces.ATMService;
-import com.example.admin.atmlocation.models.ATM;
-import com.example.admin.atmlocation.models.DirectionResult;
-import com.example.admin.atmlocation.models.Distance;
-import com.example.admin.atmlocation.models.Duration;
-import com.example.admin.atmlocation.models.Leg;
-import com.example.admin.atmlocation.models.MyLocation;
-import com.example.admin.atmlocation.models.Route;
-import com.example.admin.atmlocation.models.RouteDecode;
-import com.example.admin.atmlocation.models.Step;
+import com.example.admin.atmlocation.models.MyATM;
+import com.example.admin.atmlocation.models.googleDirections.DirectionResult;
+import com.example.admin.atmlocation.models.googleDirections.Distance;
+import com.example.admin.atmlocation.models.googleDirections.Duration;
+import com.example.admin.atmlocation.models.googleDirections.Leg;
+import com.example.admin.atmlocation.models.googleDirections.MyLocation;
+import com.example.admin.atmlocation.models.googleDirections.Route;
+import com.example.admin.atmlocation.models.googleDirections.RouteDecode;
+import com.example.admin.atmlocation.models.googleDirections.Step;
 import com.example.admin.atmlocation.services.ApiUtils;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -72,13 +72,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String KEY_DIRECTIONS;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
+    @Extra
+    MyATM mAtm;
+    @Extra
+    MyLocation mAtmMyLocation;
     private GoogleMap mMap;
     private PolylineOptions mPolylineOptions;
     private ATMService mService;
-    @Extra
-    ATM mAtm;
-    @Extra
-    MyLocation mAtmMyLocation;
     private ArrayList<Step> mSteps;
     private ArrayList<Leg> mLegs;
     private double mAtmLatitude;
@@ -106,7 +106,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPolylineOptions.add(mLocation);
         mMap.addMarker(new MarkerOptions()
                 .position(mLocation)
-                .title(mAtm.getName())
+                .title(mAtm.getTenDiaDiem())
                 .snippet(mAtmLatitude + ", " + mAtmLongitude)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)))
                 .showInfoWindow();
@@ -161,6 +161,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
                         MyLocation toPosition = null;
+                        Log.d("aaa", "onResponse: ");
                         ArrayList<LatLng> routeList = new ArrayList<>();
                         mMap.clear();
                         if (response.body().getRoutes().size() > 0) {
@@ -224,13 +225,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onFailure(Call<DirectionResult> call, Throwable t) {
-
+                        Log.d("aaa", "onFailure: ");
                     }
                 });
     }
 
     @Click(R.id.btnFind)
     public void onClickFind() {
+        Log.d("dddd", "onClickFind: ");
         drawRoute();
     }
 

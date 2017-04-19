@@ -3,6 +3,8 @@
     <words>
       <w>atmlocation</w>
       <w>atms</w>
+      <w>dlat</w>
+      <w>dlng</w>
     </words>
   </dictionary>
 </component>

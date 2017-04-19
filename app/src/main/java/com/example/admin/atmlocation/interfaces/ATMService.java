@@ -1,6 +1,6 @@
 package com.example.admin.atmlocation.interfaces;
 
-import com.example.admin.atmlocation.models.DirectionResult;
+import com.example.admin.atmlocation.models.googleDirections.DirectionResult;
 import com.example.admin.atmlocation.models.APIResponse;
 
 import retrofit2.Call;
@@ -13,6 +13,9 @@ import retrofit2.http.Query;
  */
 
 public interface ATMService {
+    @GET("api/search/atm.php?getall")
+    Call<APIResponse> getAllATM();
+
     @GET("place/textsearch/json")
     Call<APIResponse> getATM(@Query("query") String atm, @Query("key") String key);
 

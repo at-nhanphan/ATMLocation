@@ -1,6 +1,5 @@
 package com.example.admin.atmlocation.models;
 
-import com.example.admin.atmlocation.models.ATM;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -11,24 +10,14 @@ import java.util.ArrayList;
  */
 
 public class APIResponse {
-    @SerializedName("results")
-    ArrayList<ATM> atms;
-    @SerializedName("status")
-    String status;
+    @SerializedName("data")
+    ArrayList<MyATM> myATMs;
 
-    public ArrayList<ATM> getAtms() {
-        return atms;
+    public ArrayList<MyATM> getMyATMs() {
+        return myATMs;
     }
 
-    public void setAtms(ArrayList<ATM> atms) {
-        this.atms = atms;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setMyATMs(ArrayList<MyATM> myATMs) {
+        this.myATMs = myATMs;
     }
 }

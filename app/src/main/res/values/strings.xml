@@ -7,7 +7,7 @@
     <string name="button.text.drawRoute">Draw Route</string>
     <string name="textView.text.defaultDistance">0 km</string>
     <string name="textView.text.defaultDuration">0 min</string>
-    <string name="direction.key">AIzaSyDjJotwDoyLtG6RLKbXhsi56-c9dbjByOg</string>
+    <string name="direction.key">AIzaSyBLrLg8ydwDTVHQUbgFT0sqCG3Rn5Bczy0</string>
     <string name="toolbar.title.setting">Setting</string>
     <string name="textView.text.filter">FILTER</string>
     <string name="gps_network_not_enabled">GPS or Network not enabled</string>

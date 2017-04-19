@@ -1,4 +1,4 @@
-package com.example.admin.atmlocation.models;
+package com.example.admin.atmlocation.models.googleDirections;
 
 import android.os.Parcel;
 import android.os.Parcelable;

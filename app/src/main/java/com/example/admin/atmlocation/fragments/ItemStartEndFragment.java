@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
-import com.example.admin.atmlocation.models.Leg;
+import com.example.admin.atmlocation.models.googleDirections.Leg;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;

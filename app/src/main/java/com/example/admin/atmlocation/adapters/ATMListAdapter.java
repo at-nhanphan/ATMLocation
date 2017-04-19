@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.ATM;
+import com.example.admin.atmlocation.models.MyATM;
 
 import java.util.ArrayList;
 
@@ -23,13 +24,13 @@ import java.util.ArrayList;
  */
 
 public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> implements Filterable {
-    private ArrayList<ATM> mAtms;
+    private ArrayList<MyATM> mAtms;
     private final Context mContext;
     private MyOnClickListener mMyOnClickListener;
     private ValueFilter mValueFilter;
-    private ArrayList<ATM> mAtmsFilter;
+    private ArrayList<MyATM> mAtmsFilter;
 
-    public ATMListAdapter(Context context, ArrayList<ATM> atms, MyOnClickListener myOnClickListener) {
+    public ATMListAdapter(Context context, ArrayList<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
         this.mContext = context;
         this.mMyOnClickListener = myOnClickListener;
@@ -44,17 +45,10 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        ATM atm = mAtms.get(position);
+        MyATM atm = mAtms.get(position);
         holder.mImgLogo.setImageResource(R.mipmap.ic_logo_atm);
-        holder.mTvName.setText(atm.getName());
-        holder.mTvAddress.setText(atm.getAddress());
-        if (atm.getRating() == null) {
-            holder.mRatingBar.setRating(3.0f);
-            atm.setRating("3.0f");
-        } else {
-            holder.mRatingBar.setRating(Float.parseFloat(atm.getRating()));
-        }
-        holder.mImgFavorite.setSelected(atm.isFavorite());
+        holder.mTvName.setText(atm.getTenDiaDiem());
+        holder.mTvAddress.setText(atm.getDiaChi());
     }
 
     @Override
@@ -82,13 +76,13 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
                     mMyOnClickListener.onClick(getLayoutPosition());
                 }
             });
-            mImgFavorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mAtms.get(getLayoutPosition()).setFavorite(!mAtms.get(getLayoutPosition()).isFavorite());
-                    notifyDataSetChanged();
-                }
-            });
+//            mImgFavorite.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    mAtms.get(getLayoutPosition()).setFavorite(!mAtms.get(getLayoutPosition()).isFavorite());
+//                    notifyDataSetChanged();
+//                }
+//            });
         }
     }
 
@@ -111,9 +105,9 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             FilterResults results = new FilterResults();
 
             if (constraint != null && constraint.length() > 0) {
-                ArrayList<ATM> filterList = new ArrayList();
+                ArrayList<MyATM> filterList = new ArrayList();
                 for (int i = 0; i < mAtmsFilter.size(); i++) {
-                    if ((mAtmsFilter.get(i).getName().toUpperCase()).contains(constraint.toString().toUpperCase())) {
+                    if ((mAtmsFilter.get(i).getTenDiaDiem().toUpperCase()).contains(constraint.toString().toUpperCase())) {
                         filterList.add(mAtmsFilter.get(i));
                     }
                 }
@@ -128,7 +122,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            mAtms = (ArrayList<ATM>) results.values;
+            mAtms = (ArrayList<MyATM>) results.values;
             notifyDataSetChanged();
         }
     }
