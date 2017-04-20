@@ -16,6 +16,7 @@ import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
@@ -31,15 +32,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
-    @ViewById(R.id.viewPager)
-    ViewPager mViewPager;
     @ViewById(R.id.tabLayout)
     TabLayout mTabLayout;
+    @ViewById(R.id.viewPager)
+    ViewPager mViewPager;
+
     private OnQueryTextChange mOnQueryTextChange;
     private TabLayout.Tab mHome;
     private TabLayout.Tab mFavorite;
     private TabLayout.Tab mSetting;
-
 
     @AfterViews
     void init() {
@@ -124,10 +125,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.search:
-//                Intent intent  = new Intent(this, SearchActivity.class);
-//                startActivity(intent);
-                break;
             case R.id.home:
                 new AlertDialog.Builder(this)
                         .setTitle("Title")
@@ -183,5 +180,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
         this.mOnQueryTextChange = onQueryTextChange;
+    }
+
+    @Click(R.id.fabSearch)
+    void clickSearch() {
+        SearchActivity_.intent(this).start();
     }
 }
