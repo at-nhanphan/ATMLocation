@@ -21,6 +21,7 @@
     <string name="favorite">Favorite</string>
     <string name="setting">Setting</string>
     <string name="message">result empty</string>
+    <string name="textView.text.rating">Rating:</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

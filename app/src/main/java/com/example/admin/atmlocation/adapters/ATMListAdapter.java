@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
@@ -48,6 +47,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         holder.mImgLogo.setImageResource(R.mipmap.ic_logo_atm);
         holder.mTvName.setText(atm.getTenDiaDiem());
         holder.mTvAddress.setText(atm.getDiaChi());
+        holder.mImgFavorite.setSelected(atm.isFavorite());
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         private TextView mTvName;
         private TextView mTvAddress;
         private ImageView mImgFavorite;
-        private RatingBar mRatingBar;
+//        private RatingBar mRatingBar;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -68,26 +68,23 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             mTvName = (TextView) itemView.findViewById(R.id.tvName);
             mTvAddress = (TextView) itemView.findViewById(R.id.tvAddress);
             mImgFavorite = (ImageView) itemView.findViewById(R.id.imgFavorite);
-            mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
+//            mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mMyOnClickListener.onClick(getLayoutPosition());
                 }
             });
-//            mImgFavorite.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    mAtms.get(getLayoutPosition()).setFavorite(!mAtms.get(getLayoutPosition()).isFavorite());
-//                    notifyDataSetChanged();
-//                }
-//            });
+            mImgFavorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mImgFavorite.setSelected(!mAtms.get(getLayoutPosition()).isFavorite());
+                    mAtms.get(getLayoutPosition()).setFavorite(!mAtms.get(getLayoutPosition()).isFavorite());
+                    notifyDataSetChanged();
+                }
+            });
         }
     }
-
-//    public void setMyOnClickListener(MyOnClickListener myOnClickListener) {
-//        this.mMyOnClickListener = myOnClickListener;
-//    }
 
     @Override
     public Filter getFilter() {
