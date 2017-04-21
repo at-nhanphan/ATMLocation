@@ -62,7 +62,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-        ATMServiceImpl mAtmService = new ATMServiceImpl(getContext());
+        ATMServiceImpl atmServiceImpl = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -95,11 +95,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         Location locations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (locations != null) {
-            mAtmService.getATM(new CallBack<ArrayList<MyATM>>() {
+            atmServiceImpl.getATM(new CallBack<ArrayList<MyATM>>() {
                 @Override
                 public void next(ArrayList<MyATM> myATMs) {
                     mAtms.addAll(myATMs);
-                    Log.d("aaaaa", "next: " + mAtms.size());
                     mAdapter.notifyDataSetChanged();
                 }
             });
@@ -108,7 +107,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 //            String location = latitude + "," + longitude;
 //            String radius = "5000";
 //            String types = "ATM";
-//            mAtmService.getNearATM(location, radius, types, new CallBack<ArrayList<ATM>>() {
+//            atmServiceImpl.getNearATM(location, radius, types, new CallBack<ArrayList<ATM>>() {
 //                @Override
 //                public void next(ArrayList<ATM> atm) {
 //                    mAtms.addAll(atm);

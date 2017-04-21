@@ -29,13 +29,17 @@ public class ATMServiceImpl {
         this.mContext = context;
     }
 
+    private ATMService mService = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
+
+
     public void getATM(final CallBack<ArrayList<MyATM>> callBack) {
-        ATMService service = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
-        Call<APIResponse> atms = service.getAllATM();
+        Call<APIResponse> atms = mService.getAllATM();
         atms.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                if (response.isSuccessful()) {
                 callBack.next(response.body().getMyATMs());
+                }
             }
 
             @Override
@@ -45,20 +49,21 @@ public class ATMServiceImpl {
         });
     }
 
-//    public void getNearATM(String loaction, String radius, String type, final CallBack<ArrayList<ATM>> callBack) {
-//        ATMService service = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
-//        Call<APIResponse> nearATMs = service.getNearATM(loaction, radius, type, API_KEY);
-//        nearATMs.enqueue(new Callback<APIResponse>() {
-//            @Override
-//            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
-//                callBack.next(response.body().getAtms());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<APIResponse> call, Throwable t) {
-//                Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_LONG).show();
-//            }
-//        });
-//    }
+    public void getAtmSearch(String bank, String district, final CallBack<ArrayList<MyATM>> callBack) {
+        Call<APIResponse> nearATMs = mService.getATMSearch(bank, district);
+        nearATMs.enqueue(new Callback<APIResponse>() {
+            @Override
+            public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
+                if (response.isSuccessful()) {
+                    callBack.next(response.body().getMyATMs());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<APIResponse> call, Throwable t) {
+                Toast.makeText(mContext, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
 }

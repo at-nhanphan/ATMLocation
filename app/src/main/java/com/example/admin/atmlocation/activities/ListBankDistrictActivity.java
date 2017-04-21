@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.View;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
@@ -21,15 +20,14 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.prefs.Preferences;
 
 /**
- * ListActivity class
+ * ListBankDistrictActivity class
  * Created by naunem on 20/04/2017.
  */
 
 @EActivity(R.layout.activity_list)
-public class ListActivity extends AppCompatActivity implements MyOnClickListener {
+public class ListBankDistrictActivity extends AppCompatActivity implements MyOnClickListener {
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvTitle)
@@ -113,7 +111,6 @@ public class ListActivity extends AppCompatActivity implements MyOnClickListener
         getMenuInflater().inflate(R.menu.search_menu, menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setQueryHint("Type your keyword here");
-        searchView.setMaxWidth(View.FIND_VIEWS_WITH_TEXT);
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

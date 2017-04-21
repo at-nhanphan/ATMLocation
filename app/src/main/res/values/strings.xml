@@ -20,6 +20,7 @@
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
     <string name="setting">Setting</string>
+    <string name="message">result empty</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

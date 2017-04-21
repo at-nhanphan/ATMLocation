@@ -16,8 +16,8 @@ public interface ATMService {
     @GET("api/search/atm.php?getall")
     Call<APIResponse> getAllATM();
 
-    @GET("place/textsearch/json")
-    Call<APIResponse> getATM(@Query("query") String atm, @Query("key") String key);
+    @GET("api/search/search.php")
+    Call<APIResponse> getATMSearch(@Query("bank") String bank, @Query("district") String district);
 
     @GET("place/textsearch/json")
     Call<APIResponse> getNearATM(@Query("location") String location, @Query("radius") String radius,
