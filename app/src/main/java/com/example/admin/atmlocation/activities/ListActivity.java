@@ -3,7 +3,10 @@ package com.example.admin.atmlocation.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.View;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
@@ -15,10 +18,10 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
-import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+import java.util.prefs.Preferences;
 
 /**
  * ListActivity class
@@ -26,7 +29,6 @@ import java.util.ArrayList;
  */
 
 @EActivity(R.layout.activity_list)
-@OptionsMenu(R.menu.search_menu)
 public class ListActivity extends AppCompatActivity implements MyOnClickListener {
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
@@ -45,6 +47,7 @@ public class ListActivity extends AppCompatActivity implements MyOnClickListener
     @Extra
     int mPositionDistrict;
     private ArrayList<ItemListBank> mBanks;
+    private ListBankAdapter mAdapter;
 
     @AfterViews
     void init() {
@@ -74,9 +77,9 @@ public class ListActivity extends AppCompatActivity implements MyOnClickListener
                 mBanks.get(mPositionDistrict).setCheck(true);
             }
         }
-        ListBankAdapter adapter = new ListBankAdapter(mBanks, this);
-        mRecyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        mAdapter = new ListBankAdapter(mBanks, this);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -103,5 +106,27 @@ public class ListActivity extends AppCompatActivity implements MyOnClickListener
     @Click(R.id.imgBack)
     void clickBack() {
         finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu, menu);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setQueryHint("Type your keyword here");
+        searchView.setMaxWidth(View.FIND_VIEWS_WITH_TEXT);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.getValueFilter().filter(newText);
+                return false;
+            }
+        });
+        return true;
     }
 }

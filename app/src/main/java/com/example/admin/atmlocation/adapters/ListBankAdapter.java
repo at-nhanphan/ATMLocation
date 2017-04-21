@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -21,10 +22,13 @@ import java.util.ArrayList;
 public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHolder> {
     private ArrayList<ItemListBank> mBanks = new ArrayList<>();
     private MyOnClickListener mMyOnClickListener;
+    private ArrayList<ItemListBank> mBankFilters = new ArrayList<>();
+    private ValueFilter mValueFilter;
 
     public ListBankAdapter(ArrayList<ItemListBank> banks, MyOnClickListener myOnClickListener) {
         this.mBanks = banks;
         this.mMyOnClickListener = myOnClickListener;
+        this.mBankFilters = banks;
     }
 
     @Override
@@ -60,5 +64,40 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
                 }
             });
         }
+    }
+
+    public class ValueFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            if (constraint != null && constraint.length() > 0) {
+                ArrayList<ItemListBank> listFilters = new ArrayList<>();
+                for (int i = 0; i < mBankFilters.size(); i++) {
+                    if (mBankFilters.get(i).getName().toUpperCase().contains(constraint.toString().toUpperCase())) {
+                        listFilters.add(mBankFilters.get(i));
+                    }
+                }
+                results.count = listFilters.size();
+                results.values = listFilters;
+            } else {
+                results.count = mBankFilters.size();
+                results.values = mBankFilters;
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            mBanks = (ArrayList<ItemListBank>) results.values;
+            notifyDataSetChanged();
+        }
+    }
+
+    public ValueFilter getValueFilter() {
+        if (mValueFilter == null) {
+            mValueFilter = new ValueFilter();
+        }
+        return mValueFilter;
     }
 }
