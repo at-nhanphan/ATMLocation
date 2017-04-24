@@ -11,13 +11,13 @@ import java.util.ArrayList;
 
 public class APIResponse {
     @SerializedName("data")
-    ArrayList<MyATM> myATMs;
+    private ArrayList<MyATM> myATMs;
+
+    public APIResponse(ArrayList<MyATM> myATMs) {
+        this.myATMs = myATMs;
+    }
 
     public ArrayList<MyATM> getMyATMs() {
         return myATMs;
-    }
-
-    public void setMyATMs(ArrayList<MyATM> myATMs) {
-        this.myATMs = myATMs;
     }
 }

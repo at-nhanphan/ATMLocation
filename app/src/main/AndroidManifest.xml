@@ -19,15 +19,18 @@
         android:value="@string/google_maps_key" />
 
     <activity android:name="com.example.admin.atmlocation.activities.MainActivity_">
+
+    </activity>
+    <activity android:name="com.example.admin.atmlocation.activities.FavoriteActivity_" />
+    <activity android:name=".activities.DetailActivity_" />
+    <activity android:name=".activities.MapsActivity_" />
+    <activity android:name=".activities.SearchActivity_" >
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name="com.example.admin.atmlocation.activities.FavoriteActivity_" />
-    <activity android:name=".activities.DetailActivity_" />
-    <activity android:name=".activities.MapsActivity_" />
-    <activity android:name=".activities.SearchActivity" />
+    <activity android:name=".activities.ListBankDistrictActivity_" />
 
 </application>
 </manifest>

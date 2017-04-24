@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ATM Location</string>
     <string name="searchView.text.queryHint">Type your keyword here</string>
-    <string name="search_hint">search</string>
+    <string name="search_hint">Search</string>
     <string name="textView.text.start">start</string>
     <string name="textView.text.end">end</string>
     <string name="button.text.drawRoute">Draw Route</string>
@@ -13,4 +13,62 @@
     <string name="gps_network_not_enabled">GPS or Network not enabled</string>
     <string name="positiveButton">Settings</string>
     <string name="cancelButton">Cancel</string>
+    <string name="toolbar.title.chooseBank">Select a bank</string>
+    <string name="textView.text.chooseBank">Bank</string>
+    <string name="textView.text.district">District</string>
+    <string name="toolbar.title.chooseDistrict">Select a district</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="setting">Setting</string>
+    <string name="message">result empty</string>
+    <string name="textView.text.rating">Rating:</string>
+
+    <string-array name="list_banks">
+        <item>PVcom Bank</item>
+        <item>Orient Commercial Bank</item>
+        <item>Military Bank</item>
+        <item>HDBank</item>
+        <item>Nam A Bank</item>
+        <item>VPBank</item>
+        <item>Techcombank</item>
+        <item>Maritime Bank</item>
+        <item>VietCapitalBank</item>
+        <item>BacABank</item>
+        <item>ABBank</item>
+        <item>SeABank</item>
+        <item>DongA Bank</item>
+        <item>TPBank</item>
+        <item>ACB</item>
+        <item>Agribank</item>
+        <item>GPBank</item>
+        <item>Oceanbank</item>
+        <item>CB</item>
+        <item>VDB</item>
+        <item>VBSP</item>
+        <item>VIBBank</item>
+        <item>SCB</item>
+        <item>Saigonbank</item>
+        <item>SHBank</item>
+        <item>Sacombank</item>
+        <item>VietABank</item>
+        <item>BaoVietBank</item>
+        <item>VietBank</item>
+        <item>PG Bank</item>
+        <item>Eximbank</item>
+        <item>LienVietPostBank</item>
+        <item>VietinBank</item>
+        <item>BIDV</item>
+        <item>Vietcombank</item>
+    </string-array>
+
+    <string-array name="districts">
+        <item>Thanh Khê</item>
+        <item>Hải Châu</item>
+        <item>Ngũ Hành Sơn</item>
+        <item>Sơn Trà</item>
+        <item>Liên Chiểu</item>
+        <item>Cẩm Lệ</item>
+        <item>Hoàng Sa</item>
+        <item>Hòa Vang</item>
+    </string-array>
 </resources>
