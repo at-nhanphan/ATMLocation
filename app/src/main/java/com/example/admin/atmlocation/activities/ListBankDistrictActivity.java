@@ -82,20 +82,26 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
 
     @Override
     public void onClick(int position) {
+        int positionBank = 0;
+        for (int i = 0; i < mBanks.size(); i++) {
+            if (mBanks.get(i).getName().equals(mAdapter.getResultFilter().get(position).getName())) {
+                positionBank = i;
+            }
+        }
         if (mCode == 1) {
             SearchActivity_.intent(this)
-                    .mResultBank(mBanks.get(position).getName())
+                    .mResultBank(mAdapter.getResultFilter().get(position).getName())
                     .mResultDistrict(mResultDistrict)
                     .mCode(mCode)
-                    .mPositionBank(position)
+                    .mPositionBank(positionBank)
                     .mPositionDistrict(mPositionDistrict)
                     .start();
         } else {
             SearchActivity_.intent(this)
-                    .mResultDistrict(mBanks.get(position).getName())
+                    .mResultDistrict(mAdapter.getResultFilter().get(position).getName())
                     .mResultBank(mResultBank)
                     .mCode(mCode)
-                    .mPositionDistrict(position)
+                    .mPositionDistrict(positionBank)
                     .mPositionBank(mPositionBank)
                     .start();
         }
