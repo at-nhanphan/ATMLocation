@@ -164,10 +164,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
     @Override
     public void onClick(int position) {
-        MyLocation myLocation = new MyLocation(Double.parseDouble(mAtms.get(position).getLat()),
-                Double.parseDouble(mAtms.get(position).getLng()));
+        MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
+                Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
         DetailActivity_.intent(this)
-                .mAtm(mAtms.get(position))
+                .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
                 .start();
     }

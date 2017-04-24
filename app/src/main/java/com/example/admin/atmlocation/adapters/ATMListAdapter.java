@@ -122,4 +122,8 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             notifyDataSetChanged();
         }
     }
+
+    public ArrayList<MyATM> getResultFilter() {
+        return mAtms;
+    }
 }
