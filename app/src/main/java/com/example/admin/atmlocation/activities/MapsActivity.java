@@ -153,7 +153,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return new MyLocation(location.getLatitude(), location.getLongitude());
     }
 
-    private void addMarker(LatLng latLng) {
+    public void addMarker(LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
@@ -247,22 +247,25 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @PageSelected(R.id.viewPager)
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
-        double lat;
-        double lng;
-        if (position == 0) {
-            return;
-        } else if (position == 1) {
-            lat = mLegs.get(0).getStartLocation().getLat();
-            lng = mLegs.get(0).getStartLocation().getLng();
-        } else if (position >= mSteps.size() + 1) {
-            lat = mLegs.get(0).getEndLocation().getLat();
-            lng = mLegs.get(0).getEndLocation().getLng();
-        } else {
-            lat = mSteps.get(position - 1).getStartLocation().getLat();
-            lng = mSteps.get(position - 1).getStartLocation().getLng();
-        }
-        LatLng latLng = new LatLng(lat, lng);
-        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+//        double lat;
+//        double lng;
+//        if (position == 0) {
+//            return;
+//        } else if (position == 1) {
+//            lat = mLegs.get(0).getStartLocation().getLat();
+//            lng = mLegs.get(0).getStartLocation().getLng();
+//        } else if (position >= mSteps.size() + 1) {
+//            lat = mLegs.get(0).getEndLocation().getLat();
+//            lng = mLegs.get(0).getEndLocation().getLng();
+//            LatLng latLng = new LatLng(lat, lng);
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+//        } else {
+//            lat = mSteps.get(position - 1).getStartLocation().getLat();
+//            lng = mSteps.get(position - 1).getStartLocation().getLng();
+//            LatLng latLng = new LatLng(lat, lng);
+//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+//        }
+
 
         if (position < mMarkers.size()) {
             mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));

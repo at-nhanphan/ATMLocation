@@ -2,6 +2,7 @@ package com.example.admin.atmlocation.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
+import com.example.admin.atmlocation.databases.MyDatabase;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.MyATM;
 
@@ -27,12 +29,14 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     private MyOnClickListener mMyOnClickListener;
     private ValueFilter mValueFilter;
     private ArrayList<MyATM> mAtmsFilter;
+    MyDatabase mMyDatabase;
 
     public ATMListAdapter(Context context, ArrayList<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
         this.mContext = context;
         this.mMyOnClickListener = myOnClickListener;
         this.mAtmsFilter = atms;
+        mMyDatabase = new MyDatabase(mContext);
     }
 
     @Override
@@ -78,8 +82,13 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             mImgFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mImgFavorite.setSelected(!mAtms.get(getLayoutPosition()).isFavorite());
-                    mAtms.get(getLayoutPosition()).setFavorite(!mAtms.get(getLayoutPosition()).isFavorite());
+                    MyATM myATM = mAtms.get(getLayoutPosition());
+                    mImgFavorite.setSelected(!myATM.isFavorite());
+                    mAtms.get(getLayoutPosition()).setFavorite(!myATM.isFavorite());
+
+                    if (myATM.isFavorite()) {
+                        mMyDatabase.insertATM(myATM);
+                    }
                     notifyDataSetChanged();
                 }
             });

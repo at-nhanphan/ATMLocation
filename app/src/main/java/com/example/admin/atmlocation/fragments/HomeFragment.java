@@ -98,6 +98,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
             atmServiceImpl.getATM(new CallBack<ArrayList<MyATM>>() {
                 @Override
                 public void next(ArrayList<MyATM> myATMs) {
+                    mAtms.clear();
                     mAtms.addAll(myATMs);
                     mAdapter.notifyDataSetChanged();
                 }

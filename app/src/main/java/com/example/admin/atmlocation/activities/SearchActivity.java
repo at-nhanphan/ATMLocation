@@ -13,6 +13,7 @@ import com.example.admin.atmlocation.adapters.ATMListAdapter;
 import com.example.admin.atmlocation.interfaces.CallBack;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.MyATM;
+import com.example.admin.atmlocation.models.googleDirections.MyLocation;
 import com.example.admin.atmlocation.services.ATMServiceImpl;
 
 import org.androidannotations.annotations.AfterViews;
@@ -61,6 +62,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.GONE);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+
         if (null != mResultBank) {
             mTvBank.setText(mResultBank);
         }
@@ -95,8 +100,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Click(R.id.btnSearch)
     void clickSearch() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        mRecyclerView.setLayoutManager(layoutManager);
         loadData();
         if (mAtms != null) {
             mAdapter = new ATMListAdapter(this, mAtms, this);
@@ -112,7 +115,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Override
     public void onClick(int position) {
-
+        MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
+                Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
+        DetailActivity_.intent(this)
+                .mAtm(mAdapter.getResultFilter().get(position))
+                .mMyLocation(myLocation)
+                .start();
     }
 
 
@@ -122,6 +130,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
             @Override
             public void next(ArrayList<MyATM> myATMs) {
                 if (myATMs != null) {
+                    mAtms.clear();
                     mAtms.addAll(myATMs);
                     mAdapter.notifyDataSetChanged();
                 }
