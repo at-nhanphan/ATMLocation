@@ -60,6 +60,8 @@ public class MyDatabase {
                 myATM.setMaNganHang(cursor.getString(5));
                 myATM.setLat(cursor.getString(6));
                 myATM.setLng(cursor.getString(7));
+
+                results.add(myATM);
             } while (cursor.moveToNext());
         }
         return results;

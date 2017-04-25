@@ -90,11 +90,11 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
         }
         if (mCode == 1) {
             SearchActivity_.intent(this)
-                    .mResultBank(mAdapter.getResultFilter().get(position).getName())
-                    .mResultDistrict(mResultDistrict)
                     .mCode(mCode)
+                    .mResultBank(mAdapter.getResultFilter().get(position).getName())
                     .mPositionBank(positionBank)
                     .mPositionDistrict(mPositionDistrict)
+                    .mResultDistrict(mResultDistrict)
                     .start();
         } else {
             SearchActivity_.intent(this)

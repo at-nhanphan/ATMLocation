@@ -15,9 +15,9 @@ public class SqliteDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MyDatabase";
     public static final String TABLE_NAME = "ATM";
     private static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + AtmColumns._ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AtmColumns.MA_DIA_DIEM + " INTEGER " + AtmColumns.TEN_DIA_DIEM
-            + " TEXT " + AtmColumns.DIA_CHI + " TEXT " + AtmColumns.MA_QUAN + " TEXT " + AtmColumns.MA_NGAN_HANG + " TEXT "
-            + AtmColumns.LAT + " TEXT " + AtmColumns.LNG + " TEXT)";
+            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AtmColumns.MA_DIA_DIEM + " INTEGER, " + AtmColumns.TEN_DIA_DIEM
+            + " TEXT, " + AtmColumns.DIA_CHI + " TEXT, " + AtmColumns.MA_QUAN + " TEXT, " + AtmColumns.MA_NGAN_HANG + " TEXT, "
+            + AtmColumns.LAT + " TEXT, " + AtmColumns.LNG + " TEXT)";
     private static final String SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
     public SqliteDBHandler(Context context) {
