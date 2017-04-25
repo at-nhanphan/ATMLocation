@@ -16,12 +16,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.activities.DetailActivity_;
 import com.example.admin.atmlocation.activities.MainActivity_;
 import com.example.admin.atmlocation.adapters.ATMListAdapter;
+import com.example.admin.atmlocation.databases.MyDatabase;
 import com.example.admin.atmlocation.interfaces.CallBack;
+import com.example.admin.atmlocation.interfaces.MyOnClickFavoriteListener;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 import com.example.admin.atmlocation.models.MyATM;
@@ -43,19 +46,21 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by naunem on 24/03/2017.
  */
 @EFragment(R.layout.fragment_home)
-public class HomeFragment extends Fragment implements MyOnClickListener, OnQueryTextChange {
+public class HomeFragment extends Fragment implements MyOnClickListener, OnQueryTextChange, MyOnClickFavoriteListener {
 
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
     private SpotsDialog mDialog;
+    private MyDatabase mMyDatabase;
 
     @AfterViews
     void init() {
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mAtms = new ArrayList<>();
+        mMyDatabase = new MyDatabase(getContext());
 
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
 
@@ -120,7 +125,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         } else {
             Log.e("location null", "onCreateView: ");
         }
+
+
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
         ((MainActivity_) getContext()).setOnQueryTextChange(this);
     }
 
@@ -178,6 +186,27 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     @Override
     public void onTextChange(String newText) {
         mAdapter.getFilter().filter(newText);
+    }
+
+    @Override
+    public void onClickFavorite(int position) {
+        MyATM myATM = mAtms.get(position);
+        if (myATM.isFavorite()) {
+            ArrayList<MyATM> lists = mMyDatabase.getAll();
+            int count = 0;
+            if (lists.size() > 0) {
+                for (int i = 0; i < lists.size(); i++) {
+                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+                        Toast.makeText(getContext(), "Item is favorited", Toast.LENGTH_SHORT).show();
+                    } else {
+                        count++;
+                    }
+                }
+            }
+            if (count == lists.size()) {
+                mMyDatabase.insertATM(myATM);
+            }
+        }
     }
 
     private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
