@@ -17,10 +17,8 @@ import java.util.ArrayList;
 
 public class MyDatabase {
     private SqliteDBHandler mDbHandler;
-    private Context mContext;
 
     public MyDatabase(Context context) {
-        this.mContext = context;
         mDbHandler = new SqliteDBHandler(context);
     }
 
@@ -41,7 +39,7 @@ public class MyDatabase {
 
     public int deleteATM(int id) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
-        return db.delete(SqliteDBHandler.TABLE_NAME, SqliteDBHandler.AtmColumns._ID + " = ? ", new String[]{Integer.toString(id)});
+        return db.delete(SqliteDBHandler.TABLE_NAME, AtmColumns.MA_DIA_DIEM + " = ? ", new String[]{Integer.toString(id)});
     }
 
     public ArrayList<MyATM> getAll() {

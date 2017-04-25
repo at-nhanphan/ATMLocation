@@ -2,7 +2,6 @@ package com.example.admin.atmlocation.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +9,11 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.databases.MyDatabase;
+import com.example.admin.atmlocation.interfaces.MyOnClickFavoriteListener;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.MyATM;
 
@@ -29,7 +30,8 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     private MyOnClickListener mMyOnClickListener;
     private ValueFilter mValueFilter;
     private ArrayList<MyATM> mAtmsFilter;
-    MyDatabase mMyDatabase;
+    private MyDatabase mMyDatabase;
+    private MyOnClickFavoriteListener mMyOnClickFavoriteListener;
 
     public ATMListAdapter(Context context, ArrayList<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
@@ -86,13 +88,32 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
                     mImgFavorite.setSelected(!myATM.isFavorite());
                     mAtms.get(getLayoutPosition()).setFavorite(!myATM.isFavorite());
 
-                    if (myATM.isFavorite()) {
-                        mMyDatabase.insertATM(myATM);
-                    }
+//                    if (myATM.isFavorite()) {
+//                        ArrayList<MyATM> lists = mMyDatabase.getAll();
+//                        int count = 0;
+//                        if (lists.size() > 0) {
+//                            for (int i = 0; i < lists.size(); i++) {
+//                                if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+//                                    Toast.makeText(mContext, "Item is favorited", Toast.LENGTH_SHORT).show();
+//                                } else {
+//                                    count++;
+//                                }
+//                            }
+//                        }
+//                        if (count == lists.size()) {
+//                            mMyDatabase.insertATM(myATM);
+//                        }
+//                    }
+
+                    mMyOnClickFavoriteListener.onClickFavorite(getLayoutPosition());
                     notifyDataSetChanged();
                 }
             });
         }
+    }
+
+    public void setMyOnClickFavoriteListener(MyOnClickFavoriteListener mMyOnClickFavoriteListener) {
+        this.mMyOnClickFavoriteListener = mMyOnClickFavoriteListener;
     }
 
     @Override
