@@ -1,11 +1,15 @@
 package com.example.admin.atmlocation.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
@@ -34,6 +38,10 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     TextView mTvTitle;
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
+    @ViewById(R.id.llContainer)
+    LinearLayout mLinearLayout;
+    @ViewById(R.id.edtSearch)
+    EditText mEdtSearch;
     @Extra
     int mCode;
     @Extra
@@ -44,67 +52,62 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     int mPositionBank;
     @Extra
     int mPositionDistrict;
-    private ArrayList<ItemListBank> mBanks;
+    private ArrayList<ItemListBank> mLists;
     private ListBankAdapter mAdapter;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mLinearLayout.requestFocus();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-        mBanks = new ArrayList<>();
+        mLists = new ArrayList<>();
         String[] arrays;
 
         if (mCode == 1) {
             mTvTitle.setText(R.string.toolbar_title_chooseBank);
             arrays = getResources().getStringArray(R.array.list_banks);
             for (String array : arrays) {
-                mBanks.add(new ItemListBank(array));
+                mLists.add(new ItemListBank(array));
             }
-            if (mPositionBank != 0) {
-                mBanks.get(mPositionBank).setCheck(true);
+            if (mPositionBank != -1) {
+                mLists.get(mPositionBank).setCheck(true);
             }
         } else {
             mTvTitle.setText(R.string.toolbar_title_chooseDistrict);
             arrays = getResources().getStringArray(R.array.districts);
             for (String array : arrays) {
-                mBanks.add(new ItemListBank(array));
+                mLists.add(new ItemListBank(array));
             }
-            if (mPositionDistrict != 0) {
-                mBanks.get(mPositionDistrict).setCheck(true);
+            if (mPositionDistrict != -1) {
+                mLists.get(mPositionDistrict).setCheck(true);
             }
         }
-        mAdapter = new ListBankAdapter(mBanks, this);
+        mAdapter = new ListBankAdapter(mLists, this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
+        addSearchListener();
     }
 
     @Override
     public void onClick(int position) {
         int positionBank = 0;
-        for (int i = 0; i < mBanks.size(); i++) {
-            if (mBanks.get(i).getName().equals(mAdapter.getResultFilter().get(position).getName())) {
+        Intent intent = new Intent();
+        for (int i = 0; i < mLists.size(); i++) {
+            if (mLists.get(i).getName().equals(mAdapter.getResultFilter().get(position).getName())) {
                 positionBank = i;
             }
         }
         if (mCode == 1) {
-            SearchActivity_.intent(this)
-                    .mCode(mCode)
-                    .mResultBank(mAdapter.getResultFilter().get(position).getName())
-                    .mPositionBank(positionBank)
-                    .mPositionDistrict(mPositionDistrict)
-                    .mResultDistrict(mResultDistrict)
-                    .start();
+            intent.putExtra("positionBank", positionBank);
+            intent.putExtra("resultBank", mAdapter.getResultFilter().get(position).getName());
         } else {
-            SearchActivity_.intent(this)
-                    .mResultDistrict(mAdapter.getResultFilter().get(position).getName())
-                    .mResultBank(mResultBank)
-                    .mCode(mCode)
-                    .mPositionDistrict(positionBank)
-                    .mPositionBank(mPositionBank)
-                    .start();
+            intent.putExtra("positionDistrict", positionBank);
+            intent.putExtra("resultDistrict", mAdapter.getResultFilter().get(position).getName());
         }
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @Click(R.id.imgBack)
@@ -112,24 +115,27 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_menu, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setQueryHint("Type your keyword here");
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+    public void addSearchListener() {
+        mEdtSearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                mAdapter.getValueFilter().filter(newText);
-                return false;
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mAdapter.getValueFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
-        return true;
+    }
+
+    @Click(R.id.imgDelete)
+    void clickDelete() {
+        mEdtSearch.setText("");
     }
 }

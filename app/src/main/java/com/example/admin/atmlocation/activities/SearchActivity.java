@@ -1,10 +1,10 @@
 package com.example.admin.atmlocation.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -62,7 +63,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.GONE);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -81,36 +81,48 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 ListBankDistrictActivity_.intent(this)
                         .mCode(REQUEST_CODE_BANK)
                         .mPositionBank(mPositionBank)
-                        .mResultDistrict(mResultDistrict)
-                        .mPositionDistrict(mPositionDistrict)
-                        .start();
+                        .startForResult(REQUEST_CODE_BANK);
                 break;
             case R.id.tvArea:
                 ListBankDistrictActivity_.intent(this)
                         .mCode(REQUEST_CODE_AREA)
                         .mPositionDistrict(mPositionDistrict)
-                        .mPositionBank(mPositionBank)
-                        .mResultBank(mResultBank)
-                        .start();
+                        .startForResult(REQUEST_CODE_AREA);
                 break;
             case R.id.imgBack:
                 finish();
         }
     }
 
+    @OnActivityResult(REQUEST_CODE_BANK)
+    void onResultBank(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            String resultBank = data.getStringExtra("resultBank");
+            int position = data.getIntExtra("positionBank", -1);
+            if (position != -1) {
+                mTvBank.setText(resultBank);
+                mPositionBank = position;
+            }
+        }
+    }
+
+    @OnActivityResult(REQUEST_CODE_AREA)
+    void onResultDistrict(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            String resultDistrict = data.getStringExtra("resultDistrict");
+            int position = data.getIntExtra("positionDistrict", -1);
+            if (position != -1) {
+                mPositionDistrict = position;
+                mTvArea.setText(resultDistrict);
+            }
+        }
+    }
+
     @Click(R.id.btnSearch)
     void clickSearch() {
         loadData();
-        if (mAtms != null) {
-            mAdapter = new ATMListAdapter(this, mAtms, this);
-            mRecyclerView.setAdapter(mAdapter);
-            if (mAtms.size() <= 0) {
-                mTvMessage.setVisibility(View.VISIBLE);
-                mTvMessage.setText(R.string.message);
-            }
-        } else {
-            Log.d("aaaa", "clickSearch: array is empty");
-        }
+        mAdapter = new ATMListAdapter(this, mAtms, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override

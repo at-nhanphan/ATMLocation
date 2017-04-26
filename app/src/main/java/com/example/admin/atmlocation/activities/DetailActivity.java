@@ -1,11 +1,13 @@
 package com.example.admin.atmlocation.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
+import com.example.admin.atmlocation.databases.MyDatabase;
 import com.example.admin.atmlocation.models.MyATM;
 import com.example.admin.atmlocation.models.googleDirections.MyLocation;
 
@@ -34,17 +36,36 @@ public class DetailActivity extends AppCompatActivity {
     MyATM mAtm;
     @Extra
     MyLocation mMyLocation;
+    private MyDatabase mMyDatabase;
 
     @AfterViews
     void init() {
+        mMyDatabase = new MyDatabase(this);
         mTvName.setText(mAtm.getTenDiaDiem());
         mTvAddress.setText(mAtm.getDiaChi());
 //        mRatingBar.setRating(Float.parseFloat(mAtm.getRating()));
-//        mImgFavorite.setSelected(mAtm.isFavorite());
+        mImgFavorite.setSelected(mAtm.isFavorite());
     }
 
     @Click(R.id.btnShowMap)
     public void onClickShowMap() {
         MapsActivity_.intent(this).mAtm(mAtm).mAtmMyLocation(mMyLocation).start();
+    }
+
+    @Click(R.id.imgBack)
+    void clickBack() {
+        Intent intent = new Intent();
+
+        finish();
+    }
+
+    @Click(R.id.imgFavorite)
+    void clickFavorite() {
+        mImgFavorite.setSelected(!mAtm.isFavorite());
+        if (mImgFavorite.isSelected()) {
+            mMyDatabase.insertATM(mAtm);
+        } else {
+            mMyDatabase.deleteATM(Integer.parseInt(mAtm.getMaDiaDiem()));
+        }
     }
 }

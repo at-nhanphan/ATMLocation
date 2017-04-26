@@ -62,6 +62,14 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mAtms = new ArrayList<>();
         mMyDatabase = new MyDatabase(getContext());
 
+        for (int i = 0; i < mAtms.size(); i++) {
+            for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j))) {
+                    mAtms.get(i).setFavorite(true);
+                }
+            }
+        }
+
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
 
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
@@ -106,6 +114,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                     if (myATMs != null) {
                         mAtms.clear();
                         mAtms.addAll(myATMs);
+                        for (int i = 0; i < mAtms.size(); i++) {
+                            for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                                if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j).getMaDiaDiem())) {
+                                    mAtms.get(i).setFavorite(true);
+                                }
+                            }
+                        }
                         mAdapter.notifyDataSetChanged();
                     }
                 }
@@ -125,7 +140,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         } else {
             Log.e("location null", "onCreateView: ");
         }
-
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
@@ -191,8 +205,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     @Override
     public void onClickFavorite(int position) {
         MyATM myATM = mAtms.get(position);
+        ArrayList<MyATM> lists = mMyDatabase.getAll();
         if (myATM.isFavorite()) {
-            ArrayList<MyATM> lists = mMyDatabase.getAll();
             int count = 0;
             if (lists.size() > 0) {
                 for (int i = 0; i < lists.size(); i++) {
@@ -205,6 +219,14 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
             }
             if (count == lists.size()) {
                 mMyDatabase.insertATM(myATM);
+            }
+        } else {
+            if (lists.size() > 0) {
+                for (int i = 0; i < lists.size(); i++) {
+                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+                        mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
+                    }
+                }
             }
         }
     }
