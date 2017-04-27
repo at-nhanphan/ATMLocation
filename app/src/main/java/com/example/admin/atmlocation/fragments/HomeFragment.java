@@ -117,18 +117,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                     }
                 }
             });
-//            float latitude = (float) locations.getLatitude();
-//            float longitude = (float) locations.getLongitude();
-//            String location = latitude + "," + longitude;
-//            String radius = "5000";
-//            String types = "ATM";
-//            atmServiceImpl.getNearATM(location, radius, types, new CallBack<ArrayList<ATM>>() {
-//                @Override
-//                public void next(ArrayList<ATM> atm) {
-//                    mAtms.addAll(atm);
-//                    mAdapter.notifyDataSetChanged();
-//                }
-//            });
         } else {
             Log.e("location null", "onCreateView: ");
         }
@@ -191,7 +179,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
     @Override
     public void onTextChange(String newText) {
-        mAdapter.getFilter().filter(newText);
+        if (mAdapter != null) {
+            mAdapter.getFilter().filter(newText);
+        }
     }
 
     @Override

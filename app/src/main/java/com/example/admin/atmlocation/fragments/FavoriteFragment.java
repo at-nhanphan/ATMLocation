@@ -80,6 +80,8 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
     @Override
     public void onTextChange(String newText) {
-        mAdapter.getFilter().filter(newText);
+        if (mAdapter != null) {
+            mAdapter.getFilter().filter(newText);
+        }
     }
 }
