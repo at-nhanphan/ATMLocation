@@ -1,16 +1,18 @@
 package com.example.admin.atmlocation.activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ATMListAdapter;
+import com.example.admin.atmlocation.databases.MyDatabase;
 import com.example.admin.atmlocation.interfaces.CallBack;
+import com.example.admin.atmlocation.interfaces.MyOnClickFavoriteListener;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.MyATM;
 import com.example.admin.atmlocation.models.googleDirections.MyLocation;
@@ -20,6 +22,7 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ import java.util.ArrayList;
  * Created by naunem on 05/04/2017.
  */
 @EActivity(R.layout.activity_search)
-public class SearchActivity extends AppCompatActivity implements MyOnClickListener {
+public class SearchActivity extends AppCompatActivity implements MyOnClickListener, MyOnClickFavoriteListener {
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvBank)
@@ -55,14 +58,16 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     private static final int REQUEST_CODE_BANK = 1;
     private static final int REQUEST_CODE_AREA = 2;
     private ATMListAdapter mAdapter;
-    private ArrayList<MyATM> mAtms = new ArrayList<>();
+    private ArrayList<MyATM> mAtms;
+    private MyDatabase mMyDatabase;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.GONE);
-
+        mAtms = new ArrayList<>();
+        mMyDatabase = new MyDatabase(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -81,36 +86,49 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 ListBankDistrictActivity_.intent(this)
                         .mCode(REQUEST_CODE_BANK)
                         .mPositionBank(mPositionBank)
-                        .mResultDistrict(mResultDistrict)
-                        .mPositionDistrict(mPositionDistrict)
-                        .start();
+                        .startForResult(REQUEST_CODE_BANK);
                 break;
             case R.id.tvArea:
                 ListBankDistrictActivity_.intent(this)
                         .mCode(REQUEST_CODE_AREA)
                         .mPositionDistrict(mPositionDistrict)
-                        .mPositionBank(mPositionBank)
-                        .mResultBank(mResultBank)
-                        .start();
+                        .startForResult(REQUEST_CODE_AREA);
                 break;
             case R.id.imgBack:
                 finish();
         }
     }
 
+    @OnActivityResult(REQUEST_CODE_BANK)
+    void onResultBank(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            String resultBank = data.getStringExtra("resultBank");
+            int position = data.getIntExtra("positionBank", -1);
+            if (position != -1) {
+                mTvBank.setText(resultBank);
+                mPositionBank = position;
+            }
+        }
+    }
+
+    @OnActivityResult(REQUEST_CODE_AREA)
+    void onResultDistrict(int resultCode, Intent data) {
+        if (resultCode == RESULT_OK && data != null) {
+            String resultDistrict = data.getStringExtra("resultDistrict");
+            int position = data.getIntExtra("positionDistrict", -1);
+            if (position != -1) {
+                mPositionDistrict = position;
+                mTvArea.setText(resultDistrict);
+            }
+        }
+    }
+
     @Click(R.id.btnSearch)
     void clickSearch() {
         loadData();
-        if (mAtms != null) {
-            mAdapter = new ATMListAdapter(this, mAtms, this);
-            mRecyclerView.setAdapter(mAdapter);
-            if (mAtms.size() <= 0) {
-                mTvMessage.setVisibility(View.VISIBLE);
-                mTvMessage.setText(R.string.message);
-            }
-        } else {
-            Log.d("aaaa", "clickSearch: array is empty");
-        }
+        mAdapter = new ATMListAdapter(this, mAtms, this);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
     }
 
     @Override
@@ -132,9 +150,43 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 if (myATMs != null) {
                     mAtms.clear();
                     mAtms.addAll(myATMs);
+                    for (int i = 0; i < mAtms.size(); i++) {
+                        for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                            if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j).getMaDiaDiem())) {
+                                mAtms.get(i).setFavorite(true);
+                            }
+                        }
+                    }
                     mAdapter.notifyDataSetChanged();
                 }
             }
         });
+    }
+
+    @Override
+    public void onClickFavorite(int position) {
+        MyATM myATM = mAtms.get(position);
+        ArrayList<MyATM> lists = mMyDatabase.getAll();
+        if (myATM.isFavorite()) {
+            int count = 0;
+            if (lists.size() > 0) {
+                for (int i = 0; i < lists.size(); i++) {
+                    if (!myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+                        count++;
+                    }
+                }
+            }
+            if (count == lists.size()){
+                mMyDatabase.insertATM(myATM);
+            }
+        } else {
+            if (lists.size() > 0) {
+                for (int i = 0; i < lists.size(); i++) {
+                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+                        mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
+                    }
+                }
+            }
+        }
     }
 }

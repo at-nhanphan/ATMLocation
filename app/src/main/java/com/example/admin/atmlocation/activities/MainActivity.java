@@ -2,6 +2,7 @@ package com.example.admin.atmlocation.activities;
 
 import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +46,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
+        initTabLayout();
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(adapter);
+        mTabLayout.addOnTabSelectedListener(this);
+        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+    }
+
+    public void initTabLayout() {
         mHome = mTabLayout.newTab();
         mFavorite = mTabLayout.newTab();
         mSetting = mTabLayout.newTab();
@@ -55,11 +65,6 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mTabLayout.addTab(mHome, 0);
         mTabLayout.addTab(mFavorite, 1);
         mTabLayout.addTab(mSetting, 2);
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        mViewPager.setAdapter(adapter);
-
-        mTabLayout.addOnTabSelectedListener(this);
-        mViewPager.setOffscreenPageLimit(3);
     }
 
     @PageSelected(R.id.viewPager)
@@ -76,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mFavorite.setIcon(R.drawable.ic_favorite_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                 mToolbar.setTitle("Favorite");
+                Fragment fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
+                if (fragment != null) {
+                    fragment.onResume();
+                }
                 break;
             case 2:
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
