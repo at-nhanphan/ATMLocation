@@ -123,7 +123,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
-        ((MainActivity_) getContext()).setOnQueryTextChange(this);
+        ((MainActivity_) getContext()).setOnQueryTextChangeHome(this);
     }
 
     public void checkLocationEnabled() {
@@ -132,14 +132,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         boolean network_enabled = false;
         try {
             gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ignored) {
-
-        }
-
-        try {
             network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ignored) {
-
+            Log.e("ddd", "checkLocationEnabled: ", ignored);
         }
 
         if (!gps_enabled && !network_enabled) {

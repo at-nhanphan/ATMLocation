@@ -1,16 +1,12 @@
 package com.example.admin.atmlocation.activities;
 
-import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
@@ -21,8 +17,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.ArrayList;
 
 /**
  * MainActivity class
@@ -39,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     ViewPager mViewPager;
 
     private OnQueryTextChange mOnQueryTextChange;
+    private OnQueryTextChange mOnQueryTextChangeHome;
     private TabLayout.Tab mHome;
     private TabLayout.Tab mFavorite;
     private TabLayout.Tab mSetting;
@@ -124,6 +119,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             @Override
             public boolean onQueryTextChange(String newText) {
                 mOnQueryTextChange.onTextChange(newText);
+                mOnQueryTextChangeHome.onTextChange(newText);
                 return false;
             }
         });
@@ -131,64 +127,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.home:
-                new AlertDialog.Builder(this)
-                        .setTitle("Title")
-                        .setMessage("Message")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        }).show();
-                break;
-            case R.id.favorite:
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                ArrayList<String> items = new ArrayList<>();
-                items.add("Red");
-                items.add("Blue");
-                items.add("Green");
-
-                final ArrayAdapter<String> arrayAdapterItems = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, items);
-
-                dialog.setTitle("aaaa")
-                        .setSingleChoiceItems(arrayAdapterItems, -1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                dialog.create().show();
-                break;
-            case R.id.setting:
-                break;
-        }
-        return false;
-    }
-
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
         this.mOnQueryTextChange = onQueryTextChange;
+    }
+
+    public void setOnQueryTextChangeHome(OnQueryTextChange onQueryTextChange) {
+        this.mOnQueryTextChangeHome = onQueryTextChange;
     }
 
     @Click(R.id.fabSearch)
