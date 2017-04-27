@@ -55,7 +55,8 @@ public class DetailActivity extends AppCompatActivity {
     @Click(R.id.imgBack)
     void clickBack() {
         Intent intent = new Intent();
-
+        intent.putExtra("isFavorite", mAtm.isFavorite());
+        setResult(RESULT_OK, intent);
         finish();
     }
 

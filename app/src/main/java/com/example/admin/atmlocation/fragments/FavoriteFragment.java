@@ -1,6 +1,5 @@
 package com.example.admin.atmlocation.fragments;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +22,7 @@ import org.androidannotations.annotations.ViewById;
 import java.util.ArrayList;
 
 /**
- *  FavoriteFragment class
+ * FavoriteFragment class
  * Created by naunem on 24/03/2017.
  */
 
@@ -64,9 +63,6 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
     public void onClickFavorite(int position) {
         MyATM myATM = mMyATMs.get(position);
         mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("atm", myATM);
-        setArguments(bundle);
         reloadFragment();
     }
 

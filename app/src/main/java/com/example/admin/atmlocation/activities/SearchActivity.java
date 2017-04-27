@@ -10,7 +10,9 @@ import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ATMListAdapter;
+import com.example.admin.atmlocation.databases.MyDatabase;
 import com.example.admin.atmlocation.interfaces.CallBack;
+import com.example.admin.atmlocation.interfaces.MyOnClickFavoriteListener;
 import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.MyATM;
 import com.example.admin.atmlocation.models.googleDirections.MyLocation;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
  * Created by naunem on 05/04/2017.
  */
 @EActivity(R.layout.activity_search)
-public class SearchActivity extends AppCompatActivity implements MyOnClickListener {
+public class SearchActivity extends AppCompatActivity implements MyOnClickListener, MyOnClickFavoriteListener {
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvBank)
@@ -56,13 +58,16 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     private static final int REQUEST_CODE_BANK = 1;
     private static final int REQUEST_CODE_AREA = 2;
     private ATMListAdapter mAdapter;
-    private ArrayList<MyATM> mAtms = new ArrayList<>();
+    private ArrayList<MyATM> mAtms;
+    private MyDatabase mMyDatabase;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.GONE);
+        mAtms = new ArrayList<>();
+        mMyDatabase = new MyDatabase(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
@@ -123,6 +128,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         loadData();
         mAdapter = new ATMListAdapter(this, mAtms, this);
         mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
     }
 
     @Override
@@ -144,9 +150,43 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 if (myATMs != null) {
                     mAtms.clear();
                     mAtms.addAll(myATMs);
+                    for (int i = 0; i < mAtms.size(); i++) {
+                        for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                            if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j).getMaDiaDiem())) {
+                                mAtms.get(i).setFavorite(true);
+                            }
+                        }
+                    }
                     mAdapter.notifyDataSetChanged();
                 }
             }
         });
+    }
+
+    @Override
+    public void onClickFavorite(int position) {
+        MyATM myATM = mAtms.get(position);
+        ArrayList<MyATM> lists = mMyDatabase.getAll();
+        if (myATM.isFavorite()) {
+            int count = 0;
+            if (lists.size() > 0) {
+                for (int i = 0; i < lists.size(); i++) {
+                    if (!myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+                        count++;
+                    }
+                }
+            }
+            if (count == lists.size()){
+                mMyDatabase.insertATM(myATM);
+            }
+        } else {
+            if (lists.size() > 0) {
+                for (int i = 0; i < lists.size(); i++) {
+                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
+                        mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
+                    }
+                }
+            }
+        }
     }
 }

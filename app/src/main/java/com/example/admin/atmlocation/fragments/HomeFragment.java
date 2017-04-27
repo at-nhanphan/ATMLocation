@@ -62,14 +62,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mAtms = new ArrayList<>();
         mMyDatabase = new MyDatabase(getContext());
 
-        for (int i = 0; i < mAtms.size(); i++) {
-            for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
-                if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j))) {
-                    mAtms.get(i).setFavorite(true);
-                }
-            }
-        }
-
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
 
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
