@@ -6,10 +6,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
+import com.example.admin.atmlocation.fragments.HomeFragment;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
 import org.androidannotations.annotations.AfterViews;
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     TabLayout mTabLayout;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
+    private SearchView mSearchView;
 
     private OnQueryTextChange mOnQueryTextChange;
     private OnQueryTextChange mOnQueryTextChangeHome;
@@ -47,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mTabLayout.addOnTabSelectedListener(this);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mViewPager.setCurrentItem(0);
     }
 
     public void initTabLayout() {
@@ -64,19 +69,30 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @PageSelected(R.id.viewPager)
     void onPageFragmentSelected(int position) {
+        Fragment fragment;
         switch (position) {
             case 0:
                 mHome.setIcon(R.drawable.ic_home_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                 mToolbar.setTitle("Home");
+                mSearchView.setVisibility(View.VISIBLE);
+                HomeFragment homeFragment = new HomeFragment();
+                Log.d("ddd", "onPageFragmentSelected: " + homeFragment.isCheck());
+
+                fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
+                if (fragment != null) {
+                    fragment.onResume();
+                }
+
                 break;
             case 1:
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                 mToolbar.setTitle("Favorite");
-                Fragment fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
+                mSearchView.setVisibility(View.VISIBLE);
+                fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
                 if (fragment != null) {
                     fragment.onResume();
                 }
@@ -86,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_36dp);
                 mToolbar.setTitle("Setting");
+                mSearchView.setVisibility(View.GONE);
         }
     }
 
@@ -107,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setQueryHint("Type your keyword here");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+        mSearchView.setQueryHint("Type your keyword here");
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;

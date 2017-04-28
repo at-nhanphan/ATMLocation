@@ -24,7 +24,6 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name="com.example.admin.atmlocation.activities.FavoriteActivity_" />
     <activity android:name=".activities.DetailActivity_" />
     <activity android:name=".activities.MapsActivity_" />
     <activity android:name=".activities.SearchActivity_" >

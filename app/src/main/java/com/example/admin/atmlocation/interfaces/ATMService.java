@@ -13,15 +13,11 @@ import retrofit2.http.Query;
  */
 
 public interface ATMService {
-    @GET("api/search/atm.php?getall")
-    Call<APIResponse> getAllATM();
+    @GET("api/search/atm.php")
+    Call<APIResponse> getAllATM(@Query("lat") double lat, @Query("lng") double lng, @Query("radius") int radius);
 
     @GET("api/search/search.php")
     Call<APIResponse> getATMSearch(@Query("bank") String bank, @Query("district") String district);
-
-    @GET("place/textsearch/json")
-    Call<APIResponse> getNearATM(@Query("location") String location, @Query("radius") String radius,
-                                 @Query("types") String types, @Query("key") String key);
 
     @GET("/maps/api/directions/json")
     Call<DirectionResult> getData(@Query("origin") String origin, @Query("destination") String destination, @Query("key") String key);

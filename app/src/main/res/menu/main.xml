@@ -11,4 +11,11 @@
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/showMap"
+        android:icon="@mipmap/ic_launcher"
+        android:title="@string/show_map"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1"/>
+
 </menu>

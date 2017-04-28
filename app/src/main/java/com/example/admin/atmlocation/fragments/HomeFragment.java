@@ -1,6 +1,7 @@
 package com.example.admin.atmlocation.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.atmlocation.R;
@@ -32,6 +35,7 @@ import com.example.admin.atmlocation.models.googleDirections.MyLocation;
 import com.example.admin.atmlocation.services.ATMServiceImpl;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
@@ -50,23 +54,31 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
+    @ViewById(R.id.tvReload)
+    TextView mTvReload;
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
     private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
+    private boolean check;
 
     @AfterViews
     void init() {
+        mTvReload.setVisibility(View.GONE);
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
-        mAtms = new ArrayList<>();
+
         mMyDatabase = new MyDatabase(getContext());
-
-        mAdapter = new ATMListAdapter(getContext(), mAtms, this);
-
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        ((MainActivity_) getContext()).setOnQueryTextChangeHome(this);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAtms = new ArrayList<>();
+        mAdapter = new ATMListAdapter(getContext(), mAtms, this);
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         ATMServiceImpl atmServiceImpl = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -89,7 +101,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
             }
         };
-        checkLocationEnabled();
+        checkLocationEnabled(getContext());
         LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -100,7 +112,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         Location locations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (locations != null) {
-            atmServiceImpl.getATM(new CallBack<ArrayList<MyATM>>() {
+            // 16.063487, 108.223178
+            // locations.getLatitude(), locations.getLongitude()
+            atmServiceImpl.getATM(locations.getLatitude(), locations.getLongitude(), 2, new CallBack<ArrayList<MyATM>>() {
                 @Override
                 public void next(ArrayList<MyATM> myATMs) {
                     if (myATMs != null) {
@@ -123,11 +137,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
-        ((MainActivity_) getContext()).setOnQueryTextChangeHome(this);
     }
 
-    public void checkLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
+    public void checkLocationEnabled(Context context) {
+        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
         try {
@@ -179,6 +192,20 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         }
     }
 
+    @Click(R.id.tvReload)
+    void clickReload() {
+        Log.d("ddd", "clickReload: ");
+        setCheck(true);
+    }
+
+    public boolean isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check = check;
+    }
+
     @Override
     public void onClickFavorite(int position) {
         MyATM myATM = mAtms.get(position);
@@ -214,17 +241,24 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         protected void onPreExecute() {
             super.onPreExecute();
             mDialog.show();
+            mTvReload.setVisibility(View.GONE);
         }
 
         @Override
         protected Void doInBackground(Void... params) {
+            int count = 0;
             while (mAtms.size() <= 0) {
+                count++;
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                if (count >= 3) {
+                    break;
+                }
             }
+            check = false;
             return null;
         }
 
@@ -232,6 +266,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mDialog.dismiss();
+            mTvReload.setVisibility(View.VISIBLE);
         }
     }
 }
