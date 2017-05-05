@@ -10,7 +10,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_logo_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -24,7 +24,6 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name="com.example.admin.atmlocation.activities.FavoriteActivity_" />
     <activity android:name=".activities.DetailActivity_" />
     <activity android:name=".activities.MapsActivity_" />
     <activity android:name=".activities.SearchActivity_" >

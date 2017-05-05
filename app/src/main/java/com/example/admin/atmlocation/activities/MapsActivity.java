@@ -1,11 +1,12 @@
 package com.example.admin.atmlocation.activities;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.StepAdapter;
+import com.example.admin.atmlocation.fragments.HomeFragment;
+import com.example.admin.atmlocation.fragments.HomeFragment_;
 import com.example.admin.atmlocation.interfaces.ATMService;
 import com.example.admin.atmlocation.models.MyATM;
 import com.example.admin.atmlocation.models.googleDirections.DirectionResult;
@@ -82,11 +85,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ATMService mService;
     private ArrayList<Step> mSteps;
     private ArrayList<Leg> mLegs;
-    private double mAtmLatitude;
-    private double mAtmLongitude;
     private LatLng mLocation;
     private int mCurrentPage;
-    private final ArrayList<Marker> mMarkers = new ArrayList<>();
+    private ArrayList<Marker> mMarkers;
+    private HomeFragment mHomeFragment;
 
     @AfterViews
     void init() {
@@ -96,13 +98,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPolylineOptions = new PolylineOptions();
         SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
-        mAtmLatitude = mAtmMyLocation.getLat();
-        mAtmLongitude = mAtmMyLocation.getLng();
+        double mAtmLatitude = mAtmMyLocation.getLat();
+        double mAtmLongitude = mAtmMyLocation.getLng();
         mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
+        mHomeFragment = new HomeFragment();
     }
 
     @OptionsItem(R.id.drawRoute)
     void onItemDrawRoute() {
+        mHomeFragment.checkLocationEnabled(this);
         drawRoute();
     }
 
@@ -113,15 +117,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.addMarker(new MarkerOptions()
                 .position(mLocation)
                 .title(mAtm.getTenDiaDiem())
-                .snippet(mAtmLatitude + ", " + mAtmLongitude)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)))
+                .snippet(mAtm.getDiaChi())
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose)))
                 .showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
         mMap.addPolyline(new PolylineOptions().clickable(true));
         mMap.setTrafficEnabled(true);
         // Check permission location
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -138,18 +143,44 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         MarkerOptions marker = new MarkerOptions()
                 .position(myLocation)
                 .title("My MyLocation")
-                .snippet("ahihihi")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         mMap.addMarker(marker).showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
         return true;
     }
 
     private MyLocation getCurrentLocation() {
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(final Location location) {
+                //your code here
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        mHomeFragment.checkLocationEnabled(this);
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
         }
-        Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         return new MyLocation(location.getLatitude(), location.getLongitude());
     }
 
@@ -167,9 +198,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         results.enqueue(new Callback<DirectionResult>() {
             @Override
             public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
-//                MyLocation toPosition = null;
                 ArrayList<LatLng> routeList = new ArrayList<>();
+                mCurrentPage = 0;
                 mMap.clear();
+                mMarkers = new ArrayList<>();
+                if (mLegs != null) {
+                    mLegs.clear();
+                }
                 if (response.body().getRoutes().size() > 0) {
                     ArrayList<LatLng> decodeList;
                     Route routeA = response.body().getRoutes().get(0);
@@ -203,7 +238,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                         // Add end marker
                         addMarker(new LatLng(mLegs.get(0).getEndLocation().getLat(), mLegs.get(0).getEndLocation().getLng()));
-//                        toPosition = location;
                     }
                 }
                 if (routeList.size() > 0) {
@@ -219,13 +253,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                            .newLatLngZoom(new LatLng(toPosition.getLat(), toPosition.getLng()), 16));
 
                     // Zoom map fit all markers
-                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                    for(Marker marker : mMarkers) {
-                        builder.include(marker.getPosition());
-                    }
-                    LatLngBounds bounds = builder.build();
-                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-                    mMap.animateCamera(cameraUpdate);
+                    zoomMapFitMarkers(mMarkers);
                 }
                 if (mLegs == null) {
                     mViewPager.setVisibility(View.GONE);
@@ -244,6 +272,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    public void zoomMapFitMarkers(ArrayList<Marker> markers) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        mMap.animateCamera(cameraUpdate);
+    }
+
     @PageSelected(R.id.viewPager)
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
@@ -257,15 +295,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        } else if (position >= mSteps.size() + 1) {
 //            lat = mLegs.get(0).getEndLocation().getLat();
 //            lng = mLegs.get(0).getEndLocation().getLng();
-//            LatLng latLng = new LatLng(lat, lng);
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 //        } else {
 //            lat = mSteps.get(position - 1).getStartLocation().getLat();
 //            lng = mSteps.get(position - 1).getStartLocation().getLng();
-//            LatLng latLng = new LatLng(lat, lng);
-//            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 //        }
-
+//        LatLng latLng = new LatLng(lat, lng);
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
 
         if (position < mMarkers.size()) {
             mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));

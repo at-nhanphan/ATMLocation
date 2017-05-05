@@ -17,9 +17,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="fill"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="2dp"
+        android:layout_margin="5dp"
         android:layout_below="@id/toolbar"
+        android:background="@drawable/bg_white_rounded"
         app:tabIndicatorHeight="0dp" />
 
     <android.support.design.widget.FloatingActionButton
@@ -36,6 +36,8 @@
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tabLayout" />
+        android:layout_below="@id/tabLayout"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp" />
 
 </RelativeLayout>

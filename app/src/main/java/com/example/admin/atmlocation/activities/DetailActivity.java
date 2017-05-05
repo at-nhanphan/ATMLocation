@@ -21,15 +21,23 @@ import org.androidannotations.annotations.ViewById;
  * DetailActivity class
  * Created by naunem on 25/03/2017.
  */
+
 @EActivity(R.layout.activity_detail)
 public class DetailActivity extends AppCompatActivity {
-
+    @ViewById(R.id.tvId)
+    TextView mTvId;
     @ViewById(R.id.tvName)
     TextView mTvName;
     @ViewById(R.id.tvAddress)
     TextView mTvAddress;
     @ViewById(R.id.ratingBar)
     RatingBar mRatingBar;
+    @ViewById(R.id.tvDistrict)
+    TextView mTvDistrict;
+    @ViewById(R.id.tvBank)
+    TextView mTvBank;
+    @ViewById(R.id.tvLatLng)
+    TextView mTvLatLng;
     @ViewById(R.id.imgFavorite)
     ImageView mImgFavorite;
     @Extra
@@ -41,8 +49,12 @@ public class DetailActivity extends AppCompatActivity {
     @AfterViews
     void init() {
         mMyDatabase = new MyDatabase(this);
+        mTvId.setText(getString(R.string.textView_text_id_address) + " " + mAtm.getMaDiaDiem());
         mTvName.setText(mAtm.getTenDiaDiem());
-        mTvAddress.setText(mAtm.getDiaChi());
+        mTvAddress.setText(getString(R.string.textView_text_address) + " " + mAtm.getDiaChi());
+        mTvDistrict.setText(getString(R.string.textView_text_id_district) + " " + mAtm.getMaQuan());
+        mTvBank.setText(getString(R.string.textView_text_id_bank) + " " + mAtm.getMaNganHang());
+        mTvLatLng.setText(getString(R.string.textView_text_location) + " " + mAtm.getLat() + " , " + mAtm.getLng());
 //        mRatingBar.setRating(Float.parseFloat(mAtm.getRating()));
         mImgFavorite.setSelected(mAtm.isFavorite());
     }

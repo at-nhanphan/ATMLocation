@@ -1,19 +1,18 @@
 package com.example.admin.atmlocation.activities;
 
-import android.content.DialogInterface;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.view.View;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
+import com.example.admin.atmlocation.fragments.HomeFragment;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,8 +20,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.ArrayList;
 
 /**
  * MainActivity class
@@ -37,8 +34,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     TabLayout mTabLayout;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
+    private SearchView mSearchView;
 
     private OnQueryTextChange mOnQueryTextChange;
+    private OnQueryTextChange mOnQueryTextChangeHome;
     private TabLayout.Tab mHome;
     private TabLayout.Tab mFavorite;
     private TabLayout.Tab mSetting;
@@ -52,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mTabLayout.addOnTabSelectedListener(this);
         mViewPager.setOffscreenPageLimit(3);
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+        mViewPager.setCurrentItem(0);
     }
 
     public void initTabLayout() {
@@ -69,19 +69,30 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
 
     @PageSelected(R.id.viewPager)
     void onPageFragmentSelected(int position) {
+        Fragment fragment;
         switch (position) {
             case 0:
                 mHome.setIcon(R.drawable.ic_home_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                 mToolbar.setTitle("Home");
+                mSearchView.setVisibility(View.VISIBLE);
+                HomeFragment homeFragment = new HomeFragment();
+                Log.d("ddd", "onPageFragmentSelected: " + homeFragment.isCheck());
+
+                fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
+                if (fragment != null) {
+                    fragment.onResume();
+                }
+
                 break;
             case 1:
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
                 mToolbar.setTitle("Favorite");
-                Fragment fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
+                mSearchView.setVisibility(View.VISIBLE);
+                fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
                 if (fragment != null) {
                     fragment.onResume();
                 }
@@ -91,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_settings_36dp);
                 mToolbar.setTitle("Setting");
+                mSearchView.setVisibility(View.GONE);
         }
     }
 
@@ -112,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setQueryHint("Type your keyword here");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        mSearchView.setMaxWidth(Integer.MAX_VALUE);
+        mSearchView.setQueryHint("Type your keyword here");
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -124,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             @Override
             public boolean onQueryTextChange(String newText) {
                 mOnQueryTextChange.onTextChange(newText);
+                mOnQueryTextChangeHome.onTextChange(newText);
                 return false;
             }
         });
@@ -131,64 +144,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.home:
-                new AlertDialog.Builder(this)
-                        .setTitle("Title")
-                        .setMessage("Message")
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        }).show();
-                break;
-            case R.id.favorite:
-                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-                ArrayList<String> items = new ArrayList<>();
-                items.add("Red");
-                items.add("Blue");
-                items.add("Green");
-
-                final ArrayAdapter<String> arrayAdapterItems = new ArrayAdapter<>(this, android.R.layout.simple_list_item_single_choice, items);
-
-                dialog.setTitle("aaaa")
-                        .setSingleChoiceItems(arrayAdapterItems, -1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        });
-                dialog.create().show();
-                break;
-            case R.id.setting:
-                break;
-        }
-        return false;
-    }
-
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
         this.mOnQueryTextChange = onQueryTextChange;
+    }
+
+    public void setOnQueryTextChangeHome(OnQueryTextChange onQueryTextChange) {
+        this.mOnQueryTextChangeHome = onQueryTextChange;
     }
 
     @Click(R.id.fabSearch)

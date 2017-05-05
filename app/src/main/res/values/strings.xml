@@ -22,8 +22,15 @@
     <string name="setting">Setting</string>
     <string name="message">result empty</string>
     <string name="textView.text.rating">Rating:</string>
-    <string name="toolbar.title.detail">ATM Detail</string>
+    <string name="toolbar.title.detail">Detail</string>
     <string name="show_map">Show Map</string>
+    <string name="textView.text.id_address">ID Bank:</string>
+    <string name="textView.text.name">Bank:</string>
+    <string name="textView.text.address">Address:</string>
+    <string name="textView.text.id_district">ID District:</string>
+    <string name="textView.text.id_bank">ID Bank:</string>
+    <string name="textView.text.location">Location:</string>
+    <string name="textView.text.reload">Reload this page</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

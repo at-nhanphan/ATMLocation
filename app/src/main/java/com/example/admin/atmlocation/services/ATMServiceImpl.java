@@ -32,8 +32,8 @@ public class ATMServiceImpl {
     private ATMService mService = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
 
 
-    public void getATM(final CallBack<ArrayList<MyATM>> callBack) {
-        Call<APIResponse> atms = mService.getAllATM();
+    public void getATM(double lat, double lng, int radius, final CallBack<ArrayList<MyATM>> callBack) {
+        Call<APIResponse> atms = mService.getAllATM(lat, lng, radius);
         atms.enqueue(new Callback<APIResponse>() {
             @Override
             public void onResponse(Call<APIResponse> call, Response<APIResponse> response) {
