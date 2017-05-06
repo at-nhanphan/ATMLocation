@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.activities.DetailActivity_;
+import com.example.admin.atmlocation.activities.MainActivity;
 import com.example.admin.atmlocation.activities.MainActivity_;
 import com.example.admin.atmlocation.adapters.ATMListAdapter;
 import com.example.admin.atmlocation.databases.MyDatabase;
@@ -64,6 +65,8 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         MyATM myATM = mMyATMs.get(position);
         mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
         reloadFragment();
+        MainActivity main = new MainActivity();
+        main.setIsChange(true);
     }
 
     public void reloadFragment() {

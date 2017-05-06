@@ -1,6 +1,7 @@
 package com.example.admin.atmlocation.fragments;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,6 +38,7 @@ import com.example.admin.atmlocation.services.ATMServiceImpl;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ import static android.content.Context.LOCATION_SERVICE;
 @EFragment(R.layout.fragment_home)
 public class HomeFragment extends Fragment implements MyOnClickListener, OnQueryTextChange, MyOnClickFavoriteListener {
 
+    private static final int REQUEST_CODE = 1;
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
     @ViewById(R.id.tvReload)
@@ -60,7 +63,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     private ArrayList<MyATM> mAtms;
     private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
-    private boolean check;
+    private ATMServiceImpl mAtmServiceImpl;
+    private double mLat;
+    private double mLng;
 
     @AfterViews
     void init() {
@@ -71,15 +76,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mMyDatabase = new MyDatabase(getContext());
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity_) getContext()).setOnQueryTextChangeHome(this);
-    }
 
-    @Override
-    public void onResume() {
-        super.onResume();
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        ATMServiceImpl atmServiceImpl = new ATMServiceImpl(getContext());
+        mAtmServiceImpl = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -114,29 +115,35 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         if (locations != null) {
             // 16.063487, 108.223178
             // locations.getLatitude(), locations.getLongitude()
-            atmServiceImpl.getATM(locations.getLatitude(), locations.getLongitude(), 2, new CallBack<ArrayList<MyATM>>() {
-                @Override
-                public void next(ArrayList<MyATM> myATMs) {
-                    if (myATMs != null) {
-                        mAtms.clear();
-                        mAtms.addAll(myATMs);
-                        for (int i = 0; i < mAtms.size(); i++) {
-                            for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
-                                if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j).getMaDiaDiem())) {
-                                    mAtms.get(i).setFavorite(true);
-                                }
-                            }
-                        }
-                        mAdapter.notifyDataSetChanged();
-                    }
-                }
-            });
+            mLat = locations.getLatitude();
+            mLng = locations.getLongitude();
+            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         } else {
             Log.e("location null", "onCreateView: ");
         }
 
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
+    }
+
+    public void getDataResponse(ATMServiceImpl atmServiceImpl, double lat, double lng, int radius) {
+        atmServiceImpl.getATM(lat, lng, radius, new CallBack<ArrayList<MyATM>>() {
+            @Override
+            public void next(ArrayList<MyATM> myATMs) {
+                if (myATMs != null) {
+                    mAtms.clear();
+                    mAtms.addAll(myATMs);
+                    for (int i = 0; i < mAtms.size(); i++) {
+                        for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                            if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j).getMaDiaDiem())) {
+                                mAtms.get(i).setFavorite(true);
+                            }
+                        }
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 
     public void checkLocationEnabled(Context context) {
@@ -182,7 +189,15 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         DetailActivity_.intent(this)
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
-                .start();
+                .startForResult(REQUEST_CODE);
+    }
+
+    @OnActivityResult(REQUEST_CODE)
+    void onResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            boolean isFavorite = data.getBooleanExtra("isFavorite", false);
+            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+        }
     }
 
     @Override
@@ -194,16 +209,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
     @Click(R.id.tvReload)
     void clickReload() {
-        Log.d("ddd", "clickReload: ");
-        setCheck(true);
-    }
-
-    public boolean isCheck() {
-        return check;
-    }
-
-    public void setCheck(boolean check) {
-        this.check = check;
+        init();
     }
 
     @Override
@@ -258,7 +264,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                     break;
                 }
             }
-            check = false;
             return null;
         }
 

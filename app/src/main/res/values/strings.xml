@@ -31,6 +31,7 @@
     <string name="textView.text.id_bank">ID Bank:</string>
     <string name="textView.text.location">Location:</string>
     <string name="textView.text.reload">Reload this page</string>
+    <string name="textView.text.map">Maps</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>
