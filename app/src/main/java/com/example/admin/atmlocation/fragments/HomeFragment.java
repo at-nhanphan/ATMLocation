@@ -66,10 +66,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     private ATMServiceImpl mAtmServiceImpl;
     private double mLat;
     private double mLng;
+    private boolean mCheck;
 
     @AfterViews
     void init() {
-        mTvReload.setVisibility(View.GONE);
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
 
@@ -210,6 +210,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     @Click(R.id.tvReload)
     void clickReload() {
         init();
+        mTvReload.setVisibility(View.GONE);
     }
 
     @Override
@@ -256,11 +257,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
             while (mAtms.size() <= 0) {
                 count++;
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
+                    mCheck = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if (count >= 3) {
+                    mCheck = true;
                     break;
                 }
             }
@@ -271,7 +274,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mDialog.dismiss();
-            mTvReload.setVisibility(View.VISIBLE);
+            if (mCheck) {
+                mTvReload.setVisibility(View.VISIBLE);
+            } else {
+                mTvReload.setVisibility(View.GONE);
+            }
         }
     }
 }

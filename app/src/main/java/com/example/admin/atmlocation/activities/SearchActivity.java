@@ -1,6 +1,7 @@
 package com.example.admin.atmlocation.activities;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,8 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+
+import dmax.dialog.SpotsDialog;
 
 /**
  * SearchActivity class
@@ -60,13 +63,15 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
     private MyDatabase mMyDatabase;
+    private SpotsDialog mDialog;
+    private boolean mCheck;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.GONE);
-        mAtms = new ArrayList<>();
+        mDialog = new SpotsDialog(this, R.style.CustomDialog);
         mMyDatabase = new MyDatabase(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -125,7 +130,9 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Click(R.id.btnSearch)
     void clickSearch() {
+        mAtms = new ArrayList<>();
         loadData();
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         mAdapter = new ATMListAdapter(this, mAtms, this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
@@ -186,6 +193,46 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                         mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
                     }
                 }
+            }
+        }
+    }
+
+    private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mDialog.show();
+            mTvMessage.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            int count = 0;
+            while (mAtms.size() <= 0) {
+                count++;
+                try {
+                    Thread.sleep(500);
+                    mCheck = false;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (count >= 3) {
+                    mCheck = true;
+                    break;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mDialog.dismiss();
+            if (mCheck) {
+                mTvMessage.setVisibility(View.VISIBLE);
+            } else {
+                mTvMessage.setVisibility(View.GONE);
             }
         }
     }
