@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.StepAdapter;
 import com.example.admin.atmlocation.fragments.HomeFragment;
-import com.example.admin.atmlocation.fragments.HomeFragment_;
 import com.example.admin.atmlocation.interfaces.ATMService;
 import com.example.admin.atmlocation.models.MyATM;
 import com.example.admin.atmlocation.models.googleDirections.DirectionResult;
@@ -43,6 +42,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OptionsItem;
@@ -65,7 +65,6 @@ import retrofit2.Response;
 @EActivity(R.layout.acitivity_maps)
 @OptionsMenu(R.menu.map_menu)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener {
-
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvDistance)
@@ -93,6 +92,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mViewPager.setPageMargin(20);
         mService = ApiUtils.getService();
         mPolylineOptions = new PolylineOptions();
@@ -107,7 +107,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @OptionsItem(R.id.drawRoute)
     void onItemDrawRoute() {
         mHomeFragment.checkLocationEnabled(this);
+        mViewPager.setVisibility(View.VISIBLE);
         drawRoute();
+
     }
 
     @Override
@@ -120,8 +122,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .snippet(mAtm.getDiaChi())
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose)))
                 .showInfoWindow();
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(mLocation));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(16));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 16));
         mMap.addPolyline(new PolylineOptions().clickable(true));
         mMap.setTrafficEnabled(true);
         // Check permission location
@@ -139,6 +140,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMyLocationButtonClick() {
+        mMap.clear();
+        mViewPager.setVisibility(View.GONE);
         LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
         MarkerOptions marker = new MarkerOptions()
                 .position(myLocation)
@@ -278,7 +281,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
         mMap.animateCamera(cameraUpdate);
     }
 
@@ -335,5 +338,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
         return true;
+    }
+
+    @Click(R.id.imgBack)
+    void clickBack() {
+        finish();
+    }
+
+    @Click(R.id.fabSearch)
+    void clickSearch() {
+        SearchActivity_.intent(this).start();
     }
 }

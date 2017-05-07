@@ -31,6 +31,17 @@
     <string name="textView.text.id_bank">ID Bank:</string>
     <string name="textView.text.location">Location:</string>
     <string name="textView.text.reload">Reload this page</string>
+    <string name="textView.text.map">Maps</string>
+    <string name="textView.text.appName">App Name</string>
+    <string name="textView.text.author">Author</string>
+    <string name="textView.text.authorName">Phan Trọng Nhân</string>
+    <string name="textView.text.version">Version</string>
+    <string name="textView.text.valueVersion">1.0</string>
+    <string name="textView.text.null">Result is empty</string>
+    <string name="textView.text.company">Company</string>
+    <string name="textView.text.nameCompany">Asian Tech inc.</string>
+    <string name="textView.text.school">University</string>
+    <string name="textView.text.nameUniversity">Da Nang University of Technology and Science</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

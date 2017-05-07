@@ -16,6 +16,7 @@ import com.example.admin.atmlocation.interfaces.MyOnClickListener;
 import com.example.admin.atmlocation.models.MyATM;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ATMListAdapter class
@@ -23,14 +24,14 @@ import java.util.ArrayList;
  */
 
 public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> implements Filterable {
-    private ArrayList<MyATM> mAtms;
+    private List<MyATM> mAtms;
     private final Context mContext;
     private MyOnClickListener mMyOnClickListener;
     private ValueFilter mValueFilter;
-    private ArrayList<MyATM> mAtmsFilter;
+    private List<MyATM> mAtmsFilter;
     private MyOnClickFavoriteListener mMyOnClickFavoriteListener;
 
-    public ATMListAdapter(Context context, ArrayList<MyATM> atms, MyOnClickListener myOnClickListener) {
+    public ATMListAdapter(Context context, List<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
         this.mContext = context;
         this.mMyOnClickListener = myOnClickListener;
@@ -132,7 +133,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         }
     }
 
-    public ArrayList<MyATM> getResultFilter() {
+    public List<MyATM> getResultFilter() {
         return mAtms;
     }
 }

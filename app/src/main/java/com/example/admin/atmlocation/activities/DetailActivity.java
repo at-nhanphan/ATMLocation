@@ -62,6 +62,7 @@ public class DetailActivity extends AppCompatActivity {
     @Click(R.id.btnShowMap)
     public void onClickShowMap() {
         MapsActivity_.intent(this).mAtm(mAtm).mAtmMyLocation(mMyLocation).start();
+        finish();
     }
 
     @Click(R.id.imgBack)
@@ -75,10 +76,20 @@ public class DetailActivity extends AppCompatActivity {
     @Click(R.id.imgFavorite)
     void clickFavorite() {
         mImgFavorite.setSelected(!mAtm.isFavorite());
+        mAtm.setFavorite(!mAtm.isFavorite());
         if (mImgFavorite.isSelected()) {
             mMyDatabase.insertATM(mAtm);
         } else {
             mMyDatabase.deleteATM(Integer.parseInt(mAtm.getMaDiaDiem()));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent();
+        intent.putExtra("isFavorite", mAtm.isFavorite());
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

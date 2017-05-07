@@ -1,5 +1,6 @@
 package com.example.admin.atmlocation.activities;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -12,7 +13,6 @@ import android.view.View;
 
 import com.example.admin.atmlocation.R;
 import com.example.admin.atmlocation.adapters.ViewPagerAdapter;
-import com.example.admin.atmlocation.fragments.HomeFragment;
 import com.example.admin.atmlocation.interfaces.OnQueryTextChange;
 
 import org.androidannotations.annotations.AfterViews;
@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     TabLayout mTabLayout;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
+    @ViewById(R.id.fabSearch)
+    FloatingActionButton mFabSearch;
     private SearchView mSearchView;
 
     private OnQueryTextChange mOnQueryTextChange;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private TabLayout.Tab mHome;
     private TabLayout.Tab mFavorite;
     private TabLayout.Tab mSetting;
+    private static boolean mChange;
 
     @AfterViews
     void init() {
@@ -58,13 +61,21 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mHome = mTabLayout.newTab();
         mFavorite = mTabLayout.newTab();
         mSetting = mTabLayout.newTab();
-        mHome.setIcon(R.drawable.ic_home_36dp);
+        mHome.setIcon(R.drawable.ic_home_red_a400_36dp);
         mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-        mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
+        mSetting.setIcon(R.drawable.ic_info_brown_200_36dp);
 
         mTabLayout.addTab(mHome, 0);
         mTabLayout.addTab(mFavorite, 1);
         mTabLayout.addTab(mSetting, 2);
+    }
+
+    public static boolean isChange() {
+        return mChange;
+    }
+
+    public static void setChange(boolean isChange) {
+        mChange = isChange;
     }
 
     @PageSelected(R.id.viewPager)
@@ -72,26 +83,25 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         Fragment fragment;
         switch (position) {
             case 0:
-                mHome.setIcon(R.drawable.ic_home_36dp);
+                mHome.setIcon(R.drawable.ic_home_red_a400_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-                mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
+                mSetting.setIcon(R.drawable.ic_info_brown_200_36dp);
                 mToolbar.setTitle("Home");
                 mSearchView.setVisibility(View.VISIBLE);
-                HomeFragment homeFragment = new HomeFragment();
-                Log.d("ddd", "onPageFragmentSelected: " + homeFragment.isCheck());
-
-                fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
-                if (fragment != null) {
+                mFabSearch.setVisibility(View.VISIBLE);
+                if (isChange()) {
+                    Log.d("ddd", "onPageFragmentSelected: ");
+                    fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
                     fragment.onResume();
                 }
-
                 break;
             case 1:
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
-                mFavorite.setIcon(R.drawable.ic_favorite_36dp);
-                mSetting.setIcon(R.drawable.ic_settings_brown_200_36dp);
+                mFavorite.setIcon(R.drawable.ic_favorite_red_a400_36dp);
+                mSetting.setIcon(R.drawable.ic_info_brown_200_36dp);
                 mToolbar.setTitle("Favorite");
                 mSearchView.setVisibility(View.VISIBLE);
+                mFabSearch.setVisibility(View.VISIBLE);
                 fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
                 if (fragment != null) {
                     fragment.onResume();
@@ -100,9 +110,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
             case 2:
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
-                mSetting.setIcon(R.drawable.ic_settings_36dp);
-                mToolbar.setTitle("Setting");
+                mSetting.setIcon(R.drawable.ic_info_red_a400_36dp);
+                mToolbar.setTitle("About");
                 mSearchView.setVisibility(View.GONE);
+                mFabSearch.setVisibility(View.GONE);
         }
     }
 

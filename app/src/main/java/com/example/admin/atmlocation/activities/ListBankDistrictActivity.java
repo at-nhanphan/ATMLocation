@@ -24,6 +24,7 @@ import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * ListBankDistrictActivity class
@@ -54,6 +55,7 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     int mPositionDistrict;
     private ArrayList<ItemListBank> mLists;
     private ListBankAdapter mAdapter;
+    private String[] sort;
 
     @AfterViews
     void init() {
@@ -68,6 +70,7 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
         if (mCode == 1) {
             mTvTitle.setText(R.string.toolbar_title_chooseBank);
             arrays = getResources().getStringArray(R.array.list_banks);
+            Arrays.sort(arrays);
             for (String array : arrays) {
                 mLists.add(new ItemListBank(array));
             }
@@ -77,6 +80,7 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
         } else {
             mTvTitle.setText(R.string.toolbar_title_chooseDistrict);
             arrays = getResources().getStringArray(R.array.districts);
+            Arrays.sort(arrays);
             for (String array : arrays) {
                 mLists.add(new ItemListBank(array));
             }
@@ -84,6 +88,8 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
                 mLists.get(mPositionDistrict).setCheck(true);
             }
         }
+
+
         mAdapter = new ListBankAdapter(mLists, this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
