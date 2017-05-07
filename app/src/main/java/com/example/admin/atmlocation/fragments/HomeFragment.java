@@ -42,6 +42,9 @@ import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 
@@ -60,7 +63,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     @ViewById(R.id.tvReload)
     TextView mTvReload;
     private ATMListAdapter mAdapter;
-    private ArrayList<MyATM> mAtms;
+    private List<MyATM> mAtms;
     private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(getContext(), mAtms, this);
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
         mAtmServiceImpl = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -140,6 +144,12 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                             }
                         }
                     }
+                    Collections.sort(mAtms, new Comparator<MyATM>() {
+                        @Override
+                        public int compare(MyATM o1, MyATM o2) {
+                            return o1.getTenDiaDiem().compareTo(o2.getTenDiaDiem());
+                        }
+                    });
                     mAdapter.notifyDataSetChanged();
                 }
             }
