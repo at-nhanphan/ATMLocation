@@ -3,12 +3,11 @@ package com.example.admin.atmlocation.adapters;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import com.example.admin.atmlocation.fragments.FavoriteFragment_;
 import com.example.admin.atmlocation.fragments.HomeFragment_;
-import com.example.admin.atmlocation.fragments.SettingFragment_;
+import com.example.admin.atmlocation.fragments.AboutFragment_;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new FavoriteFragment_();
             case 2:
-                return new SettingFragment_();
+                return new AboutFragment_();
         }
         return null;
     }

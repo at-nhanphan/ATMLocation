@@ -32,6 +32,11 @@
     <string name="textView.text.location">Location:</string>
     <string name="textView.text.reload">Reload this page</string>
     <string name="textView.text.map">Maps</string>
+    <string name="textView.text.appName">App Name</string>
+    <string name="textView.text.author">Author</string>
+    <string name="textView.text.authorName">Phan Trọng Nhân</string>
+    <string name="textView.text.version">Version</string>
+    <string name="textView.text.valueVersion">1.0</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

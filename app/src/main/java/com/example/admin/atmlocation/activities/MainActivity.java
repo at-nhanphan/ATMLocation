@@ -1,5 +1,6 @@
 package com.example.admin.atmlocation.activities;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,8 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
+
+import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * MainActivity class
@@ -77,6 +80,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         this.mIsChange = mIsChange;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    }
+
     @PageSelected(R.id.viewPager)
     void onPageFragmentSelected(int position) {
         Fragment fragment;
@@ -113,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_info_red_a400_36dp);
-                mToolbar.setTitle("Info");
+                mToolbar.setTitle("About");
                 mSearchView.setVisibility(View.GONE);
                 mFabSearch.setVisibility(View.GONE);
         }
