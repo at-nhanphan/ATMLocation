@@ -1,6 +1,5 @@
 package com.example.admin.atmlocation.activities;
 
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -8,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -20,8 +20,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
-
-import pub.devrel.easypermissions.EasyPermissions;
 
 /**
  * MainActivity class
@@ -45,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     private TabLayout.Tab mHome;
     private TabLayout.Tab mFavorite;
     private TabLayout.Tab mSetting;
-    private boolean mIsChange;
+    private static boolean mChange;
 
     @AfterViews
     void init() {
@@ -72,18 +70,12 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         mTabLayout.addTab(mSetting, 2);
     }
 
-    public boolean isIsChange() {
-        return mIsChange;
+    public static boolean isChange() {
+        return mChange;
     }
 
-    public void setIsChange(boolean mIsChange) {
-        this.mIsChange = mIsChange;
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
+    public static void setChange(boolean isChange) {
+        mChange = isChange;
     }
 
     @PageSelected(R.id.viewPager)
@@ -97,14 +89,11 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mToolbar.setTitle("Home");
                 mSearchView.setVisibility(View.VISIBLE);
                 mFabSearch.setVisibility(View.VISIBLE);
-//                HomeFragment homeFragment = new HomeFragment();
-//                Log.d("ddd", "onPageFragmentSelected: " + homeFragment.isCheck());
-//
-//                fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
-//                if (fragment != null) {
-//                    fragment.onResume();
-//                }
-
+                if (isChange()) {
+                    Log.d("ddd", "onPageFragmentSelected: ");
+                    fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
+                    fragment.onResume();
+                }
                 break;
             case 1:
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);

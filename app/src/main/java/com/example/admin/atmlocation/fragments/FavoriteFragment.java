@@ -65,8 +65,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         MyATM myATM = mMyATMs.get(position);
         mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
         reloadFragment();
-        MainActivity main = new MainActivity();
-        main.setIsChange(true);
+        MainActivity.setChange(true);
     }
 
     public void reloadFragment() {

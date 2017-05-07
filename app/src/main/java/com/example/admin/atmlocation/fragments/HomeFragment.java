@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
     private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
+    private Location mLocations;
     private double mLat;
     private double mLng;
     private boolean mCheck;
@@ -115,17 +116,17 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
             // TODO: Consider calling
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
-        Location locations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (locations != null) {
-            // 16.063487, 108.223178
-            // locations.getLatitude(), locations.getLongitude()
-            mLat = locations.getLatitude();
-            mLng = locations.getLongitude();
-            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
-        } else {
-            Log.e("location null", "onCreateView: ");
-        }
+        mLocations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mLocations != null) {
+            mLat = mLocations.getLatitude();
+            mLng = mLocations.getLongitude();
+            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+        }
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
     }
