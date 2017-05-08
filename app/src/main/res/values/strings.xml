@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ATM Location</string>
+    <string name="app_name">Find ATM</string>
     <string name="searchView.text.queryHint">Type your keyword here</string>
     <string name="search_hint">Search</string>
     <string name="textView.text.start">start</string>

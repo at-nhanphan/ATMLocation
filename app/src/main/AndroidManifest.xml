@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.admin.atmlocation">
+    package="com.example.admin.findatm">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -18,18 +18,17 @@
         android:name="com.google.android.geo.API_KEY"
         android:value="@string/google_maps_key" />
 
-    <activity android:name="com.example.admin.atmlocation.activities.MainActivity_">
+    <activity android:name="com.example.admin.findatm.activities.MainActivity_">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name=".activities.DetailActivity_" />
-    <activity android:name=".activities.MapsActivity_" />
-    <activity android:name=".activities.SearchActivity_" >
+    <activity android:name="com.example.admin.findatm.activities.DetailActivity_" />
+    <activity android:name="com.example.admin.findatm.activities.MapsActivity_" />
+    <activity android:name="com.example.admin.findatm.activities.SearchActivity_" >
 
     </activity>
-    <activity android:name=".activities.ListBankDistrictActivity_" />
-
+    <activity android:name="com.example.admin.findatm.activities.ListBankDistrictActivity_" />
 </application>
 </manifest>
