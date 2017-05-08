@@ -7,7 +7,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 
@@ -90,9 +89,10 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mSearchView.setVisibility(View.VISIBLE);
                 mFabSearch.setVisibility(View.VISIBLE);
                 if (isChange()) {
-                    Log.d("ddd", "onPageFragmentSelected: ");
-                    fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(0);
-                    fragment.onResume();
+                    for (int i = 0; i < 2; i++) {
+                        fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(i);
+                        fragment.onResume();
+                    }
                 }
                 break;
             case 1:

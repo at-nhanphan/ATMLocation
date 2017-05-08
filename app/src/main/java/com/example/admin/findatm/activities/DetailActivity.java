@@ -24,18 +24,18 @@ import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_detail)
 public class DetailActivity extends AppCompatActivity {
-    @ViewById(R.id.tvId)
-    TextView mTvId;
     @ViewById(R.id.tvName)
     TextView mTvName;
-    @ViewById(R.id.tvAddress)
-    TextView mTvAddress;
-    @ViewById(R.id.ratingBar)
-    RatingBar mRatingBar;
-    @ViewById(R.id.tvDistrict)
-    TextView mTvDistrict;
+    @ViewById(R.id.tvId)
+    TextView mTvId;
     @ViewById(R.id.tvBank)
     TextView mTvBank;
+    @ViewById(R.id.tvAddress)
+    TextView mTvAddress;
+    @ViewById(R.id.tvIdDistrict)
+    TextView mTvDistrict;
+    @ViewById(R.id.tvIdBank)
+    TextView mTvIdBank;
     @ViewById(R.id.tvLatLng)
     TextView mTvLatLng;
     @ViewById(R.id.imgFavorite)
@@ -49,13 +49,13 @@ public class DetailActivity extends AppCompatActivity {
     @AfterViews
     void init() {
         mMyDatabase = new MyDatabase(this);
-        mTvId.setText(getString(R.string.textView_text_id_address) + " " + mAtm.getMaDiaDiem());
         mTvName.setText(mAtm.getTenDiaDiem());
-        mTvAddress.setText(getString(R.string.textView_text_address) + " " + mAtm.getDiaChi());
-        mTvDistrict.setText(getString(R.string.textView_text_id_district) + " " + mAtm.getMaQuan());
-        mTvBank.setText(getString(R.string.textView_text_id_bank) + " " + mAtm.getMaNganHang());
-        mTvLatLng.setText(getString(R.string.textView_text_location) + " " + mAtm.getLat() + " , " + mAtm.getLng());
-//        mRatingBar.setRating(Float.parseFloat(mAtm.getRating()));
+        mTvId.setText(mAtm.getMaDiaDiem());
+        mTvBank.setText(mAtm.getTenDiaDiem());
+        mTvAddress.setText(mAtm.getDiaChi());
+        mTvDistrict.setText(mAtm.getMaQuan());
+        mTvIdBank.setText(mAtm.getMaNganHang());
+        mTvLatLng.setText(mAtm.getLat() + " , " + mAtm.getLng());
         mImgFavorite.setSelected(mAtm.isFavorite());
     }
 
