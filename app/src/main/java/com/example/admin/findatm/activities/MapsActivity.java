@@ -75,7 +75,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String KEY_DIRECTIONS;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
-    @StringRes(R.string.mylocation)
+    @StringRes(R.string.myLocation)
     String mStMyLocation;
     @Extra
     MyATM mAtm;
@@ -264,7 +264,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mViewPager.setVisibility(View.GONE);
                 } else {
                     mViewPager.setVisibility(View.VISIBLE);
-                    StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs);
+                    StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs, mAtm);
                     mViewPager.setAdapter(stepAdapter);
                     mViewPager.setCurrentItem(mCurrentPage + 1);
                 }
