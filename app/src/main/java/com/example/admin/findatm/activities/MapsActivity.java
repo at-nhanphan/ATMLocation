@@ -75,6 +75,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     String KEY_DIRECTIONS;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
+    @StringRes(R.string.mylocation)
+    String mStMyLocation;
     @Extra
     MyATM mAtm;
     @Extra
@@ -145,7 +147,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
         MarkerOptions marker = new MarkerOptions()
                 .position(myLocation)
-                .title("My MyLocation")
+                .title(mStMyLocation)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         mMap.addMarker(marker).showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
@@ -332,9 +334,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        for (int i = 0; i < mMarkers.size(); i++) {
-            if (marker.equals(mMarkers.get(i))) {
-                mViewPager.setCurrentItem(i);
+        if (mMarkers != null) {
+            for (int i = 0; i < mMarkers.size(); i++) {
+                if (marker.equals(mMarkers.get(i))) {
+                    mViewPager.setCurrentItem(i);
+                }
             }
         }
         return true;

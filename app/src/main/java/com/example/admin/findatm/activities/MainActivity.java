@@ -19,6 +19,7 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.StringRes;
 
 /**
  * MainActivity class
@@ -35,8 +36,15 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
     ViewPager mViewPager;
     @ViewById(R.id.fabSearch)
     FloatingActionButton mFabSearch;
+    @StringRes(R.string.searchView_text_queryHint)
+    String mStQuery;
+    @StringRes(R.string.home)
+    String mStHome;
+    @StringRes(R.string.favorite)
+    String mStFavorite;
+    @StringRes(R.string.about)
+    String mStAbout;
     private SearchView mSearchView;
-
     private OnQueryTextChange mOnQueryTextChange;
     private OnQueryTextChange mOnQueryTextChangeHome;
     private TabLayout.Tab mHome;
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mHome.setIcon(R.drawable.ic_home_red_a400_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_info_brown_200_36dp);
-                mToolbar.setTitle("Home");
+                mToolbar.setTitle(mStHome);
                 mSearchView.setVisibility(View.VISIBLE);
                 mFabSearch.setVisibility(View.VISIBLE);
                 if (isChange()) {
@@ -99,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_red_a400_36dp);
                 mSetting.setIcon(R.drawable.ic_info_brown_200_36dp);
-                mToolbar.setTitle("Favorite");
+                mToolbar.setTitle(mStFavorite);
                 mSearchView.setVisibility(View.VISIBLE);
                 mFabSearch.setVisibility(View.VISIBLE);
                 fragment = ((ViewPagerAdapter) mViewPager.getAdapter()).getFragment(1);
@@ -111,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
                 mHome.setIcon(R.drawable.ic_home_brown_200_36dp);
                 mFavorite.setIcon(R.drawable.ic_favorite_brown_200_36dp);
                 mSetting.setIcon(R.drawable.ic_info_red_a400_36dp);
-                mToolbar.setTitle("About");
+                mToolbar.setTitle(mStAbout);
                 mSearchView.setVisibility(View.GONE);
                 mFabSearch.setVisibility(View.GONE);
         }
@@ -137,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements TabLayout.OnTabSe
         getMenuInflater().inflate(R.menu.main, menu);
         mSearchView = (SearchView) menu.findItem(R.id.search).getActionView();
         mSearchView.setMaxWidth(Integer.MAX_VALUE);
-        mSearchView.setQueryHint("Type your keyword here");
+        mSearchView.setQueryHint(mStQuery);
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
