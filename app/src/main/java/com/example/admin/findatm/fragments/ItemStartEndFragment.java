@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.findatm.R;
+import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.Leg;
 
 import org.androidannotations.annotations.AfterViews;
@@ -32,19 +33,21 @@ public class ItemStartEndFragment extends Fragment {
     void init() {
         int position = getArguments().getInt("position");
         Leg leg = getArguments().getParcelable("leg");
+        MyATM myATM = getArguments().getParcelable("myATM");
         if (position == 1 || position == (leg.getSteps().size() + 2)) {
             mTvName.setText(leg.getStartAddress());
             mImgLogo.setImageResource(R.drawable.ic_flag_start);
         } else {
-            mTvName.setText(leg.getEndAddress());
+            mTvName.setText(myATM.getDiaChi());
             mImgLogo.setImageResource(R.drawable.ic_flag_end);
         }
     }
 
-    public ItemStartEndFragment_ newInstance(Leg leg, int position) {
+    public ItemStartEndFragment_ newInstance(Leg leg, MyATM myATM, int position) {
         ItemStartEndFragment_ fragment = new ItemStartEndFragment_();
         Bundle bundle = new Bundle();
         bundle.putParcelable("leg", leg);
+        bundle.putParcelable("myATM", myATM);
         bundle.putInt("position", position);
         fragment.setArguments(bundle);
         return fragment;
