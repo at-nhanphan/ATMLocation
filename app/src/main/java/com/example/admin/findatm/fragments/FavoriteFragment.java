@@ -42,11 +42,6 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         ((MainActivity_) getContext()).setOnQueryTextChange(this);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         reloadFragment();
     }
 

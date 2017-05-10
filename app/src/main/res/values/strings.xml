@@ -19,7 +19,7 @@
     <string name="toolbar.title.chooseDistrict">Select a district</string>
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
-    <string name="setting">Setting</string>
+    <string name="about">About</string>
     <string name="message">result empty</string>
     <string name="textView.text.rating">Rating</string>
     <string name="toolbar.title.detail">Detail</string>

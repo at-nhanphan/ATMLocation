@@ -117,14 +117,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         mLocations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (mLocations != null) {
-            mLat = mLocations.getLatitude();
-            mLng = mLocations.getLongitude();
+            mLat = 16.073812;
+            mLng = 108.149925;
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         }
         mRecyclerView.setAdapter(mAdapter);
