@@ -1,8 +1,9 @@
-package com.example.admin.findatm.activities;
+package com.example.admin.findatm.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -10,6 +11,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.admin.findatm.R;
+import com.example.admin.findatm.activities.DetailActivity_;
+import com.example.admin.findatm.activities.ListBankDistrictActivity_;
 import com.example.admin.findatm.adapters.ATMListAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.interfaces.CallBack;
@@ -21,8 +24,7 @@ import com.example.admin.findatm.services.ATMServiceImpl;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
 
@@ -34,8 +36,8 @@ import dmax.dialog.SpotsDialog;
  * SearchActivity class
  * Created by naunem on 05/04/2017.
  */
-@EActivity(R.layout.activity_search)
-public class SearchActivity extends AppCompatActivity implements MyOnClickListener, MyOnClickFavoriteListener {
+@EFragment(R.layout.fragment_search)
+public class SearchFragment extends Fragment implements MyOnClickListener, MyOnClickFavoriteListener {
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvBank)
@@ -46,18 +48,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     RecyclerView mRecyclerView;
     @ViewById(R.id.tvMessage)
     TextView mTvMessage;
-    @Extra
-    int mCode;
-    @Extra
-    String mResultBank;
-    @Extra
-    String mResultDistrict;
-    @Extra
-    int mPosition;
-    @Extra
-    int mPositionBank;
-    @Extra
-    int mPositionDistrict;
+
+    private int mPositionBank = -1;
+    private int mPositionDistrict = -1;
+
     private static final int REQUEST_CODE_BANK = 1;
     private static final int REQUEST_CODE_AREA = 2;
     private ATMListAdapter mAdapter;
@@ -68,23 +62,14 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @AfterViews
     void init() {
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.GONE);
-        mDialog = new SpotsDialog(this, R.style.CustomDialog);
-        mMyDatabase = new MyDatabase(this);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+        mMyDatabase = new MyDatabase(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
-
-        if (null != mResultBank) {
-            mTvBank.setText(mResultBank);
-        }
-        if (null != mResultDistrict) {
-            mTvArea.setText(mResultDistrict);
-        }
     }
 
-    @Click({R.id.tvBank, R.id.tvArea, R.id.imgBack})
+    @Click({R.id.tvBank, R.id.tvArea})
     void clickChoose(View v) {
         switch (v.getId()) {
             case R.id.tvBank:
@@ -99,14 +84,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                         .mPositionDistrict(mPositionDistrict)
                         .startForResult(REQUEST_CODE_AREA);
                 break;
-            case R.id.imgBack:
-                finish();
         }
     }
 
     @OnActivityResult(REQUEST_CODE_BANK)
     void onResultBank(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             String resultBank = data.getStringExtra("resultBank");
             int position = data.getIntExtra("positionBank", -1);
             if (position != -1) {
@@ -118,12 +101,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @OnActivityResult(REQUEST_CODE_AREA)
     void onResultDistrict(int resultCode, Intent data) {
-        if (resultCode == RESULT_OK && data != null) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
             String resultDistrict = data.getStringExtra("resultDistrict");
             int position = data.getIntExtra("positionDistrict", -1);
             if (position != -1) {
-                mPositionDistrict = position;
                 mTvArea.setText(resultDistrict);
+                mPositionDistrict = position;
             }
         }
     }
@@ -150,7 +133,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
 
     public void loadData() {
-        ATMServiceImpl atmServiceImpl = new ATMServiceImpl(this);
+        ATMServiceImpl atmServiceImpl = new ATMServiceImpl(getContext());
         atmServiceImpl.getAtmSearch(String.valueOf(mTvBank.getText()), String.valueOf(mTvArea.getText()), new CallBack<ArrayList<MyATM>>() {
             @Override
             public void next(ArrayList<MyATM> myATMs) {
@@ -237,3 +220,4 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         }
     }
 }
+

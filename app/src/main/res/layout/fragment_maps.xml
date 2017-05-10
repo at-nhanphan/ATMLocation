@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/llContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:background="@drawable/bg_white_rounded"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/imgDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_distance" />
+
+            <TextView
+                android:id="@+id/tvDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:text="@string/textView.text.defaultDistance" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/imgDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_clock" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:gravity="center"
+                android:text="@string/textView.text.defaultDuration" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.example.admin.findatm.activities.MapsActivity" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:clipToPadding="false"
+            android:paddingLeft="40dp"
+            android:paddingRight="40dp" />
+    </RelativeLayout>
+</LinearLayout>
+

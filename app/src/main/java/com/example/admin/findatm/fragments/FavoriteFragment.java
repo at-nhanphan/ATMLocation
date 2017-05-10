@@ -74,7 +74,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
             myAtm.setFavorite(true);
         }
         if (mMyATMs.size() > 0) {
-            mAdapter = new ATMListAdapter(getActivity(), mMyATMs, this);
+            mAdapter = new ATMListAdapter(mMyATMs, this);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setMyOnClickFavoriteListener(this);
         }
@@ -83,7 +83,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
     @Override
     public void onTextChange(String newText) {
         if (mAdapter != null) {
-            mAdapter.getFilter().filter(newText);
+//            mAdapter.getValueFilter().filter(newText);
         }
     }
 }

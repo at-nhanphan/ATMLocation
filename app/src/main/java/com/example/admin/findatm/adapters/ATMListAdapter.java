@@ -1,12 +1,10 @@
 package com.example.admin.findatm.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,24 +21,22 @@ import java.util.List;
  * Created by Admin on 3/3/2017.
  */
 
-public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> implements Filterable {
+public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> {
     private List<MyATM> mAtms;
-    private final Context mContext;
     private MyOnClickListener mMyOnClickListener;
-    private ValueFilter mValueFilter;
+    private ValueFilterATM mValueFilter;
     private List<MyATM> mAtmsFilter;
     private MyOnClickFavoriteListener mMyOnClickFavoriteListener;
 
-    public ATMListAdapter(Context context, List<MyATM> atms, MyOnClickListener myOnClickListener) {
+    public ATMListAdapter(List<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
-        this.mContext = context;
         this.mMyOnClickListener = myOnClickListener;
         this.mAtmsFilter = atms;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_list, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -63,7 +59,6 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         private TextView mTvName;
         private TextView mTvAddress;
         private ImageView mImgFavorite;
-//        private RatingBar mRatingBar;
 
         MyViewHolder(View itemView) {
             super(itemView);
@@ -71,7 +66,6 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             mTvName = (TextView) itemView.findViewById(R.id.tvName);
             mTvAddress = (TextView) itemView.findViewById(R.id.tvAddress);
             mImgFavorite = (ImageView) itemView.findViewById(R.id.imgFavorite);
-//            mRatingBar = (RatingBar) itemView.findViewById(R.id.ratingBar);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -96,29 +90,20 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         this.mMyOnClickFavoriteListener = mMyOnClickFavoriteListener;
     }
 
-    @Override
-    public Filter getFilter() {
-        if (mValueFilter == null) {
-            mValueFilter = new ValueFilter();
-        }
-        return mValueFilter;
-    }
-
-    private class ValueFilter extends Filter {
+    public class ValueFilterATM extends Filter {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-
             if (constraint != null && constraint.length() > 0) {
-                ArrayList<MyATM> filterList = new ArrayList();
+                List<MyATM> filterLists = new ArrayList();
                 for (int i = 0; i < mAtmsFilter.size(); i++) {
                     if ((mAtmsFilter.get(i).getTenDiaDiem().toUpperCase()).contains(constraint.toString().toUpperCase())) {
-                        filterList.add(mAtmsFilter.get(i));
+                        filterLists.add(mAtmsFilter.get(i));
                     }
                 }
-                results.count = filterList.size();
-                results.values = filterList;
+                results.count = filterLists.size();
+                results.values = filterLists;
             } else {
                 results.count = mAtmsFilter.size();
                 results.values = mAtmsFilter;
@@ -128,12 +113,19 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            mAtms = (ArrayList<MyATM>) results.values;
+            mAtms = (List<MyATM>) results.values;
             notifyDataSetChanged();
         }
     }
 
     public List<MyATM> getResultFilter() {
         return mAtms;
+    }
+
+    public ValueFilterATM getValueFilter() {
+        if (mValueFilter == null) {
+            mValueFilter = new ValueFilterATM();
+        }
+        return mValueFilter;
     }
 }
