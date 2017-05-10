@@ -2,26 +2,34 @@ package com.example.admin.findatm.activities;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.example.admin.findatm.R;
+import com.example.admin.findatm.adapters.ListBankAdapter;
 import com.example.admin.findatm.fragments.AboutFragment_;
 import com.example.admin.findatm.fragments.FavoriteFragment_;
 import com.example.admin.findatm.fragments.HomeFragment_;
 import com.example.admin.findatm.fragments.MapsFragment_;
 import com.example.admin.findatm.fragments.SearchFragment_;
+import com.example.admin.findatm.interfaces.MyOnClickListener;
 import com.example.admin.findatm.interfaces.OnQueryTextChange;
+import com.example.admin.findatm.models.ItemListBank;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
 
 /**
  * MainActivity class
@@ -30,20 +38,26 @@ import org.androidannotations.annotations.ViewById;
 @EActivity(R.layout.activity_main)
 public class MainActivity extends AppCompatActivity {
 
-    @ViewById(R.id.toolbar)
-    Toolbar mToolbar;
-    @ViewById(R.id.fabSearch)
-    FloatingActionButton mFabSearch;
+    @ViewById(R.id.imgSearch)
+    ImageView mImgSearch;
+    @ViewById(R.id.imgSwipe)
+    ImageView mImgSwipe;
+    @ViewById(R.id.rlSearch)
+    RelativeLayout mRlSearch;
+    @ViewById(R.id.edtSearch)
+    EditText mEdtSearch;
 
     private OnQueryTextChange mOnQueryTextChange;
     private OnQueryTextChange mOnQueryTextChangeHome;
     private static boolean mChange;
     private boolean mCheck = false;
     private FragmentManager mManager;
+    private boolean mFlag;
+    private boolean mClick;
 
     @AfterViews
     void init() {
-        setSupportActionBar(mToolbar);
+        mRlSearch.setVisibility(View.GONE);
         mManager = getSupportFragmentManager();
         mManager.beginTransaction().replace(R.id.flContainer, new HomeFragment_()).commit();
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
@@ -60,15 +74,23 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     fragment = new HomeFragment_();
                                 }
+                                mImgSwipe.setVisibility(View.VISIBLE);
+                                mImgSearch.setVisibility(View.VISIBLE);
                                 break;
                             case R.id.favorite:
                                 fragment = new FavoriteFragment_();
+                                mImgSwipe.setVisibility(View.VISIBLE);
+                                mImgSearch.setVisibility(View.VISIBLE);
                                 break;
                             case R.id.search:
                                 fragment = new SearchFragment_();
+                                mImgSwipe.setVisibility(View.GONE);
+                                mImgSearch.setVisibility(View.GONE);
                                 break;
                             case R.id.about:
                                 fragment = new AboutFragment_();
+                                mImgSwipe.setVisibility(View.GONE);
+                                mImgSearch.setVisibility(View.GONE);
                                 break;
                         }
                         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
@@ -76,6 +98,33 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
+        addSearchListener();
+    }
+
+    @Click(R.id.imgSearch)
+    void clickSearch() {
+        if (!mClick) {
+            mRlSearch.setVisibility(View.VISIBLE);
+            mClick = true;
+        } else {
+            mRlSearch.setVisibility(View.GONE);
+            mClick = false;
+        }
+    }
+
+    @Click(R.id.imgSwipe)
+    void clickSwipe() {
+        Fragment fragment;
+        if (!mCheck) {
+            fragment = new MapsFragment_();
+            mImgSwipe.setBackgroundResource(R.drawable.ic_favorite_border_black_36dp);
+            mCheck = true;
+        } else {
+            fragment = new HomeFragment_();
+            mImgSwipe.setBackgroundResource(R.drawable.ic_favorite_red_a400_36dp);
+            mCheck = false;
+        }
+        mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
     public static boolean isChange() {
@@ -86,54 +135,39 @@ public class MainActivity extends AppCompatActivity {
         mChange = isChange;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setMaxWidth(Integer.MAX_VALUE);
-        searchView.setQueryHint("Type your keyword here");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                mOnQueryTextChange.onTextChange(newText);
-                mOnQueryTextChangeHome.onTextChange(newText);
-                return false;
-            }
-        });
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Fragment fragment = null;
-        switch (item.getItemId()) {
-            case R.id.swipe:
-                if (!mCheck) {
-                    fragment = new MapsFragment_();
-                    item.setIcon(R.drawable.ic_favorite_border_black_36dp);
-                    mCheck = true;
-                } else {
-                    fragment = new HomeFragment_();
-                    item.setIcon(R.drawable.ic_favorite_red_a400_36dp);
-                    mCheck = false;
-                }
-                break;
-        }
-        mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-        return false;
-    }
-
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
         this.mOnQueryTextChange = onQueryTextChange;
     }
 
     public void setOnQueryTextChangeHome(OnQueryTextChange onQueryTextChange) {
         this.mOnQueryTextChangeHome = onQueryTextChange;
+    }
+
+    public void addSearchListener() {
+        mEdtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mOnQueryTextChange.onTextChange(s.toString());
+                mOnQueryTextChangeHome.onTextChange(s.toString());
+                ListBankAdapter adapter = new ListBankAdapter(new ArrayList<ItemListBank>(), new MyOnClickListener() {
+                    @Override
+                    public void onClick(int position) {
+
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 }

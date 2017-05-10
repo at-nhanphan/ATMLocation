@@ -55,7 +55,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by naunem on 24/03/2017.
  */
 @EFragment(R.layout.fragment_home)
-public class HomeFragment extends Fragment implements MyOnClickListener, OnQueryTextChange, MyOnClickFavoriteListener {
+public class HomeFragment extends Fragment implements MyOnClickListener, MyOnClickFavoriteListener, OnQueryTextChange {
 
     private static final int REQUEST_CODE = 1;
     @ViewById(R.id.recyclerView)
@@ -206,13 +206,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         }
     }
 
-    @Override
-    public void onTextChange(String newText) {
-        if (mAdapter != null) {
-            mAdapter.getFilter().filter(newText);
-        }
-    }
-
     @Click(R.id.tvReload)
     void clickReload() {
         init();
@@ -245,6 +238,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void onTextChange(String newText) {
+        if (mAdapter != null) {
+//            mAdapter.getValueFilter().filter(newText);
         }
     }
 
