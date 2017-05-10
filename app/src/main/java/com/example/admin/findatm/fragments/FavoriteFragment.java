@@ -42,6 +42,11 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         ((MainActivity_) getContext()).setOnQueryTextChange(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         reloadFragment();
     }
 
@@ -69,7 +74,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
             myAtm.setFavorite(true);
         }
         if (mMyATMs.size() > 0) {
-            mAdapter = new ATMListAdapter(getActivity(), mMyATMs, this);
+            mAdapter = new ATMListAdapter(mMyATMs, this);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setMyOnClickFavoriteListener(this);
         }

@@ -79,10 +79,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
         mMyDatabase = new MyDatabase(getContext());
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
-        ((MainActivity) getContext()).setOnQueryTextChangeHome(this);
+        ((MainActivity) getContext()).setOnQueryTextChange(this);
 
         mAtms = new ArrayList<>();
-        mAdapter = new ATMListAdapter(getContext(), mAtms, this);
+        mAdapter = new ATMListAdapter(mAtms, this);
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         mAtmServiceImpl = new ATMServiceImpl(getContext());
@@ -244,7 +244,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     @Override
     public void onTextChange(String newText) {
         if (mAdapter != null) {
-//            mAdapter.getValueFilter().filter(newText);
+            mAdapter.getValueFilter().filter(newText);
         }
     }
 

@@ -14,22 +14,17 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.example.admin.findatm.R;
-import com.example.admin.findatm.adapters.ListBankAdapter;
 import com.example.admin.findatm.fragments.AboutFragment_;
 import com.example.admin.findatm.fragments.FavoriteFragment_;
 import com.example.admin.findatm.fragments.HomeFragment_;
 import com.example.admin.findatm.fragments.MapsFragment_;
 import com.example.admin.findatm.fragments.SearchFragment_;
-import com.example.admin.findatm.interfaces.MyOnClickListener;
 import com.example.admin.findatm.interfaces.OnQueryTextChange;
-import com.example.admin.findatm.models.ItemListBank;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
-
-import java.util.ArrayList;
 
 /**
  * MainActivity class
@@ -48,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
     EditText mEdtSearch;
 
     private OnQueryTextChange mOnQueryTextChange;
-    private OnQueryTextChange mOnQueryTextChangeHome;
     private static boolean mChange;
     private boolean mCheck = false;
     private FragmentManager mManager;
@@ -139,10 +133,6 @@ public class MainActivity extends AppCompatActivity {
         this.mOnQueryTextChange = onQueryTextChange;
     }
 
-    public void setOnQueryTextChangeHome(OnQueryTextChange onQueryTextChange) {
-        this.mOnQueryTextChangeHome = onQueryTextChange;
-    }
-
     public void addSearchListener() {
         mEdtSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -153,15 +143,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mOnQueryTextChange.onTextChange(s.toString());
-                mOnQueryTextChangeHome.onTextChange(s.toString());
-                ListBankAdapter adapter = new ListBankAdapter(new ArrayList<ItemListBank>(), new MyOnClickListener() {
-                    @Override
-                    public void onClick(int position) {
-
-                    }
-                });
-
-
             }
 
             @Override
@@ -169,5 +150,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Click(R.id.imgDelete)
+    void clickDelete() {
+        mEdtSearch.setText("");
     }
 }

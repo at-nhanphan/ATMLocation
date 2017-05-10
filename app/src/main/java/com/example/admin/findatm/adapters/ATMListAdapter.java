@@ -1,6 +1,5 @@
 package com.example.admin.findatm.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,22 +23,20 @@ import java.util.List;
 
 public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> {
     private List<MyATM> mAtms;
-    private final Context mContext;
     private MyOnClickListener mMyOnClickListener;
-    private ValueFilter mValueFilter;
+    private ValueFilterATM mValueFilter;
     private List<MyATM> mAtmsFilter;
     private MyOnClickFavoriteListener mMyOnClickFavoriteListener;
 
-    public ATMListAdapter(Context context, List<MyATM> atms, MyOnClickListener myOnClickListener) {
+    public ATMListAdapter(List<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
-        this.mContext = context;
         this.mMyOnClickListener = myOnClickListener;
         this.mAtmsFilter = atms;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_list, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, parent, false);
         return new MyViewHolder(view);
     }
 
@@ -93,14 +90,13 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         this.mMyOnClickFavoriteListener = mMyOnClickFavoriteListener;
     }
 
-    private class ValueFilter extends Filter {
+    public class ValueFilterATM extends Filter {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
-
             if (constraint != null && constraint.length() > 0) {
-                ArrayList<MyATM> filterLists = new ArrayList();
+                List<MyATM> filterLists = new ArrayList();
                 for (int i = 0; i < mAtmsFilter.size(); i++) {
                     if ((mAtmsFilter.get(i).getTenDiaDiem().toUpperCase()).contains(constraint.toString().toUpperCase())) {
                         filterLists.add(mAtmsFilter.get(i));
@@ -126,9 +122,9 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         return mAtms;
     }
 
-    public ValueFilter getValueFilter() {
+    public ValueFilterATM getValueFilter() {
         if (mValueFilter == null) {
-            mValueFilter = new ValueFilter();
+            mValueFilter = new ValueFilterATM();
         }
         return mValueFilter;
     }
