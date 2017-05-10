@@ -13,6 +13,7 @@ import com.example.admin.findatm.interfaces.MyOnClickListener;
 import com.example.admin.findatm.models.ItemListBank;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ListBankAdapter class
@@ -20,12 +21,12 @@ import java.util.ArrayList;
  */
 
 public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHolder> {
-    private ArrayList<ItemListBank> mBanks = new ArrayList<>();
+    private List<ItemListBank> mBanks = new ArrayList<>();
     private MyOnClickListener mMyOnClickListener;
-    public ArrayList<ItemListBank> mBankFilters = new ArrayList<>();
+    public List<ItemListBank> mBankFilters = new ArrayList<>();
     private ValueFilter mValueFilter;
 
-    public ListBankAdapter(ArrayList<ItemListBank> banks, MyOnClickListener myOnClickListener) {
+    public ListBankAdapter(List<ItemListBank> banks, MyOnClickListener myOnClickListener) {
         this.mBanks = banks;
         this.mMyOnClickListener = myOnClickListener;
         this.mBankFilters = banks;
@@ -72,7 +73,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             if (constraint != null && constraint.length() > 0) {
-                ArrayList<ItemListBank> listFilters = new ArrayList<>();
+                List<ItemListBank> listFilters = new ArrayList<>();
                 for (int i = 0; i < mBankFilters.size(); i++) {
                     if (mBankFilters.get(i).getName().toUpperCase().contains(constraint.toString().toUpperCase())) {
                         listFilters.add(mBankFilters.get(i));
@@ -101,7 +102,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
         return mValueFilter;
     }
 
-    public ArrayList<ItemListBank> getResultFilter() {
+    public List<ItemListBank> getResultFilter() {
         return mBanks;
     }
 }

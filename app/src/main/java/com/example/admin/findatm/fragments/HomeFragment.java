@@ -55,7 +55,7 @@ import static android.content.Context.LOCATION_SERVICE;
  * Created by naunem on 24/03/2017.
  */
 @EFragment(R.layout.fragment_home)
-public class HomeFragment extends Fragment implements MyOnClickListener, OnQueryTextChange, MyOnClickFavoriteListener {
+public class HomeFragment extends Fragment implements MyOnClickListener, MyOnClickFavoriteListener, OnQueryTextChange {
 
     private static final int REQUEST_CODE = 1;
     @ViewById(R.id.recyclerView)
@@ -79,10 +79,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
 
         mMyDatabase = new MyDatabase(getContext());
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
-        ((MainActivity) getContext()).setOnQueryTextChangeHome(this);
+        ((MainActivity) getContext()).setOnQueryTextChange(this);
 
         mAtms = new ArrayList<>();
-        mAdapter = new ATMListAdapter(getContext(), mAtms, this);
+        mAdapter = new ATMListAdapter(mAtms, this);
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         mAtmServiceImpl = new ATMServiceImpl(getContext());
@@ -117,14 +117,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         mLocations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (mLocations != null) {
-            mLat = mLocations.getLatitude();
-            mLng = mLocations.getLongitude();
+            mLat = 16.073812;
+            mLng = 108.149925;
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         }
         mRecyclerView.setAdapter(mAdapter);
@@ -211,13 +206,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
         }
     }
 
-    @Override
-    public void onTextChange(String newText) {
-        if (mAdapter != null) {
-            mAdapter.getFilter().filter(newText);
-        }
-    }
-
     @Click(R.id.tvReload)
     void clickReload() {
         init();
@@ -250,6 +238,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, OnQuery
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void onTextChange(String newText) {
+        if (mAdapter != null) {
+            mAdapter.getValueFilter().filter(newText);
         }
     }
 
