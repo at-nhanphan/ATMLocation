@@ -116,9 +116,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.swipe:
                 if (!mCheck) {
                     fragment = new MapsFragment_();
+                    item.setIcon(R.drawable.ic_favorite_border_black_36dp);
                     mCheck = true;
                 } else {
                     fragment = new HomeFragment_();
+                    item.setIcon(R.drawable.ic_favorite_red_a400_36dp);
                     mCheck = false;
                 }
                 break;
