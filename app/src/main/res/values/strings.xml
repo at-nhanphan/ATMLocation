@@ -10,8 +10,8 @@
     <string name="direction.key">AIzaSyBLrLg8ydwDTVHQUbgFT0sqCG3Rn5Bczy0</string>
     <string name="toolbar.title.setting">Setting</string>
     <string name="textView.text.filter">FILTER</string>
-    <string name="gps_network_not_enabled">GPS or Network not enabled</string>
-    <string name="positiveButton">Settings</string>
+    <string name="gps_network_not_enabled">Enable GPS ?</string>
+    <string name="positiveButton">Enable</string>
     <string name="cancelButton">Cancel</string>
     <string name="toolbar.title.chooseBank">Select a bank</string>
     <string name="textView.text.chooseBank">Bank</string>

@@ -348,9 +348,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     void clickBack() {
         finish();
     }
-
-    @Click(R.id.fabSearch)
-    void clickSearch() {
-        SearchActivity_.intent(this).start();
-    }
 }

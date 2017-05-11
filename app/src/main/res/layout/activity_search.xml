@@ -78,7 +78,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorAccent"
         android:layout_gravity="center"
-        android:drawableLeft="@drawable/ic_crying"
+        android:drawableTop="@drawable/ic_sad_brown_200_48dp"
         android:text="@string/textView.text.null"
         android:textSize="18sp" />
 

@@ -111,11 +111,11 @@ public class MainActivity extends AppCompatActivity {
         Fragment fragment;
         if (!mCheck) {
             fragment = new MapsFragment_();
-            mImgSwipe.setBackgroundResource(R.drawable.ic_favorite_border_black_36dp);
+            mImgSwipe.setBackgroundResource(R.drawable.ic_list_white_24dp);
             mCheck = true;
         } else {
             fragment = new HomeFragment_();
-            mImgSwipe.setBackgroundResource(R.drawable.ic_favorite_red_a400_36dp);
+            mImgSwipe.setBackgroundResource(R.drawable.ic_google_maps);
             mCheck = false;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();

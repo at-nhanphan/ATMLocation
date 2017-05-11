@@ -18,17 +18,25 @@
         android:name="com.google.android.geo.API_KEY"
         android:value="@string/google_maps_key" />
 
-    <activity android:name="com.example.admin.findatm.activities.MainActivity_">
+        <activity
+            android:name="com.example.admin.findatm.activities.MainActivity_"
+            android:screenOrientation="portrait">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
     </activity>
-    <activity android:name="com.example.admin.findatm.activities.DetailActivity_" />
-    <activity android:name="com.example.admin.findatm.activities.MapsActivity_" />
-    <activity android:name="com.example.admin.findatm.activities.SearchActivity_" >
-
-    </activity>
-    <activity android:name="com.example.admin.findatm.activities.ListBankDistrictActivity_" />
+        <activity
+            android:name="com.example.admin.findatm.activities.DetailActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.admin.findatm.activities.MapsActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.admin.findatm.activities.SearchActivity_"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.example.admin.findatm.activities.ListBankDistrictActivity_"
+            android:screenOrientation="portrait" />
 </application>
 </manifest>

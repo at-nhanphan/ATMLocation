@@ -35,7 +35,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="5dp"
-            android:background="@drawable/ic_favorite_red_a400_36dp" />
+            android:background="@drawable/ic_google_maps" />
     </RelativeLayout>
 
     <include

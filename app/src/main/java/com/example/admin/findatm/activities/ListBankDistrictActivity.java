@@ -7,8 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.admin.findatm.R;
@@ -20,6 +22,8 @@ import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
+import org.androidannotations.annotations.OptionsItem;
+import org.androidannotations.annotations.OptionsMenu;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
@@ -31,6 +35,7 @@ import java.util.Arrays;
  */
 
 @EActivity(R.layout.activity_list)
+@OptionsMenu(R.menu.main)
 public class ListBankDistrictActivity extends AppCompatActivity implements MyOnClickListener {
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
@@ -42,6 +47,8 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     LinearLayout mLinearLayout;
     @ViewById(R.id.edtSearch)
     EditText mEdtSearch;
+    @ViewById(R.id.rlSearch)
+    RelativeLayout mRlSearch;
     @Extra
     int mCode;
     @Extra
@@ -54,13 +61,14 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     int mPositionDistrict;
     private ArrayList<ItemListBank> mLists;
     private ListBankAdapter mAdapter;
-    private String[] sort;
+    private boolean mClick;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mLinearLayout.requestFocus();
+        mRlSearch.setVisibility(View.GONE);
+//        mLinearLayout.requestFocus();
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
         mLists = new ArrayList<>();
@@ -142,5 +150,16 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     @Click(R.id.imgDelete)
     void clickDelete() {
         mEdtSearch.setText("");
+    }
+
+    @OptionsItem(R.id.search)
+    void onItemSearch() {
+        if (!mClick) {
+            mRlSearch.setVisibility(View.GONE);
+            mClick = true;
+        } else {
+            mRlSearch.setVisibility(View.VISIBLE);
+            mClick = false;
+        }
     }
 }
