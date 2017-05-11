@@ -43,7 +43,6 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MyATM atm = mAtms.get(position);
-        holder.mImgLogo.setImageResource(R.mipmap.ic_logo_atm);
         holder.mTvName.setText(atm.getTenDiaDiem());
         holder.mTvAddress.setText(atm.getDiaChi());
         holder.mImgFavorite.setSelected(atm.isFavorite());

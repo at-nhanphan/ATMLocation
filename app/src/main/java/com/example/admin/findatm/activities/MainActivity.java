@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -28,12 +27,16 @@ import com.example.admin.findatm.fragments.HomeFragment_;
 import com.example.admin.findatm.fragments.MapsFragment_;
 import com.example.admin.findatm.fragments.SearchFragment_;
 import com.example.admin.findatm.interfaces.OnQueryTextChange;
+import com.example.admin.findatm.models.MyATM;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * MainActivity class
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private boolean mFlag;
     private boolean mClick;
     private static LatLng mCurrentLocation;
+    private static List<MyATM> mListAtms = new ArrayList<>();
 
     @AfterViews
     void init() {
@@ -98,7 +102,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location != null) {
-            Log.d("ddd", "init: " + location.getLatitude());
             mCurrentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         }
     }
@@ -204,5 +207,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         return true;
+    }
+
+    public static List<MyATM> getListAtms() {
+        return mListAtms;
+    }
+
+    public static void setListAtms(List<MyATM> listAtms) {
+        mListAtms = listAtms;
     }
 }

@@ -142,6 +142,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                             return o1.getTenDiaDiem().compareTo(o2.getTenDiaDiem());
                         }
                     });
+                    MainActivity.setListAtms(mAtms);
                     mAdapter.notifyDataSetChanged();
                 }
             }

@@ -35,7 +35,6 @@ public class ItemStepFragment extends Fragment {
         mTvName.setText(Html.fromHtml(step.getHtmlInstructions()));
         mTvDistance.setText(step.getDistance().getText());
 
-        Log.d("aaaa", "init: " + step.getManeuver());
         if (null != step.getManeuver()) {
             switch (step.getManeuver()) {
                 case "turn-left":

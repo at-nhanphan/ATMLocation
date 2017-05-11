@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorTabLayout">#ff471a</color>
     <color name="colorSearchView">#4bc2ea</color>
+    <color name="colorItem">#89e8f1</color>
 </resources>

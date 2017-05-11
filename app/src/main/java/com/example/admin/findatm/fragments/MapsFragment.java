@@ -4,21 +4,34 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
+import android.view.View;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.MainActivity;
+import com.example.admin.findatm.adapters.ATMListViewPagerAdapter;
+import com.example.admin.findatm.models.MyATM;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.PageScrollStateChanged;
+import org.androidannotations.annotations.PageSelected;
+import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * class MapsFragment
@@ -29,11 +42,18 @@ import org.androidannotations.annotations.res.StringRes;
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationButtonClickListener {
     @StringRes(R.string.myLocation)
     String mStMyLocation;
+    @ViewById(R.id.viewPager)
+    ViewPager mViewPager;
+    private List<MyATM> mAtms;
     private GoogleMap mMap;
     private LatLng mCurrentLocation;
+    private ArrayList<Marker> mMarkers = new ArrayList<>();
+    private int mCurrentPage;
 
     @AfterViews
     void init() {
+        mAtms = new ArrayList<>();
+        mViewPager.setPageMargin(20);
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.mapView, mapFragment).commit();
         mapFragment.getMapAsync(this);
@@ -50,25 +70,90 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setCompassEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(true);
-        mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-        if (mCurrentLocation != null) {
-            mMap.addMarker(new MarkerOptions().position(mCurrentLocation)
-                    .title(mStMyLocation)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose))).showInfoWindow();
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mCurrentLocation, 16));
+
+        mAtms = MainActivity.getListAtms();
+        if (mAtms.size() > 0) {
+            for (int i = 0; i < mAtms.size(); i++) {
+                addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
+            }
+            mViewPager.setVisibility(View.VISIBLE);
+            ATMListViewPagerAdapter adapter = new ATMListViewPagerAdapter(getFragmentManager(), mAtms);
+            mViewPager.setAdapter(adapter);
+            mViewPager.setCurrentItem(mCurrentPage + 1);
+        } else {
+            mViewPager.setVisibility(View.GONE);
         }
+        zoomMapFitMarkers(mMarkers);
+    }
+
+    public void addMarker(LatLng latLng) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
+        mMarkers.add(marker);
+    }
+
+    public void zoomMapFitMarkers(ArrayList<Marker> markers) {
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (Marker marker : markers) {
+            builder.include(marker.getPosition());
+        }
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+        mMap.moveCamera(cameraUpdate);
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (mMarkers != null) {
+            for (int i = 0; i < mMarkers.size(); i++) {
+                if (marker.equals(mMarkers.get(i))) {
+                    mViewPager.setCurrentItem(i);
+                }
+            }
+        }
         return false;
     }
 
     @Override
     public boolean onMyLocationButtonClick() {
+        if (mCurrentLocation != null) {
+            mMap.addMarker(new MarkerOptions().position(mCurrentLocation)
+                    .title(mStMyLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon))).showInfoWindow();
+        }
         return false;
+    }
+
+    @PageSelected(R.id.viewPager)
+    void onItemAtmSelected(int position) {
+        mCurrentPage = position;
+        Log.d("dddd", "onItemAtmSelected: " + position);
+        if (position < mMarkers.size()) {
+            mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
+        }
+        for (int i = 0; i < mMarkers.size(); i++) {
+            if (position == 1) {
+                mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
+            }
+            if (i != position) {
+                mMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
+            }
+        }
+    }
+
+    @PageScrollStateChanged(R.id.viewPager)
+    void onPageScrollChanged(int state) {
+        if (state == ViewPager.SCROLL_STATE_IDLE) {
+            int pageCount = mAtms.size() + 2;
+            if (mCurrentPage == 0) {
+                mViewPager.setCurrentItem(pageCount - 2, false);
+            } else if (mCurrentPage == pageCount - 1) {
+                mViewPager.setCurrentItem(1, false);
+            }
+        }
     }
 }
