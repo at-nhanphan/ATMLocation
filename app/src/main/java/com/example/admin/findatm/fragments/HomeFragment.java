@@ -75,15 +75,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     void init() {
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
-
         mMyDatabase = new MyDatabase(getContext());
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
-
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(mAtms, this);
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         mAtmServiceImpl = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -107,6 +103,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             }
         };
         checkLocationEnabled(getContext());
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -117,8 +114,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location != null) {
-            mLat = 16.073812;
-            mLng = 108.149925;
+            mLat = location.getLatitude();
+            mLng = location.getLongitude();
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         }
         mRecyclerView.setAdapter(mAdapter);

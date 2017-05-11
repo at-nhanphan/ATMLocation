@@ -1,14 +1,18 @@
 package com.example.admin.findatm.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,7 +21,6 @@ import android.widget.TextView;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.adapters.StepAdapter;
-import com.example.admin.findatm.fragments.HomeFragment;
 import com.example.admin.findatm.interfaces.ATMService;
 import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.DirectionResult;
@@ -80,7 +83,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Extra
     MyATM mAtm;
     @Extra
-    MyLocation mAtmMyLocation;
+    MyLocation mAddressAtm;
     private GoogleMap mMap;
     private PolylineOptions mPolylineOptions;
     private ATMService mService;
@@ -89,7 +92,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng mLocation;
     private int mCurrentPage;
     private ArrayList<Marker> mMarkers;
-    private HomeFragment mHomeFragment;
 
     @AfterViews
     void init() {
@@ -100,18 +102,49 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPolylineOptions = new PolylineOptions();
         SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mMapFragment.getMapAsync(this);
-        double mAtmLatitude = mAtmMyLocation.getLat();
-        double mAtmLongitude = mAtmMyLocation.getLng();
+        double mAtmLatitude = mAddressAtm.getLat();
+        double mAtmLongitude = mAddressAtm.getLng();
         mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
-        mHomeFragment = new HomeFragment();
     }
 
     @OptionsItem(R.id.drawRoute)
     void onItemDrawRoute() {
-        mHomeFragment.checkLocationEnabled(this);
+        checkLocationEnabled();
         mViewPager.setVisibility(View.VISIBLE);
         drawRoute();
+    }
 
+    public void checkLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+        try {
+            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ignored) {
+            Log.e("ddd", "checkLocationEnabled: ", ignored);
+        }
+
+        if (!gps_enabled) {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setCancelable(false);
+            dialog.setMessage(this.getResources().getString(R.string.gps_network_not_enabled));
+            dialog.setPositiveButton(getResources().getString(R.string.positiveButton), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(myIntent);
+                }
+            });
+            dialog.setNegativeButton(getResources().getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
+                }
+            });
+            dialog.show();
+        }
     }
 
     @Override
@@ -176,7 +209,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         };
-        mHomeFragment.checkLocationEnabled(this);
+        checkLocationEnabled();
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -186,7 +219,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        return new MyLocation(location.getLatitude(), location.getLongitude());
+        MyLocation myLocation = new MyLocation(16.073812, 108.149925);
+        if (location != null) {
+            myLocation = new MyLocation(location.getLatitude(), location.getLongitude());
+        }
+        return myLocation;
     }
 
     public void addMarker(LatLng latLng) {
@@ -198,7 +235,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void drawRoute() {
         Call<DirectionResult> results = mService.getData(getCurrentLocation().getLat() + "," +
-                getCurrentLocation().getLng(), mAtmMyLocation.getLat() + "," + mAtmMyLocation.getLng(), KEY_DIRECTIONS);
+                getCurrentLocation().getLng(), mAddressAtm.getLat() + "," + mAddressAtm.getLng(), KEY_DIRECTIONS);
 
         results.enqueue(new Callback<DirectionResult>() {
             @Override
@@ -253,10 +290,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     // Adding route on the map
                     mMap.addPolyline(rectLine);
-                    // Move camera to current location
-//                    mMap.animateCamera(CameraUpdateFactory
-//                            .newLatLngZoom(new LatLng(toPosition.getLat(), toPosition.getLng()), 16));
-
                     // Zoom map fit all markers
                     zoomMapFitMarkers(mMarkers);
                 }
@@ -283,30 +316,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cameraUpdate);
     }
 
     @PageSelected(R.id.viewPager)
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
-//        double lat;
-//        double lng;
-//        if (position == 0) {
-//            return;
-//        } else if (position == 1) {
-//            lat = mLegs.get(0).getStartLocation().getLat();
-//            lng = mLegs.get(0).getStartLocation().getLng();
-//        } else if (position >= mSteps.size() + 1) {
-//            lat = mLegs.get(0).getEndLocation().getLat();
-//            lng = mLegs.get(0).getEndLocation().getLng();
-//        } else {
-//            lat = mSteps.get(position - 1).getStartLocation().getLat();
-//            lng = mSteps.get(position - 1).getStartLocation().getLng();
-//        }
-//        LatLng latLng = new LatLng(lat, lng);
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-
         if (position < mMarkers.size()) {
             mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
