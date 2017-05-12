@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
+import com.example.admin.findatm.Utils.PermissionAccessFineLocationUtil;
 import com.example.admin.findatm.activities.DetailActivity_;
 import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.activities.MapsActivity_;
@@ -72,6 +74,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private double mLat;
     private double mLng;
     private boolean mCheck;
+    private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
 
     @AfterViews
     void init() {
@@ -81,19 +84,18 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
-        Log.d("dddd", "init: " + mAtms.size());
         mAdapter = new ATMListAdapter(mAtms, this);
         mAtmServiceImpl = new ATMServiceImpl(getContext());
-        getCurrentLocation();
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
+        PermissionAccessFineLocationUtil.askPermissionsAccessLocation(getActivity(), ACCESS_FINE_LOCATION_AND_COARSE_LOCATION);
     }
 
     public void getCurrentLocation() {
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
-                //your code here
+                // TODO: 12/05/2017
             }
 
             @Override
@@ -130,6 +132,29 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             Log.d("dddd", "getCurrentLocation: yes");
         } else {
             Log.d("dddd", "getCurrentLocation: null");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case ACCESS_FINE_LOCATION_AND_COARSE_LOCATION:
+                // If ignore: array null.
+                if (grantResults.length > 1
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+
+                    Toast.makeText(getActivity(), "Permission granted!", Toast.LENGTH_LONG).show();
+
+                    // Display current location.
+                    getCurrentLocation();
+                }
+                // Cancel or refuse.
+                else {
+                    Toast.makeText(getActivity(), "Permission denied!", Toast.LENGTH_LONG).show();
+                }
+                break;
         }
     }
 
@@ -224,7 +249,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
-        init();
+        getCurrentLocation();
         mTvReload.setVisibility(View.GONE);
     }
 
