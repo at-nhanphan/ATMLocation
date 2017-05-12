@@ -159,12 +159,14 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
 
     @OptionsItem(R.id.search)
     void onItemSearch() {
-        if (!mClick) {
+        if (mClick) {
             mRlSearch.setVisibility(View.GONE);
-            mClick = true;
+            mLinearLayout.requestFocus();
+            mClick = false;
         } else {
             mRlSearch.setVisibility(View.VISIBLE);
-            mClick = false;
+            mEdtSearch.requestFocus();
+            mClick = true;
         }
     }
 }

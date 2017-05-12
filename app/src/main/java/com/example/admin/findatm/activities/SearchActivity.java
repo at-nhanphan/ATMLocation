@@ -53,8 +53,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @Extra
     String mResultDistrict;
     @Extra
-    int mPosition;
-    @Extra
     int mPositionBank;
     @Extra
     int mPositionDistrict;
@@ -76,6 +74,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
+        mPositionBank = -1;
+        mPositionDistrict = -1;
         if (null != mResultBank) {
             mTvBank.setText(mResultBank);
         }
