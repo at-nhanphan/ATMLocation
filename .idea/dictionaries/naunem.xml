@@ -11,6 +11,7 @@
       <w>favorited</w>
       <w>findatm</w>
       <w>getall</w>
+      <w>unfavorited</w>
     </words>
   </dictionary>
 </component>

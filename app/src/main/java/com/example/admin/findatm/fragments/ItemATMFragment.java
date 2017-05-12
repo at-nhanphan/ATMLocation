@@ -3,11 +3,13 @@ package com.example.admin.findatm.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.findatm.R;
+import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.models.MyATM;
 
 import org.androidannotations.annotations.AfterViews;
@@ -21,7 +23,7 @@ import org.androidannotations.annotations.res.ColorRes;
  */
 
 @EFragment(R.layout.item_list)
-public class ItemATMFragment extends Fragment {
+public class ItemATMFragment extends Fragment implements View.OnClickListener {
     @ViewById(R.id.tvName)
     TextView mTvName;
     @ViewById(R.id.tvAddress)
@@ -32,17 +34,21 @@ public class ItemATMFragment extends Fragment {
     CardView mCardView;
     @ColorRes(R.color.colorItem)
     int mColorItem;
+    private MyDatabase mMyDatabase;
+    private MyATM mMyATM;
 
 
     @AfterViews
     void init() {
+        mMyDatabase = new MyDatabase(getContext());
         mCardView.setCardBackgroundColor(mColorItem);
-        MyATM myATM = getArguments().getParcelable("atm");
-        if (myATM != null) {
-            mTvName.setText(myATM.getTenDiaDiem());
-            mTvAddress.setText(myATM.getDiaChi());
-            mImgFavorite.setSelected(myATM.isFavorite());
+        mMyATM = getArguments().getParcelable("atm");
+        if (mMyATM != null) {
+            mTvName.setText(mMyATM.getTenDiaDiem());
+            mTvAddress.setText(mMyATM.getDiaChi());
+            mImgFavorite.setSelected(mMyATM.isFavorite());
         }
+        mImgFavorite.setOnClickListener(this);
     }
 
     public ItemATMFragment_ newInstance(MyATM myATM) {
@@ -51,5 +57,18 @@ public class ItemATMFragment extends Fragment {
         bundle.putParcelable("atm", myATM);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onClick(View v) {
+        mMyATM.setFavorite(!mMyATM.isFavorite());
+        mImgFavorite.setSelected(mMyATM.isFavorite());
+        if (mMyATM.isFavorite()) {
+            mMyDatabase.insertATM(mMyATM);
+            Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
+        } else {
+            mMyDatabase.deleteATM(Integer.parseInt(mMyATM.getMaDiaDiem()));
+            Toast.makeText(getContext(), "You're unfavorited this item", Toast.LENGTH_SHORT).show();
+        }
     }
 }
