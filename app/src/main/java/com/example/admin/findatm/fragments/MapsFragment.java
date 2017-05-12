@@ -97,12 +97,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     public void zoomMapFitMarkers(ArrayList<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers) {
-            builder.include(marker.getPosition());
+        if (markers.size() > 0) {
+            for (Marker marker : markers) {
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+            mMap.moveCamera(cameraUpdate);
         }
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-        mMap.moveCamera(cameraUpdate);
     }
 
     @Override
@@ -131,6 +133,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
         if (position <= mMarkers.size() && position > 0) {
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(mMarkers.get(position - 1).getPosition()));
             mMarkers.get(position - 1).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
         for (int i = 0; i < mMarkers.size(); i++) {

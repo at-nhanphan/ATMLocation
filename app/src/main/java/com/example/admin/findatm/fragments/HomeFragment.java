@@ -35,6 +35,7 @@ import com.example.admin.findatm.interfaces.OnQueryTextChange;
 import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
+import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -80,8 +81,15 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
+        Log.d("dddd", "init: " + mAtms.size());
         mAdapter = new ATMListAdapter(mAtms, this);
         mAtmServiceImpl = new ATMServiceImpl(getContext());
+        getCurrentLocation();
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
+    }
+
+    public void getCurrentLocation() {
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -117,10 +125,12 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         if (location != null) {
             mLat = location.getLatitude();
             mLng = location.getLongitude();
+            MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+            Log.d("dddd", "getCurrentLocation: yes");
+        } else {
+            Log.d("dddd", "getCurrentLocation: null");
         }
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setMyOnClickFavoriteListener(this);
     }
 
     public void getDataResponse(ATMServiceImpl atmServiceImpl, double lat, double lng, int radius) {
@@ -145,6 +155,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                     });
                     MainActivity.setListAtms(mAtms);
                     mAdapter.notifyDataSetChanged();
+                    Log.d("dddd", "next: " + MainActivity.getListAtms().size());
                 }
             }
         });
