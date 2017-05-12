@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
-    private Location mLocations;
     private double mLat;
     private double mLng;
     private boolean mCheck;
@@ -76,15 +75,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     void init() {
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
-
         mMyDatabase = new MyDatabase(getContext());
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
-
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(mAtms, this);
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
         mAtmServiceImpl = new ATMServiceImpl(getContext());
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -108,6 +103,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             }
         };
         checkLocationEnabled(getContext());
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -116,10 +112,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             // TODO: Consider calling
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
-        mLocations = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (mLocations != null) {
-            mLat = 16.073812;
-            mLng = 108.149925;
+        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        if (location != null) {
+            mLat = location.getLatitude();
+            mLng = location.getLongitude();
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         }
         mRecyclerView.setAdapter(mAdapter);
@@ -146,6 +142,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                             return o1.getTenDiaDiem().compareTo(o2.getTenDiaDiem());
                         }
                     });
+                    MainActivity.setListAtms(mAtms);
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -158,12 +155,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         boolean network_enabled = false;
         try {
             gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
         } catch (Exception ignored) {
             Log.e("ddd", "checkLocationEnabled: ", ignored);
         }
 
-        if (!gps_enabled && !network_enabled) {
+        if (!gps_enabled) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
             dialog.setCancelable(false);
             dialog.setMessage(getContext().getResources().getString(R.string.gps_network_not_enabled));
@@ -171,9 +167,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     // TODO Auto-generated method stub
-                    Intent myIntent = new Intent(Settings.ACTION_SETTINGS);
+                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     getContext().startActivity(myIntent);
-                    //get gps
                 }
             });
             dialog.setNegativeButton(getResources().getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
@@ -181,7 +176,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     // TODO Auto-generated method stub
-
                 }
             });
             dialog.show();

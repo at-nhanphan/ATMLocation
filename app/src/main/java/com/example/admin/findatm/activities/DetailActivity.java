@@ -3,7 +3,6 @@ package com.example.admin.findatm.activities;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.admin.findatm.R;
@@ -61,7 +60,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Click(R.id.btnShowMap)
     public void onClickShowMap() {
-        MapsActivity_.intent(this).mAtm(mAtm).mAtmMyLocation(mMyLocation).start();
+        MapsActivity_.intent(this).mAtm(mAtm).mAddressAtm(mMyLocation).start();
         finish();
     }
 

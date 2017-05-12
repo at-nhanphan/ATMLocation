@@ -10,10 +10,4 @@
         android:title="@string/search_hint"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/swipe"
-        android:icon="@drawable/ic_favorite_red_a400_36dp"
-        android:orderInCategory="1"
-        android:title="@string/app_name"
-        app:showAsAction="ifRoom" />
 </menu>

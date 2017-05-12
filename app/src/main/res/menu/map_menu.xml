@@ -2,9 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search_hint"
+        app:showAsAction="always"/>
     <item
         android:id="@+id/drawRoute"
-        android:icon="@drawable/ic_draw_route"
+        android:icon="@drawable/ic_transfer_white_24dp"
         android:title="@string/button.text.drawRoute"
         app:showAsAction="ifRoom" />
 </menu>
