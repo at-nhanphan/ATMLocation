@@ -71,6 +71,14 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
                     mMyOnClickListener.onClick(getLayoutPosition());
                 }
             });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mMyOnClickListener.onLongClick(getLayoutPosition());
+                    return true;
+                }
+            });
             mImgFavorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

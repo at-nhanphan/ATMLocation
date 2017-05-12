@@ -123,6 +123,11 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
         finish();
     }
 
+    @Override
+    public void onLongClick(int position) {
+
+    }
+
     @Click(R.id.imgBack)
     void clickBack() {
         finish();

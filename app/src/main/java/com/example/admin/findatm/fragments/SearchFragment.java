@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.DetailActivity_;
 import com.example.admin.findatm.activities.ListBankDistrictActivity_;
+import com.example.admin.findatm.activities.MapsActivity_;
 import com.example.admin.findatm.adapters.ATMListAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.interfaces.CallBack;
@@ -123,6 +124,16 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
 
     @Override
     public void onClick(int position) {
+        MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
+                Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
+        MapsActivity_.intent(this)
+                .mAddressAtm(myLocation)
+                .mAtm(mAdapter.getResultFilter().get(position))
+                .start();
+    }
+
+    @Override
+    public void onLongClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
                 Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
         DetailActivity_.intent(this)

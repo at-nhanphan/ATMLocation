@@ -146,6 +146,17 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
                 .start();
+//                .startForResult(REQUEST_CODE);
+    }
+
+    @Override
+    public void onLongClick(int position) {
+        MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
+                Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
+        DetailActivity_.intent(this)
+                .mAtm(mAdapter.getResultFilter().get(position))
+                .mMyLocation(myLocation)
+                .start();
     }
 
 
