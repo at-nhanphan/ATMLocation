@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.adapters.StepAdapter;
@@ -97,7 +98,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mViewPager.setPageMargin(20);
+        mViewPager.setPageMargin(10);
         mService = ApiUtils.getService();
         mPolylineOptions = new PolylineOptions();
         SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -177,13 +178,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMyLocationButtonClick() {
         mMap.clear();
         mViewPager.setVisibility(View.GONE);
-        LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
-        MarkerOptions marker = new MarkerOptions()
-                .position(myLocation)
-                .title(mStMyLocation)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
-        mMap.addMarker(marker).showInfoWindow();
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
+        if (getCurrentLocation() != null) {
+            LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
+            MarkerOptions marker = new MarkerOptions()
+                    .position(myLocation)
+                    .title(mStMyLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
+            mMap.addMarker(marker).showInfoWindow();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
+        } else {
+            Toast.makeText(this, "Location null", Toast.LENGTH_SHORT).show();
+        }
         return true;
     }
 
@@ -219,11 +224,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
         Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        MyLocation myLocation = new MyLocation(16.073812, 108.149925);
         if (location != null) {
-            myLocation = new MyLocation(location.getLatitude(), location.getLongitude());
+            return new MyLocation(location.getLatitude(), location.getLongitude());
+        } else {
+            Toast.makeText(this, "Loading GPS...", Toast.LENGTH_SHORT).show();
+            return null;
         }
-        return myLocation;
     }
 
     public void addMarker(LatLng latLng) {
@@ -234,80 +240,83 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void drawRoute() {
-        Call<DirectionResult> results = mService.getData(getCurrentLocation().getLat() + "," +
-                getCurrentLocation().getLng(), mAddressAtm.getLat() + "," + mAddressAtm.getLng(), KEY_DIRECTIONS);
+        if (getCurrentLocation() != null) {
+            Call<DirectionResult> results = mService.getData(getCurrentLocation().getLat() + "," +
+                    getCurrentLocation().getLng(), mAddressAtm.getLat() + "," + mAddressAtm.getLng(), KEY_DIRECTIONS);
 
-        results.enqueue(new Callback<DirectionResult>() {
-            @Override
-            public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
-                ArrayList<LatLng> routeList = new ArrayList<>();
-                mCurrentPage = 0;
-                mMap.clear();
-                mMarkers = new ArrayList<>();
-                if (mLegs != null) {
-                    mLegs.clear();
-                }
-                if (response.body().getRoutes().size() > 0) {
-                    ArrayList<LatLng> decodeList;
-                    Route routeA = response.body().getRoutes().get(0);
-                    mLegs = routeA.getLegs();
-                    if (mLegs.size() > 0) {
-                        Distance distance = mLegs.get(0).getDistance();
-                        Duration duration = mLegs.get(0).getDuration();
-                        mTvDistance.setText(distance.getText());
-                        mTvDuration.setText(duration.getText());
+            results.enqueue(new Callback<DirectionResult>() {
+                @Override
+                public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
+                    ArrayList<LatLng> routeList = new ArrayList<>();
+                    mCurrentPage = 0;
+                    mMap.clear();
+                    mMarkers = new ArrayList<>();
+                    if (mLegs != null) {
+                        mLegs.clear();
+                    }
+                    if (response.body().getRoutes().size() > 0) {
+                        ArrayList<LatLng> decodeList;
+                        Route routeA = response.body().getRoutes().get(0);
+                        mLegs = routeA.getLegs();
+                        if (mLegs.size() > 0) {
+                            Distance distance = mLegs.get(0).getDistance();
+                            Duration duration = mLegs.get(0).getDuration();
+                            mTvDistance.setText(distance.getText());
+                            mTvDuration.setText(duration.getText());
 
-                        // Add start marker
-                        addMarker(new LatLng(mLegs.get(0).getStartLocation().getLat(), mLegs.get(0).getStartLocation().getLng()));
+                            // Add start marker
+                            addMarker(new LatLng(mLegs.get(0).getStartLocation().getLat(), mLegs.get(0).getStartLocation().getLng()));
 
-                        mSteps = new ArrayList<>();
-                        mSteps = routeA.getLegs().get(0).getSteps();
-                        Step step;
-                        MyLocation location;
-                        String polyline;
-                        for (int i = 0; i < mSteps.size(); i++) {
-                            step = mSteps.get(i);
-                            location = step.getStartLocation();
-                            routeList.add(new LatLng(location.getLat(), location.getLng()));
-                            polyline = step.getPolyline().getPoints();
-                            decodeList = RouteDecode.decodePoly(polyline);
-                            routeList.addAll(decodeList);
-                            location = step.getEndLocation();
-                            routeList.add(new LatLng(location.getLat(), location.getLng()));
-                            // Add step maker
-                            addMarker(new LatLng(step.getStartLocation().getLat(), step.getStartLocation().getLng()));
-
+                            mSteps = new ArrayList<>();
+                            mSteps = routeA.getLegs().get(0).getSteps();
+                            Step step;
+                            MyLocation location;
+                            String polyline;
+                            for (int i = 0; i < mSteps.size(); i++) {
+                                step = mSteps.get(i);
+                                location = step.getStartLocation();
+                                routeList.add(new LatLng(location.getLat(), location.getLng()));
+                                polyline = step.getPolyline().getPoints();
+                                decodeList = RouteDecode.decodePoly(polyline);
+                                routeList.addAll(decodeList);
+                                location = step.getEndLocation();
+                                routeList.add(new LatLng(location.getLat(), location.getLng()));
+                                // Add step maker
+                                addMarker(new LatLng(step.getStartLocation().getLat(), step.getStartLocation().getLng()));
+                            }
+                            // Add end marker
+                            addMarker(new LatLng(mLegs.get(0).getEndLocation().getLat(), mLegs.get(0).getEndLocation().getLng()));
                         }
-                        // Add end marker
-                        addMarker(new LatLng(mLegs.get(0).getEndLocation().getLat(), mLegs.get(0).getEndLocation().getLng()));
+                    }
+                    if (routeList.size() > 0) {
+                        PolylineOptions rectLine = new PolylineOptions().width(10).color(Color.RED);
+
+                        for (int i = 0; i < routeList.size(); i++) {
+                            rectLine.add(routeList.get(i));
+                        }
+                        // Adding route on the map
+                        mMap.addPolyline(rectLine);
+                        // Zoom map fit all markers
+                        zoomMapFitMarkers(mMarkers);
+                    }
+                    if (mLegs == null) {
+                        mViewPager.setVisibility(View.GONE);
+                    } else {
+                        mViewPager.setVisibility(View.VISIBLE);
+                        StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs, mAtm);
+                        mViewPager.setAdapter(stepAdapter);
+                        mViewPager.setCurrentItem(mCurrentPage + 1);
                     }
                 }
-                if (routeList.size() > 0) {
-                    PolylineOptions rectLine = new PolylineOptions().width(10).color(Color.RED);
 
-                    for (int i = 0; i < routeList.size(); i++) {
-                        rectLine.add(routeList.get(i));
-                    }
-                    // Adding route on the map
-                    mMap.addPolyline(rectLine);
-                    // Zoom map fit all markers
-                    zoomMapFitMarkers(mMarkers);
+                @Override
+                public void onFailure(Call<DirectionResult> call, Throwable t) {
+                    Log.d("aaa", "onFailure: " + t.getMessage());
                 }
-                if (mLegs == null) {
-                    mViewPager.setVisibility(View.GONE);
-                } else {
-                    mViewPager.setVisibility(View.VISIBLE);
-                    StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs, mAtm);
-                    mViewPager.setAdapter(stepAdapter);
-                    mViewPager.setCurrentItem(mCurrentPage + 1);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<DirectionResult> call, Throwable t) {
-                Log.d("aaa", "onFailure: " + t.getMessage());
-            }
-        });
+            });
+        } else {
+            Toast.makeText(this, "shit", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void zoomMapFitMarkers(ArrayList<Marker> markers) {
@@ -327,9 +336,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
         for (int i = 0; i < mMarkers.size(); i++) {
-            if (position == 1) {
-                mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
-            }
             if (i != position) {
                 mMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
             }
@@ -363,5 +369,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Click(R.id.imgBack)
     void clickBack() {
         finish();
+    }
+
+    @OptionsItem(R.id.search)
+    void clickSearch() {
+        SearchActivity_.intent(this).start();
     }
 }

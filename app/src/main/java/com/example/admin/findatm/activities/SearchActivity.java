@@ -53,8 +53,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @Extra
     String mResultDistrict;
     @Extra
-    int mPosition;
-    @Extra
     int mPositionBank;
     @Extra
     int mPositionDistrict;
@@ -76,6 +74,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
 
+        mPositionBank = -1;
+        mPositionDistrict = -1;
         if (null != mResultBank) {
             mTvBank.setText(mResultBank);
         }
@@ -140,6 +140,17 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Override
     public void onClick(int position) {
+        MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
+                Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
+        DetailActivity_.intent(this)
+                .mAtm(mAdapter.getResultFilter().get(position))
+                .mMyLocation(myLocation)
+                .start();
+//                .startForResult(REQUEST_CODE);
+    }
+
+    @Override
+    public void onLongClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
                 Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
         DetailActivity_.intent(this)

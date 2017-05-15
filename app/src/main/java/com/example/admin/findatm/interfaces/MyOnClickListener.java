@@ -7,4 +7,5 @@ package com.example.admin.findatm.interfaces;
 
 public interface MyOnClickListener {
     void onClick(int position);
+    void onLongClick(int position);
 }

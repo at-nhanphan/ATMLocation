@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 
 import com.example.admin.findatm.R;
@@ -53,7 +52,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @AfterViews
     void init() {
         mAtms = new ArrayList<>();
-        mViewPager.setPageMargin(20);
+        mViewPager.setPageMargin(10);
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.mapView, mapFragment).commit();
         mapFragment.getMapAsync(this);
@@ -92,18 +91,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public void addMarker(LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose)));
         mMarkers.add(marker);
     }
 
     public void zoomMapFitMarkers(ArrayList<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers) {
-            builder.include(marker.getPosition());
+        if (markers.size() > 0) {
+            for (Marker marker : markers) {
+                builder.include(marker.getPosition());
+            }
+            LatLngBounds bounds = builder.build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
+            mMap.moveCamera(cameraUpdate);
         }
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-        mMap.moveCamera(cameraUpdate);
     }
 
     @Override
@@ -111,7 +112,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (mMarkers != null) {
             for (int i = 0; i < mMarkers.size(); i++) {
                 if (marker.equals(mMarkers.get(i))) {
-                    mViewPager.setCurrentItem(i);
+                    mViewPager.setCurrentItem(i + 1);
                 }
             }
         }
@@ -131,15 +132,12 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @PageSelected(R.id.viewPager)
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
-        Log.d("dddd", "onItemAtmSelected: " + position);
-        if (position < mMarkers.size()) {
-            mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
+        if (position <= mMarkers.size() && position > 0) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(mMarkers.get(position - 1).getPosition()));
+            mMarkers.get(position - 1).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
         for (int i = 0; i < mMarkers.size(); i++) {
-            if (position == 1) {
-                mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
-            }
-            if (i != position) {
+            if (i != (position - 1)) {
                 mMarkers.get(i).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin));
             }
         }

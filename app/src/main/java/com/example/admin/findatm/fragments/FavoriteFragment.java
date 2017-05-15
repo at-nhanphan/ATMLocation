@@ -8,6 +8,7 @@ import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.DetailActivity_;
 import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.activities.MainActivity_;
+import com.example.admin.findatm.activities.MapsActivity_;
 import com.example.admin.findatm.adapters.ATMListAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.interfaces.MyOnClickFavoriteListener;
@@ -52,6 +53,16 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
     @Override
     public void onClick(int position) {
+        MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
+                Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
+        MapsActivity_.intent(this)
+                .mAddressAtm(myLocation)
+                .mAtm(mAdapter.getResultFilter().get(position))
+                .start();
+    }
+
+    @Override
+    public void onLongClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
                 Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
         DetailActivity_.intent(this)
