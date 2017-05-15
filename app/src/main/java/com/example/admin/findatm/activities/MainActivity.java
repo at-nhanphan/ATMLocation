@@ -81,12 +81,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     void clickSwipe() {
         Fragment fragment;
         if (!mCheck) {
-            fragment = new MapsFragment_();
+            fragment = MapsFragment_.builder().build();
             mImgSwipe.setBackgroundResource(R.drawable.ic_list_white_24dp);
+            mImgSearch.setVisibility(View.GONE);
+            mRlSearch.setVisibility(View.GONE);
             mCheck = true;
         } else {
-            fragment = new HomeFragment_();
+            fragment = HomeFragment_.builder().build();
             mImgSwipe.setBackgroundResource(R.drawable.ic_google_maps);
+            mImgSearch.setVisibility(View.VISIBLE);
             mCheck = false;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
@@ -142,25 +145,25 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         switch (item.getItemId()) {
             case R.id.home:
                 if (mCheck) {
-                    fragment = new MapsFragment_();
+                    fragment = MapsFragment_.builder().build();
                 } else {
-                    fragment = new HomeFragment_();
+                    fragment = HomeFragment_.builder().build();
                 }
                 mImgSwipe.setVisibility(View.VISIBLE);
                 mImgSearch.setVisibility(View.VISIBLE);
                 break;
             case R.id.favorite:
-                fragment = new FavoriteFragment_();
-                mImgSwipe.setVisibility(View.VISIBLE);
+                fragment = FavoriteFragment_.builder().build();
+                mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.VISIBLE);
                 break;
             case R.id.search:
-                fragment = new SearchFragment_();
+                fragment = SearchFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
                 break;
             case R.id.about:
-                fragment = new AboutFragment_();
+                fragment = AboutFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
                 break;
