@@ -314,8 +314,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Log.d("aaa", "onFailure: " + t.getMessage());
                 }
             });
-        } else {
-            Toast.makeText(this, "shit", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -332,6 +330,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @PageSelected(R.id.viewPager)
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
+        Log.d("ddd", "onItemAtmSelected: " + position);
+//        double lat;
+//        double lng;
+//        if (position == 0) {
+//            return;
+//        } else if (position == 1) {
+//            lat = mLegs.get(0).getStartLocation().getLat();
+//            lng = mLegs.get(0).getStartLocation().getLng();
+//        } else if (position >= mSteps.size() + 1) {
+//            lat = mLegs.get(0).getEndLocation().getLat();
+//            lng = mLegs.get(0).getEndLocation().getLng();
+//        } else {
+//            lat = mSteps.get(position - 1).getStartLocation().getLat();
+//            lng = mSteps.get(position - 1).getStartLocation().getLng();
+//        }
+//        LatLng latLng = new LatLng(lat, lng);
+//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
         if (position < mMarkers.size()) {
             mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
@@ -359,7 +374,16 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mMarkers != null) {
             for (int i = 0; i < mMarkers.size(); i++) {
                 if (marker.equals(mMarkers.get(i))) {
-                    mViewPager.setCurrentItem(i);
+                    if (i == 0) {
+                        mViewPager.setCurrentItem(1);
+                        Log.d("dddd", "onMarkerClick: 000");
+                    } else if (i == 1) {
+                        mViewPager.setCurrentItem(2);
+                        Log.d("dddd", "onMarkerClick: 111");
+                    } else {
+                        mViewPager.setCurrentItem(i);
+                        Log.d("dddd", "onMarkerClick: " + i);
+                    }
                 }
             }
         }

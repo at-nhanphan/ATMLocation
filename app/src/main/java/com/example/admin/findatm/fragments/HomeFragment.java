@@ -151,6 +151,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     public void getAtmAroundCurrentLocation() {
+        checkLocationEnabled(getContext());
         if (getCurrentLocation() != null) {
             mLat = getCurrentLocation().getLatitude();
             mLng = getCurrentLocation().getLongitude();
