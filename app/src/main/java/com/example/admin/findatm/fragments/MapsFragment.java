@@ -133,7 +133,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
         if (position <= mMarkers.size() && position > 0) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(mMarkers.get(position - 1).getPosition()));
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(mMarkers.get(position - 1).getPosition()));
             mMarkers.get(position - 1).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
         for (int i = 0; i < mMarkers.size(); i++) {

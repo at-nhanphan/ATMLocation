@@ -10,11 +10,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
-import com.example.admin.findatm.Utils.PermissionAccessFineLocationUtil;
 import com.example.admin.findatm.activities.DetailActivity_;
 import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.activities.MapsActivity_;
@@ -75,6 +76,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private double mLng;
     private boolean mCheck;
     private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
+    private Location mLocation;
 
     @AfterViews
     void init() {
@@ -88,10 +90,34 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mAtmServiceImpl = new ATMServiceImpl(getContext());
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
-        PermissionAccessFineLocationUtil.askPermissionsAccessLocation(getActivity(), ACCESS_FINE_LOCATION_AND_COARSE_LOCATION);
+        askPermissionsAccessLocation();
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void getCurrentLocation() {
+    public void askPermissionsAccessLocation() {
+        // Ask for permission with API >= 23.
+        if (Build.VERSION.SDK_INT >= 23) {
+            int accessCoarsePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
+            int accessFinePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (accessCoarsePermission != PackageManager.PERMISSION_GRANTED
+                    && accessFinePermission != PackageManager.PERMISSION_GRANTED) {
+
+                // Permissions.
+                String[] permissions = new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION};
+
+                // Dialog.
+                ActivityCompat.requestPermissions(getActivity(), permissions, ACCESS_FINE_LOCATION_AND_COARSE_LOCATION);
+                return;
+            } else {
+                getAtmAroundCurrentLocation();
+                mTvReload.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public Location getCurrentLocation() {
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
@@ -113,8 +139,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
             }
         };
-        checkLocationEnabled(getContext());
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
@@ -123,15 +147,17 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             // TODO: Consider calling
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            mLat = location.getLatitude();
-            mLng = location.getLongitude();
+        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    }
+
+    public void getAtmAroundCurrentLocation() {
+        if (getCurrentLocation() != null) {
+            mLat = getCurrentLocation().getLatitude();
+            mLng = getCurrentLocation().getLongitude();
             MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
-            Log.d("dddd", "getCurrentLocation: yes");
         } else {
-            Log.d("dddd", "getCurrentLocation: null");
+            Toast.makeText(getContext(), "Finding your current location", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -144,11 +170,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 if (grantResults.length > 1
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-
                     Toast.makeText(getActivity(), "Permission granted!", Toast.LENGTH_LONG).show();
-
                     // Display current location.
-                    getCurrentLocation();
                 }
                 // Cancel or refuse.
                 else {
@@ -249,7 +272,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
-        getCurrentLocation();
+        getAtmAroundCurrentLocation();
+        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         mTvReload.setVisibility(View.GONE);
     }
 
