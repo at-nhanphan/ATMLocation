@@ -281,29 +281,12 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     @Override
     public void onClickFavorite(int position) {
         MyATM myATM = mAtms.get(position);
-        ArrayList<MyATM> lists = mMyDatabase.getAll();
         if (myATM.isFavorite()) {
-            int count = 0;
-            if (lists.size() > 0) {
-                for (int i = 0; i < lists.size(); i++) {
-                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
-                        Toast.makeText(getContext(), "Item is favorited", Toast.LENGTH_SHORT).show();
-                    } else {
-                        count++;
-                    }
-                }
-            }
-            if (count == lists.size()) {
-                mMyDatabase.insertATM(myATM);
-            }
+            mMyDatabase.insertATM(myATM);
+            Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
         } else {
-            if (lists.size() > 0) {
-                for (int i = 0; i < lists.size(); i++) {
-                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
-                        mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
-                    }
-                }
-            }
+            mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+            Toast.makeText(getContext(), "You're unfavorited this item", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -348,6 +331,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             mDialog.dismiss();
             if (mCheck) {
                 mTvReload.setVisibility(View.VISIBLE);
+                MainActivity.setListAtms(new ArrayList<MyATM>());
             } else {
                 mTvReload.setVisibility(View.GONE);
             }

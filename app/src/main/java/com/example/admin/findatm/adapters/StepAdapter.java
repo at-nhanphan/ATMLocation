@@ -28,9 +28,9 @@ public class StepAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position <= 1 || position >= mLegs.get(0).getSteps().size() + 1) {
-            return new ItemStartEndFragment_().newInstance(mLegs.get(0), mMyATM, position);
+            return ItemStartEndFragment_.builder().build().newInstance(mLegs.get(0), mMyATM, position);
         } else {
-            return new ItemStepFragment_().newInstance(mLegs.get(0).getSteps().get(position - 1));
+            return ItemStepFragment_.builder().build().newInstance(mLegs.get(0).getSteps().get(position - 1));
         }
     }
 

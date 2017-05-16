@@ -175,9 +175,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMyLocationButtonClick() {
-        mMap.clear();
         mViewPager.setVisibility(View.GONE);
         if (getCurrentLocation() != null) {
+            mMap.clear();
             LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
             MarkerOptions marker = new MarkerOptions()
                     .position(myLocation)

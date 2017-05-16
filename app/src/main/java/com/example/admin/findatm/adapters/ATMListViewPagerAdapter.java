@@ -25,11 +25,11 @@ public class ATMListViewPagerAdapter extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         if (position == 0) {
-            return new ItemATMFragment_().newInstance(mLists.get(mLists.size() - 1));
+            return ItemATMFragment_.builder().build().newInstance(mLists.get(mLists.size() - 1));
         } else if (position >= mLists.size() + 1) {
-            return new ItemATMFragment_().newInstance(mLists.get(0));
+            return ItemATMFragment_.builder().build().newInstance(mLists.get(0));
         } else {
-            return new ItemATMFragment_().newInstance(mLists.get(position - 1));
+            return ItemATMFragment_.builder().build().newInstance(mLists.get(position - 1));
         }
     }
 

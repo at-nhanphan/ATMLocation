@@ -6,10 +6,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.adapters.ATMListViewPagerAdapter;
+import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.models.MyATM;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -72,11 +74,18 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-
         mAtms = MainActivity.getListAtms();
+        MyDatabase myDatabase = new MyDatabase(getContext());
         if (mAtms.size() > 0) {
             for (int i = 0; i < mAtms.size(); i++) {
                 addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
+                for (int j = 0; j < myDatabase.getAll().size(); j++) {
+                    if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
+                        mAtms.get(i).setFavorite(true);
+                    } else {
+                        mAtms.get(i).setFavorite(false);
+                    }
+                }
             }
             mViewPager.setVisibility(View.VISIBLE);
             ATMListViewPagerAdapter adapter = new ATMListViewPagerAdapter(getFragmentManager(), mAtms);
@@ -84,6 +93,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             mViewPager.setCurrentItem(mCurrentPage + 1);
         } else {
             mViewPager.setVisibility(View.GONE);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(16.054031, 108.203836), 10));
         }
         zoomMapFitMarkers(mMarkers);
     }
@@ -125,6 +135,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             mMap.addMarker(new MarkerOptions().position(mCurrentLocation)
                     .title(mStMyLocation)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon))).showInfoWindow();
+        } else {
+            Toast.makeText(getContext(), "Location not found", Toast.LENGTH_SHORT).show();
         }
         return false;
     }
