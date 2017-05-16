@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#e6dfe6">
+    android:background="@color/colorGray">
 
     <include
         android:id="@+id/header_bar"
@@ -15,7 +15,8 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_navigation"
         android:layout_below="@+id/header_bar"
-        android:paddingBottom="1dp"
+        android:layout_marginBottom="2dp"
+        android:paddingBottom="2dp"
         android:paddingTop="1dp" />
 
     <android.support.design.widget.BottomNavigationView
@@ -23,9 +24,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/colorPrimary"
+        app:itemBackground="@android:color/white"
         app:itemIconTint="@drawable/selector"
-        app:itemTextColor="@android:color/white"
+        app:itemTextColor="@color/colorToolbar"
         app:menu="@menu/bottom_navigation_main" />
 
 </RelativeLayout>

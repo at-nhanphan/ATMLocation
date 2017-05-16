@@ -32,7 +32,7 @@ public class ItemATMFragment extends Fragment implements View.OnClickListener {
     ImageView mImgFavorite;
     @ViewById(R.id.cardView)
     CardView mCardView;
-    @ColorRes(R.color.colorItem)
+    @ColorRes(R.color.colorWhite)
     int mColorItem;
     private MyDatabase mMyDatabase;
     private MyATM mMyATM;

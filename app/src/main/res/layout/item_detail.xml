@@ -37,7 +37,7 @@
                     android:layout_alignTop="@id/imgLogo"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@id/imgLogo"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="@color/colorToolbar"
                     android:textSize="25sp" />
 
                 <ImageView

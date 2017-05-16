@@ -112,8 +112,9 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         }
     }
 
-    @Click(R.id.btnSearch)
+    @Click(R.id.tvSearch)
     void clickSearch() {
+        mTvMessage.setVisibility(View.GONE);
         mAtms = new ArrayList<>();
         loadData();
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -206,12 +207,12 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             while (mAtms.size() <= 0) {
                 count++;
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     mCheck = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 3) {
+                if (count >= 5) {
                     mCheck = true;
                     break;
                 }

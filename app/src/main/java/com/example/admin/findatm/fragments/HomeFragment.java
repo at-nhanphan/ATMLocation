@@ -334,7 +334,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 3) {
+                if (count >= 5) {
                     mCheck = true;
                     break;
                 }
