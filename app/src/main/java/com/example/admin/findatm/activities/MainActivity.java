@@ -161,13 +161,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = SearchFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
-                mClick = true;
+                mRlSearch.setVisibility(View.GONE);
+                mClick = false;
                 break;
             case R.id.about:
                 fragment = AboutFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
-                mClick = true;
+                mRlSearch.setVisibility(View.GONE);
+                mClick = false;
                 break;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();

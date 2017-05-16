@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
-import android.widget.RadioButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.admin.findatm.R;
@@ -40,7 +40,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.mTvName.setText(mBanks.get(position).getName());
-        holder.mRbChoose.setChecked(mBanks.get(position).isCheck());
+        holder.mImgCheck.setSelected(mBanks.get(position).isCheck());
     }
 
     @Override
@@ -50,18 +50,18 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView mTvName;
-        private RadioButton mRbChoose;
+        private ImageView mImgCheck;
 
         ViewHolder(View itemView) {
             super(itemView);
             mTvName = (TextView) itemView.findViewById(R.id.tvName);
-            mRbChoose = (RadioButton) itemView.findViewById(R.id.rbOk);
+            mImgCheck = (ImageView) itemView.findViewById(R.id.imgCheck);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mMyOnClickListener.onClick(getLayoutPosition());
                     mBanks.get(getLayoutPosition()).setCheck(true);
-                    mRbChoose.setChecked(mBanks.get(getLayoutPosition()).isCheck());
+                    mImgCheck.setSelected(mBanks.get(getLayoutPosition()).isCheck());
                 }
             });
         }
