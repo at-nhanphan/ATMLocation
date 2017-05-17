@@ -3,7 +3,6 @@ package com.example.admin.findatm.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,7 +47,7 @@ public class ItemStepFragment extends Fragment {
                     break;
             }
         } else {
-            mImgLogo.setImageResource(R.drawable.ic_ahead_point);
+            mImgLogo.setImageResource(R.drawable.ic_turning_ahead);
         }
     }
 

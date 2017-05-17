@@ -68,11 +68,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private double mLng;
     private boolean mCheck;
     private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
-    private Location mCurrentLocation;
 
     @AfterViews
     void init() {
-        mCurrentLocation = MyCurrentLocation.getCurrentLocation(getContext());
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mMyDatabase = new MyDatabase(getContext());
@@ -111,15 +109,14 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 getAtmAroundCurrentLocation();
                 mTvReload.setVisibility(View.GONE);
             }
-        } else {
-            getAtmAroundCurrentLocation();
         }
     }
 
     public void getAtmAroundCurrentLocation() {
-        if (mCurrentLocation != null) {
-            mLat = mCurrentLocation.getLatitude();
-            mLng = mCurrentLocation.getLongitude();
+        Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
+        if (currentLocation != null) {
+            mLat = currentLocation.getLatitude();
+            mLng = currentLocation.getLongitude();
             MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         } else {
@@ -205,8 +202,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
-        getAtmAroundCurrentLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+            getAtmAroundCurrentLocation();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             mTvReload.setVisibility(View.GONE);
         } else {
@@ -274,7 +271,5 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             }
         }
     }
-    //=============================================================//
-
     //=============================================================//
 }

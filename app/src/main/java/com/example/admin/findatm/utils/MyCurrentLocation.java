@@ -47,6 +47,7 @@ public class MyCurrentLocation {
 
             }
         };
+        Location location = null;
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -54,8 +55,13 @@ public class MyCurrentLocation {
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
         }
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
-        return locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        try {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        } catch (SecurityException ignored) {
+            Log.e("ddd", "getCurrentLocation: ", ignored);
+        }
+        return location;
     }
 
     public static boolean checkLocationEnabled(final Context context) {
