@@ -101,8 +101,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mViewPager.setPageMargin(10);
         mService = ApiUtils.getService();
         mPolylineOptions = new PolylineOptions();
-        SupportMapFragment mMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        mMapFragment.getMapAsync(this);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
         double mAtmLatitude = mAddressAtm.getLat();
         double mAtmLongitude = mAddressAtm.getLng();
         mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
@@ -118,7 +118,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void checkLocationEnabled() {
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         boolean gps_enabled = false;
-        boolean network_enabled = false;
         try {
             gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ignored) {
@@ -296,7 +295,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         // Adding route on the map
                         mMap.addPolyline(rectLine);
                         // Zoom map fit all markers
-                        zoomMapFitMarkers(mMarkers);
+//                        zoomMapFitMarkers(mMarkers);
                     }
                     if (mLegs == null) {
                         mViewPager.setVisibility(View.GONE);
@@ -322,7 +321,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 200);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
         mMap.animateCamera(cameraUpdate);
     }
 
@@ -330,22 +329,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
         Log.d("ddd", "onItemAtmSelected: " + position);
-//        double lat;
-//        double lng;
-//        if (position == 0) {
-//            return;
-//        } else if (position == 1) {
-//            lat = mLegs.get(0).getStartLocation().getLat();
-//            lng = mLegs.get(0).getStartLocation().getLng();
-//        } else if (position >= mSteps.size() + 1) {
-//            lat = mLegs.get(0).getEndLocation().getLat();
-//            lng = mLegs.get(0).getEndLocation().getLng();
-//        } else {
-//            lat = mSteps.get(position - 1).getStartLocation().getLat();
-//            lng = mSteps.get(position - 1).getStartLocation().getLng();
-//        }
-//        LatLng latLng = new LatLng(lat, lng);
-//        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+        double lat;
+        double lng;
+        if (position == 0) {
+            return;
+        } else if (position == 1) {
+            lat = mLegs.get(0).getStartLocation().getLat();
+            lng = mLegs.get(0).getStartLocation().getLng();
+        } else if (position >= mSteps.size() + 1) {
+            lat = mLegs.get(0).getEndLocation().getLat();
+            lng = mLegs.get(0).getEndLocation().getLng();
+        } else {
+            lat = mSteps.get(position - 1).getStartLocation().getLat();
+            lng = mSteps.get(position - 1).getStartLocation().getLng();
+        }
+        LatLng latLng = new LatLng(lat, lng);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         if (position < mMarkers.size()) {
             mMarkers.get(position).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
         }
