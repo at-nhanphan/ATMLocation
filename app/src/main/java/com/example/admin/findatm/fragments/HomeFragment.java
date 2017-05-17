@@ -91,7 +91,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
-        checkLocationEnabled(getContext());
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -147,11 +146,12 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
         return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
     public void getAtmAroundCurrentLocation() {
+        checkLocationEnabled(getContext());
         if (getCurrentLocation() != null) {
             mLat = getCurrentLocation().getLatitude();
             mLng = getCurrentLocation().getLongitude();
@@ -273,6 +273,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
+        getCurrentLocation();
         getAtmAroundCurrentLocation();
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         mTvReload.setVisibility(View.GONE);

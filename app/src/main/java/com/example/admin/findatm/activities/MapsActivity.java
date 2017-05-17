@@ -17,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +76,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView mTvDistance;
     @ViewById(R.id.tvDuration)
     TextView mTvDuration;
+    @ViewById(R.id.llTimeDistance)
+    LinearLayout mLlTimeDistance;
     @StringRes(R.string.direction_key)
     String KEY_DIRECTIONS;
     @ViewById(R.id.viewPager)
@@ -98,6 +101,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mLlTimeDistance.setVisibility(View.GONE);
         mViewPager.setPageMargin(10);
         mService = ApiUtils.getService();
         mPolylineOptions = new PolylineOptions();
@@ -111,6 +115,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @OptionsItem(R.id.drawRoute)
     void onItemDrawRoute() {
         checkLocationEnabled();
+        mLlTimeDistance.setVisibility(View.VISIBLE);
         mViewPager.setVisibility(View.VISIBLE);
         drawRoute();
     }
@@ -173,6 +178,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public boolean onMyLocationButtonClick() {
         checkLocationEnabled();
+        mLlTimeDistance.setVisibility(View.GONE);
         mViewPager.setVisibility(View.GONE);
         if (getCurrentLocation() != null) {
             mMap.clear();
@@ -372,13 +378,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (marker.equals(mMarkers.get(i))) {
                     if (i == 0) {
                         mViewPager.setCurrentItem(1);
-                        Log.d("dddd", "onMarkerClick: 000");
                     } else if (i == 1) {
                         mViewPager.setCurrentItem(2);
-                        Log.d("dddd", "onMarkerClick: 111");
                     } else {
                         mViewPager.setCurrentItem(i);
-                        Log.d("dddd", "onMarkerClick: " + i);
                     }
                 }
             }
