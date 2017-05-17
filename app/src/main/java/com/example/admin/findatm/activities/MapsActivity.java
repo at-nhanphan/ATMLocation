@@ -10,6 +10,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -130,17 +131,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         if (!gps_enabled) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
             dialog.setCancelable(false);
             dialog.setMessage(this.getResources().getString(R.string.gps_network_not_enabled));
             dialog.setPositiveButton(getResources().getString(R.string.positiveButton), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    // TODO Auto-generated method stub
                     Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(myIntent);
                 }
             });
             dialog.setNegativeButton(getResources().getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
+
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
                     // TODO Auto-generated method stub
@@ -195,6 +198,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
+    @Nullable
     private MyLocation getCurrentLocation() {
         LocationListener locationListener = new LocationListener() {
             @Override
@@ -378,10 +382,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (marker.equals(mMarkers.get(i))) {
                     if (i == 0) {
                         mViewPager.setCurrentItem(1);
+                        Log.d("dddd", "onMarkerClick: 000");
                     } else if (i == 1) {
                         mViewPager.setCurrentItem(2);
+                        Log.d("dddd", "onMarkerClick: 111");
                     } else {
                         mViewPager.setCurrentItem(i);
+                        Log.d("dddd", "onMarkerClick: " + i);
                     }
                 }
             }
