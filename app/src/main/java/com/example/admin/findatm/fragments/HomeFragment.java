@@ -2,22 +2,15 @@ package com.example.admin.findatm.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,6 +31,7 @@ import com.example.admin.findatm.interfaces.OnQueryTextChange;
 import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
+import com.example.admin.findatm.utils.MyCurrentLocation;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
@@ -52,8 +46,6 @@ import java.util.Comparator;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * HomeFragment class
@@ -76,10 +68,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private double mLng;
     private boolean mCheck;
     private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
-    private Location mLocation;
+    private Location mCurrentLocation;
 
     @AfterViews
     void init() {
+        mCurrentLocation = MyCurrentLocation.getCurrentLocation(getContext());
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mMyDatabase = new MyDatabase(getContext());
@@ -91,7 +84,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            mTvReload.setVisibility(View.VISIBLE);
+        }
     }
 
     public void askPermissionsAccessLocation() {
@@ -114,47 +111,15 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 getAtmAroundCurrentLocation();
                 mTvReload.setVisibility(View.GONE);
             }
+        } else {
+            getAtmAroundCurrentLocation();
         }
-    }
-
-    public Location getCurrentLocation() {
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-                // TODO: 12/05/2017
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-        LocationManager locationManager = (LocationManager) getContext().getSystemService(LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, locationListener);
-        return locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
     }
 
     public void getAtmAroundCurrentLocation() {
-        checkLocationEnabled(getContext());
-        if (getCurrentLocation() != null) {
-            mLat = getCurrentLocation().getLatitude();
-            mLng = getCurrentLocation().getLongitude();
+        if (mCurrentLocation != null) {
+            mLat = mCurrentLocation.getLatitude();
+            mLng = mCurrentLocation.getLongitude();
             MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         } else {
@@ -210,39 +175,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         });
     }
 
-    public void checkLocationEnabled(Context context) {
-        LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-        try {
-            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ignored) {
-            Log.e("ddd", "checkLocationEnabled: ", ignored);
-        }
-
-        if (!gps_enabled) {
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-            dialog.setCancelable(false);
-            dialog.setMessage(getContext().getResources().getString(R.string.gps_network_not_enabled));
-            dialog.setPositiveButton(getResources().getString(R.string.positiveButton), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    getContext().startActivity(myIntent);
-                }
-            });
-            dialog.setNegativeButton(getResources().getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                }
-            });
-            dialog.show();
-        }
-    }
-
     @Override
     public void onClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
@@ -273,10 +205,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
-        getCurrentLocation();
         getAtmAroundCurrentLocation();
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        mTvReload.setVisibility(View.GONE);
+        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            mTvReload.setVisibility(View.GONE);
+        } else {
+            mTvReload.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -298,6 +233,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
+    //=============================================================//
     private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -338,4 +274,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             }
         }
     }
+    //=============================================================//
+
+    //=============================================================//
 }

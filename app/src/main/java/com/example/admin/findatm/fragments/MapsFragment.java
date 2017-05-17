@@ -2,6 +2,7 @@ package com.example.admin.findatm.fragments;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.adapters.ATMListViewPagerAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.models.MyATM;
+import com.example.admin.findatm.utils.MyCurrentLocation;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -47,7 +49,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     ViewPager mViewPager;
     private List<MyATM> mAtms;
     private GoogleMap mMap;
-    private LatLng mCurrentLocation;
+    private Location mCurrentLocation;
     private ArrayList<Marker> mMarkers = new ArrayList<>();
     private int mCurrentPage;
 
@@ -58,7 +60,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.mapView, mapFragment).commit();
         mapFragment.getMapAsync(this);
-        mCurrentLocation = MainActivity.getCurrentLocation();
+        mCurrentLocation = MyCurrentLocation.getCurrentLocation(getContext());
     }
 
     @Override
@@ -131,8 +133,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public boolean onMyLocationButtonClick() {
+        MyCurrentLocation.checkLocationEnabled(getContext());
         if (mCurrentLocation != null) {
-            mMap.addMarker(new MarkerOptions().position(mCurrentLocation)
+            mMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
                     .title(mStMyLocation)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon))).showInfoWindow();
         } else {
