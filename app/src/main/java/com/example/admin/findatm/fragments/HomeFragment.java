@@ -91,6 +91,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
+        checkLocationEnabled(getContext());
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -151,7 +152,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     public void getAtmAroundCurrentLocation() {
-        checkLocationEnabled(getContext());
         if (getCurrentLocation() != null) {
             mLat = getCurrentLocation().getLatitude();
             mLng = getCurrentLocation().getLongitude();
