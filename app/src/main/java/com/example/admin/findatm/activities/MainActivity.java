@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Fragment fragment;
         if (!mCheck) {
             fragment = MapsFragment_.builder().build();
-            mImgSwipe.setBackgroundResource(R.drawable.ic_list_white_24dp);
+            mImgSwipe.setBackgroundResource(R.drawable.ic_view_list_white_24dp);
             mImgSearch.setVisibility(View.GONE);
             mRlSearch.setVisibility(View.GONE);
             mCheck = true;
@@ -161,11 +161,15 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = SearchFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
+                mRlSearch.setVisibility(View.GONE);
+                mClick = false;
                 break;
             case R.id.about:
                 fragment = AboutFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
+                mRlSearch.setVisibility(View.GONE);
+                mClick = false;
                 break;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();

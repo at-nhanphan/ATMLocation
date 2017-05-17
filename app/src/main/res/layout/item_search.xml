@@ -3,7 +3,7 @@
     android:id="@+id/rlSearch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorSearchView">
+    android:background="@color/colorToolbar">
 
     <EditText
         android:id="@+id/edtSearch"

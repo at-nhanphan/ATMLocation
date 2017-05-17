@@ -11,7 +11,7 @@
         android:layout_centerInParent="true"
         android:drawableTop="@drawable/ic_reload_48dp"
         android:text="@string/textView.text.reload"
-        android:textColor="#B0BEC5"
+        android:textColor="#BCAAA4"
         android:textSize="16sp" />
 
     <android.support.v7.widget.RecyclerView

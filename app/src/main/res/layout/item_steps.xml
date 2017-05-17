@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:layout_margin="2dp"
-    app:cardBackgroundColor="@color/colorItem"
     android:padding="4dp"
+    app:cardBackgroundColor="@android:color/white"
     app:cardCornerRadius="5dp">
 
     <RelativeLayout
@@ -26,40 +26,41 @@
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imgLogo"
             android:layout_toLeftOf="@+id/imgFavorite"
             android:layout_toRightOf="@+id/imgLogo"
-            android:layout_alignTop="@+id/imgLogo"
-            android:text="@string/app_name"
-            android:maxLines="2"
             android:ellipsize="end"
+            android:maxLines="2"
+            android:text="@string/app_name"
             android:textStyle="bold" />
 
         <View
             android:id="@+id/view"
             android:layout_width="match_parent"
             android:layout_height="1dp"
+            android:layout_above="@+id/imgCar"
             android:layout_alignLeft="@+id/tvName"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_above="@id/imgCar"
-            android:background="@android:color/holo_red_light" />
+            android:background="@color/colorToolbar" />
 
         <ImageView
             android:id="@+id/imgCar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@+id/tvName"
+            android:layout_alignParentBottom="true"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_car_pink_400_24dp"
-            android:layout_alignParentBottom="true"/>
+            android:src="@drawable/ic_directions_car_white_24dp" />
 
         <TextView
             android:id="@+id/tvDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/imgCar"
             android:layout_alignParentBottom="true"
-            android:text="@string/textView.text.defaultDistance" />
+            android:layout_toRightOf="@+id/imgCar"
+            android:text="@string/textView.text.defaultDistance"
+            android:textColor="@color/colorToolbar" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

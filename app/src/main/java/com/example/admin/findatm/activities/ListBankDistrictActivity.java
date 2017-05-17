@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -49,6 +50,8 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
     EditText mEdtSearch;
     @ViewById(R.id.rlSearch)
     RelativeLayout mRlSearch;
+    @ViewById(R.id.imgCheck)
+    ImageView mImgCheck;
     @Extra
     int mCode;
     @Extra

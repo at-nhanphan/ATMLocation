@@ -128,8 +128,9 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         }
     }
 
-    @Click(R.id.btnSearch)
+    @Click(R.id.tvSearch)
     void clickSearch() {
+        mTvMessage.setVisibility(View.GONE);
         mAtms = new ArrayList<>();
         loadData();
         new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
