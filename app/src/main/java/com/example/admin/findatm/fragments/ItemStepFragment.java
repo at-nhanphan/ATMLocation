@@ -3,7 +3,6 @@ package com.example.admin.findatm.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Html;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,19 +35,21 @@ public class ItemStepFragment extends Fragment {
         mTvDistance.setText(step.getDistance().getText());
 
         if (null != step.getManeuver()) {
-            switch (step.getManeuver()) {
-                case "turn-left":
-                    mImgLogo.setImageResource(R.drawable.ic_turn_left);
-                    break;
-                case "turn-right":
-                    mImgLogo.setImageResource(R.drawable.ic_turn_right);
-                    break;
-                default:
-                    mImgLogo.setImageResource(R.drawable.ic_turning_point_right);
-                    break;
+            if (step.getManeuver().equals("turn-left")) {
+                mImgLogo.setImageResource(R.drawable.ic_turn_left);
+            } else if (step.getManeuver().equals("turn-right")) {
+                mImgLogo.setImageResource(R.drawable.ic_turn_right);
+            } else if (Html.fromHtml(step.getHtmlInstructions()).toString().contains("At the roundabout, take the 2nd")) {
+                mImgLogo.setImageResource(R.drawable.ic_turning_point_2nd);
+            } else if (Html.fromHtml(step.getHtmlInstructions()).toString().contains("At the roundabout, take the 3rd")) {
+                mImgLogo.setImageResource(R.drawable.ic_turning_point_3rd);
+            } else if (Html.fromHtml(step.getHtmlInstructions()).toString().contains("At the roundabout, take the 4th")) {
+                mImgLogo.setImageResource(R.drawable.ic_turning_point_4th);
+            } else {
+                mImgLogo.setImageResource(R.drawable.ic_turning_point_1st);
             }
         } else {
-            mImgLogo.setImageResource(R.drawable.ic_ahead_point);
+            mImgLogo.setImageResource(R.drawable.ic_turning_point_2nd);
         }
     }
 

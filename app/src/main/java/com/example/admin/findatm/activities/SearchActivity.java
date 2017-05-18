@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.adapters.ATMListAdapter;
@@ -130,13 +131,17 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Click(R.id.tvSearch)
     void clickSearch() {
-        mTvMessage.setVisibility(View.GONE);
-        mAtms = new ArrayList<>();
-        loadData();
-        new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        mAdapter = new ATMListAdapter(mAtms, this);
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setMyOnClickFavoriteListener(this);
+        if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
+            Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+        } else {
+            mTvMessage.setVisibility(View.GONE);
+            mAtms = new ArrayList<>();
+            loadData();
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            mAdapter = new ATMListAdapter(mAtms, this);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setMyOnClickFavoriteListener(this);
+        }
     }
 
     @Override

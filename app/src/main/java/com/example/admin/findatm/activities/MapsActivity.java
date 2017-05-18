@@ -1,22 +1,16 @@
 package com.example.admin.findatm.activities;
 
 import android.Manifest;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +27,7 @@ import com.example.admin.findatm.models.googleDirections.Route;
 import com.example.admin.findatm.models.googleDirections.RouteDecode;
 import com.example.admin.findatm.models.googleDirections.Step;
 import com.example.admin.findatm.services.ApiUtils;
+import com.example.admin.findatm.utils.MyCurrentLocation;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -75,6 +70,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     TextView mTvDistance;
     @ViewById(R.id.tvDuration)
     TextView mTvDuration;
+    @ViewById(R.id.llTimeDistance)
+    LinearLayout mLlTimeDistance;
     @StringRes(R.string.direction_key)
     String KEY_DIRECTIONS;
     @ViewById(R.id.viewPager)
@@ -93,11 +90,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private LatLng mLocation;
     private int mCurrentPage;
     private ArrayList<Marker> mMarkers;
+    private Location mCurrentLocation;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mLlTimeDistance.setVisibility(View.GONE);
         mViewPager.setPageMargin(10);
         mService = ApiUtils.getService();
         mPolylineOptions = new PolylineOptions();
@@ -106,45 +105,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         double mAtmLatitude = mAddressAtm.getLat();
         double mAtmLongitude = mAddressAtm.getLng();
         mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
+        mCurrentLocation = MyCurrentLocation.getCurrentLocation(this);
     }
 
     @OptionsItem(R.id.drawRoute)
     void onItemDrawRoute() {
-        checkLocationEnabled();
-        mViewPager.setVisibility(View.VISIBLE);
+        MyCurrentLocation.checkLocationEnabled(this);
         drawRoute();
-    }
-
-    public void checkLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        try {
-            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ignored) {
-            Log.e("ddd", "checkLocationEnabled: ", ignored);
-        }
-
-        if (!gps_enabled) {
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setCancelable(false);
-            dialog.setMessage(this.getResources().getString(R.string.gps_network_not_enabled));
-            dialog.setPositiveButton(getResources().getString(R.string.positiveButton), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                }
-            });
-            dialog.setNegativeButton(getResources().getString(R.string.cancelButton), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                }
-            });
-            dialog.show();
-        }
     }
 
     @Override
@@ -174,10 +141,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public boolean onMyLocationButtonClick() {
+        MyCurrentLocation.checkLocationEnabled(this);
+        mLlTimeDistance.setVisibility(View.GONE);
         mViewPager.setVisibility(View.GONE);
-        if (getCurrentLocation() != null) {
+        if (mCurrentLocation != null) {
             mMap.clear();
-            LatLng myLocation = new LatLng(getCurrentLocation().getLat(), getCurrentLocation().getLng());
+            LatLng myLocation = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             MarkerOptions marker = new MarkerOptions()
                     .position(myLocation)
                     .title(mStMyLocation)
@@ -190,46 +159,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return true;
     }
 
-    private MyLocation getCurrentLocation() {
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(final Location location) {
-                //your code here
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-        checkLocationEnabled();
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-        }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 5000, locationListener);
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            return new MyLocation(location.getLatitude(), location.getLongitude());
-        } else {
-            Toast.makeText(this, "Loading GPS...", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-    }
-
     public void addMarker(LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
@@ -238,9 +167,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void drawRoute() {
-        if (getCurrentLocation() != null) {
-            Call<DirectionResult> results = mService.getData(getCurrentLocation().getLat() + "," +
-                    getCurrentLocation().getLng(), mAddressAtm.getLat() + "," + mAddressAtm.getLng(), KEY_DIRECTIONS);
+        if (mCurrentLocation != null) {
+            Call<DirectionResult> results = mService.getData(mCurrentLocation.getLatitude() + "," +
+                    mCurrentLocation.getLongitude(), mAddressAtm.getLat() + "," + mAddressAtm.getLng(), KEY_DIRECTIONS);
 
             results.enqueue(new Callback<DirectionResult>() {
                 @Override
@@ -299,8 +228,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     if (mLegs == null) {
                         mViewPager.setVisibility(View.GONE);
+                        mLlTimeDistance.setVisibility(View.GONE);
                     } else {
                         mViewPager.setVisibility(View.VISIBLE);
+                        mLlTimeDistance.setVisibility(View.VISIBLE);
                         StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs, mAtm);
                         mViewPager.setAdapter(stepAdapter);
                         mViewPager.setCurrentItem(mCurrentPage + 1);
