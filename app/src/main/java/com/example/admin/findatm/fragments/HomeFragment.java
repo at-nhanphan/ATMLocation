@@ -109,6 +109,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 getAtmAroundCurrentLocation();
                 mTvReload.setVisibility(View.GONE);
             }
+        } else {
+            getAtmAroundCurrentLocation();
+            mTvReload.setVisibility(View.GONE);
         }
     }
 
