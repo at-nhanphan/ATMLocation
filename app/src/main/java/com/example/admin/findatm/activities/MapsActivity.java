@@ -111,8 +111,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @OptionsItem(R.id.drawRoute)
     void onItemDrawRoute() {
         MyCurrentLocation.checkLocationEnabled(this);
-        mLlTimeDistance.setVisibility(View.VISIBLE);
-        mViewPager.setVisibility(View.VISIBLE);
         drawRoute();
     }
 
@@ -230,8 +228,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     if (mLegs == null) {
                         mViewPager.setVisibility(View.GONE);
+                        mLlTimeDistance.setVisibility(View.GONE);
                     } else {
                         mViewPager.setVisibility(View.VISIBLE);
+                        mLlTimeDistance.setVisibility(View.VISIBLE);
                         StepAdapter stepAdapter = new StepAdapter(getSupportFragmentManager(), mLegs, mAtm);
                         mViewPager.setAdapter(stepAdapter);
                         mViewPager.setCurrentItem(mCurrentPage + 1);
