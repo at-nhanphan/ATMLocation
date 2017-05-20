@@ -3,10 +3,11 @@ package com.example.admin.findatm.fragments;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.DetailActivity_;
-import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.activities.MainActivity_;
 import com.example.admin.findatm.activities.MapsActivity_;
 import com.example.admin.findatm.adapters.ATMListAdapter;
@@ -34,8 +35,8 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
     RecyclerView mRecyclerView;
 
     private MyDatabase mMyDatabase;
-    private ArrayList<MyATM> mMyATMs;
     private ATMListAdapter mAdapter;
+    ArrayList<MyATM> mMyATMs;
 
     @AfterViews
     void init() {
@@ -73,28 +74,36 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
     @Override
     public void onClickFavorite(int position) {
-        MyATM myATM = mMyATMs.get(position);
+        MyATM myATM = mAdapter.getResultFilter().get(position);
         mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+        Toast.makeText(getContext(), "Deleted item", Toast.LENGTH_SHORT).show();
         reloadFragment();
-        MainActivity.setChange(true);
     }
 
-    public void reloadFragment() {
+    public boolean reloadFragment() {
         mMyATMs = mMyDatabase.getAll();
-        for (MyATM myAtm : mMyATMs) {
-            myAtm.setFavorite(true);
-        }
         if (mMyATMs.size() > 0) {
-            mAdapter = new ATMListAdapter(mMyATMs, this);
+            for (MyATM myAtm : mMyATMs) {
+                myAtm.setFavorite(true);
+            }
+            if (mMyATMs.size() > 0) {
+                mAdapter = new ATMListAdapter(mMyATMs, this);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.setMyOnClickFavoriteListener(this);
+            }
+            return true;
+        } else {
+            mAdapter = new ATMListAdapter(new ArrayList<MyATM>(), this);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setMyOnClickFavoriteListener(this);
+            return false;
         }
     }
 
     @Override
     public void onTextChange(String newText) {
         if (mAdapter != null) {
-//            mAdapter.getValueFilter().filter(newText);
+            mAdapter.getValueFilter().filter(newText);
         }
     }
 }

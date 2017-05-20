@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     EditText mEdtSearch;
 
     private OnQueryTextChange mOnQueryTextChange;
-    private static boolean mChange;
     private boolean mCheck = false;
     private FragmentManager mManager;
     private boolean mFlag;
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     void clickSearch() {
         if (!mClick) {
             mRlSearch.setVisibility(View.VISIBLE);
+            mEdtSearch.setText("");
             mClick = true;
         } else {
             mRlSearch.setVisibility(View.GONE);
@@ -101,14 +101,6 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     public static void setCurrentLocation(LatLng currentLocation) {
         mCurrentLocation = currentLocation;
-    }
-
-    public static boolean isChange() {
-        return mChange;
-    }
-
-    public static void setChange(boolean isChange) {
-        mChange = isChange;
     }
 
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
@@ -156,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 fragment = FavoriteFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.VISIBLE);
+                mEdtSearch.setText("");
                 break;
             case R.id.search:
                 fragment = SearchFragment_.builder().build();

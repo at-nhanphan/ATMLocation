@@ -71,6 +71,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @AfterViews
     void init() {
+        mTvReload.setVisibility(View.INVISIBLE);
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mMyDatabase = new MyDatabase(getContext());
@@ -107,11 +108,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 return;
             } else {
                 getAtmAroundCurrentLocation();
-                mTvReload.setVisibility(View.GONE);
+                mTvReload.setVisibility(View.INVISIBLE);
             }
         } else {
             getAtmAroundCurrentLocation();
-            mTvReload.setVisibility(View.GONE);
+            mTvReload.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -198,7 +199,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     @OnActivityResult(REQUEST_CODE)
     void onResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            boolean isFavorite = data.getBooleanExtra("isFavorite", false);
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
         }
     }
@@ -208,7 +208,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
             getAtmAroundCurrentLocation();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            mTvReload.setVisibility(View.GONE);
+            mTvReload.setVisibility(View.INVISIBLE);
         } else {
             mTvReload.setVisibility(View.VISIBLE);
         }
@@ -216,7 +216,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Override
     public void onClickFavorite(int position) {
-        MyATM myATM = mAtms.get(position);
+        MyATM myATM = mAdapter.getResultFilter().get(position);
         if (myATM.isFavorite()) {
             mMyDatabase.insertATM(myATM);
             Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
@@ -240,7 +240,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         protected void onPreExecute() {
             super.onPreExecute();
             mDialog.show();
-            mTvReload.setVisibility(View.GONE);
+            mTvReload.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -254,7 +254,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 5) {
+                if (count >= 3) {
                     mCheck = true;
                     break;
                 }
@@ -266,11 +266,15 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mDialog.dismiss();
-            if (mCheck) {
-                mTvReload.setVisibility(View.VISIBLE);
-                MainActivity.setListAtms(new ArrayList<MyATM>());
-            } else {
-                mTvReload.setVisibility(View.GONE);
+            try {
+                if (mCheck) {
+                    mTvReload.setVisibility(View.VISIBLE);
+                    MainActivity.setListAtms(new ArrayList<MyATM>());
+                } else {
+                    mTvReload.setVisibility(View.INVISIBLE);
+                }
+            } catch (NullPointerException ignored) {
+                Log.e("ddd", "onPostExecute: ", ignored);
             }
         }
     }

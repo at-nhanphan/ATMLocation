@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,7 +65,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
 
     @AfterViews
     void init() {
-        mTvMessage.setVisibility(View.GONE);
+        mTvMessage.setVisibility(View.INVISIBLE);
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         mMyDatabase = new MyDatabase(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -118,7 +119,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
             Toast.makeText(getContext(), "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
         } else {
-            mTvMessage.setVisibility(View.GONE);
+            mTvMessage.setVisibility(View.INVISIBLE);
             mAtms = new ArrayList<>();
             loadData();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -203,7 +204,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         protected void onPreExecute() {
             super.onPreExecute();
             mDialog.show();
-            mTvMessage.setVisibility(View.GONE);
+            mTvMessage.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -217,7 +218,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 5) {
+                if (count >= 3) {
                     mCheck = true;
                     break;
                 }
@@ -229,10 +230,14 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mDialog.dismiss();
-            if (mCheck) {
-                mTvMessage.setVisibility(View.VISIBLE);
-            } else {
-                mTvMessage.setVisibility(View.GONE);
+            try {
+                if (mCheck) {
+                    mTvMessage.setVisibility(View.VISIBLE);
+                } else {
+                    mTvMessage.setVisibility(View.INVISIBLE);
+                }
+            } catch (NullPointerException ignored) {
+                Log.e("dddd", "onPostExecute: ", ignored);
             }
         }
     }
