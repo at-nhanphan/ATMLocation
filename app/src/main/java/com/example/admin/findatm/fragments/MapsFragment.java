@@ -6,6 +6,7 @@ import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -78,15 +79,21 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setOnMyLocationButtonClickListener(this);
         mAtms = MainActivity.getListAtms();
         MyDatabase myDatabase = new MyDatabase(getContext());
+        Log.d("dddd", "onMapReady: " + myDatabase.getAll().size() + "-----" + mAtms.size());
         if (mAtms.size() > 0) {
             for (int i = 0; i < mAtms.size(); i++) {
                 addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
-                for (int j = 0; j < myDatabase.getAll().size(); j++) {
-                    if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
-                        mAtms.get(i).setFavorite(true);
-                    } else {
-                        mAtms.get(i).setFavorite(false);
+                if (myDatabase.getAll().size() > 0) {
+                    for (int j = 0; j < myDatabase.getAll().size(); j++) {
+                        if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
+                            mAtms.get(i).setFavorite(true);
+                            Log.d("ddd", "onMapReady: " + mAtms.get(i).getDiaChi());
+                        } else {
+                            mAtms.get(i).setFavorite(false);
+                        }
                     }
+                } else {
+                    mAtms.get(i).setFavorite(false);
                 }
             }
             mViewPager.setVisibility(View.VISIBLE);
@@ -95,7 +102,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             mViewPager.setCurrentItem(mCurrentPage + 1);
         } else {
             mViewPager.setVisibility(View.GONE);
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(16.054031, 108.203836), 10));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(16.054031, 108.203836), 13));
         }
         zoomMapFitMarkers(mMarkers);
     }
