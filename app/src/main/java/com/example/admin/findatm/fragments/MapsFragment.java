@@ -88,6 +88,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                         if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
                             mAtms.get(i).setFavorite(true);
                             Log.d("ddd", "onMapReady: " + mAtms.get(i).getDiaChi());
+                            break;
                         } else {
                             mAtms.get(i).setFavorite(false);
                         }
