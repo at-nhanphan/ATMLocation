@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,7 +70,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     void init() {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mTvMessage.setVisibility(View.GONE);
+        mTvMessage.setVisibility(View.INVISIBLE);
         mDialog = new SpotsDialog(this, R.style.CustomDialog);
         mMyDatabase = new MyDatabase(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -134,7 +135,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
             Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
         } else {
-            mTvMessage.setVisibility(View.GONE);
+            mTvMessage.setVisibility(View.INVISIBLE);
             mAtms = new ArrayList<>();
             loadData();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -152,7 +153,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
                 .start();
-//                .startForResult(REQUEST_CODE);
     }
 
     @Override
@@ -190,27 +190,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @Override
     public void onClickFavorite(int position) {
         MyATM myATM = mAtms.get(position);
-        ArrayList<MyATM> lists = mMyDatabase.getAll();
         if (myATM.isFavorite()) {
-            int count = 0;
-            if (lists.size() > 0) {
-                for (int i = 0; i < lists.size(); i++) {
-                    if (!myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
-                        count++;
-                    }
-                }
-            }
-            if (count == lists.size()){
-                mMyDatabase.insertATM(myATM);
-            }
+            mMyDatabase.insertATM(myATM);
+            Toast.makeText(this, "You're favorited this item", Toast.LENGTH_SHORT).show();
         } else {
-            if (lists.size() > 0) {
-                for (int i = 0; i < lists.size(); i++) {
-                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
-                        mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
-                    }
-                }
-            }
+            mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+            Toast.makeText(this, "You're unfavorited this item", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -220,7 +205,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         protected void onPreExecute() {
             super.onPreExecute();
             mDialog.show();
-            mTvMessage.setVisibility(View.GONE);
+            mTvMessage.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -229,7 +214,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
             while (mAtms.size() <= 0) {
                 count++;
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     mCheck = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -246,10 +231,14 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mDialog.dismiss();
-            if (mCheck) {
-                mTvMessage.setVisibility(View.VISIBLE);
-            } else {
-                mTvMessage.setVisibility(View.GONE);
+            try {
+                if (mCheck) {
+                    mTvMessage.setVisibility(View.VISIBLE);
+                } else {
+                    mTvMessage.setVisibility(View.INVISIBLE);
+                }
+            } catch (NullPointerException ignored) {
+                Log.e("dddd", "onPostExecute: ", ignored);
             }
         }
     }

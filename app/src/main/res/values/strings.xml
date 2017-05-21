@@ -12,6 +12,7 @@
     <string name="textView.text.filter">FILTER</string>
     <string name="gps_network_not_enabled">Enable GPS ?</string>
     <string name="positiveButton">Enable</string>
+    <string name="OkButton">OK</string>
     <string name="cancelButton">Cancel</string>
     <string name="toolbar.title.chooseBank">Select a bank</string>
     <string name="textView.text.chooseBank">Bank</string>

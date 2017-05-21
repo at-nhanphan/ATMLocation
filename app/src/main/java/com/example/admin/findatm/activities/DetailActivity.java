@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.databases.MyDatabase;
@@ -78,7 +79,9 @@ public class DetailActivity extends AppCompatActivity {
         mAtm.setFavorite(!mAtm.isFavorite());
         if (mImgFavorite.isSelected()) {
             mMyDatabase.insertATM(mAtm);
+            Toast.makeText(this, "You're favorited this item", Toast.LENGTH_SHORT).show();
         } else {
+            Toast.makeText(this, "You're unfavorited this item", Toast.LENGTH_SHORT).show();
             mMyDatabase.deleteATM(Integer.parseInt(mAtm.getMaDiaDiem()));
         }
     }
