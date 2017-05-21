@@ -190,27 +190,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @Override
     public void onClickFavorite(int position) {
         MyATM myATM = mAtms.get(position);
-        ArrayList<MyATM> lists = mMyDatabase.getAll();
         if (myATM.isFavorite()) {
-            int count = 0;
-            if (lists.size() > 0) {
-                for (int i = 0; i < lists.size(); i++) {
-                    if (!myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
-                        count++;
-                    }
-                }
-            }
-            if (count == lists.size()){
-                mMyDatabase.insertATM(myATM);
-            }
+            mMyDatabase.insertATM(myATM);
+            Toast.makeText(this, "You're favorited this item", Toast.LENGTH_SHORT).show();
         } else {
-            if (lists.size() > 0) {
-                for (int i = 0; i < lists.size(); i++) {
-                    if (myATM.getMaDiaDiem().equals(lists.get(i).getMaDiaDiem())) {
-                        mMyDatabase.deleteATM(Integer.parseInt(lists.get(i).getMaDiaDiem()));
-                    }
-                }
-            }
+            mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+            Toast.makeText(this, "You're unfavorited this item", Toast.LENGTH_SHORT).show();
         }
     }
 

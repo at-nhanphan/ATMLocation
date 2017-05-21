@@ -1,10 +1,10 @@
 package com.example.admin.findatm.fragments;
 
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.DetailActivity_;
@@ -21,6 +21,7 @@ import com.example.admin.findatm.models.googleDirections.MyLocation;
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.StringRes;
 
 import java.util.ArrayList;
 
@@ -33,6 +34,10 @@ import java.util.ArrayList;
 public class FavoriteFragment extends Fragment implements MyOnClickListener, MyOnClickFavoriteListener, OnQueryTextChange {
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
+    @StringRes(R.string.OkButton)
+    String mOkButton;
+    @StringRes(R.string.cancelButton)
+    String mCancelButton;
 
     private MyDatabase mMyDatabase;
     private ATMListAdapter mAdapter;
@@ -40,6 +45,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
     @AfterViews
     void init() {
+        mMyATMs = new ArrayList<>();
         mMyDatabase = new MyDatabase(getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -74,28 +80,37 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
     @Override
     public void onClickFavorite(int position) {
-        MyATM myATM = mAdapter.getResultFilter().get(position);
-        mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
-        Toast.makeText(getContext(), "Deleted item", Toast.LENGTH_SHORT).show();
-        reloadFragment();
+        final MyATM myATM = mAdapter.getResultFilter().get(position);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        dialog.setMessage("Do you want deleted this item ?");
+        dialog.setCancelable(false);
+        dialog.setPositiveButton(mOkButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+                reloadFragment();
+            }
+        });
+        dialog.setNegativeButton(mCancelButton, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                reloadFragment();
+            }
+        });
+        dialog.show();
     }
 
     public boolean reloadFragment() {
         mMyATMs = mMyDatabase.getAll();
+        mAdapter = new ATMListAdapter(mMyATMs, this);
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
         if (mMyATMs.size() > 0) {
             for (MyATM myAtm : mMyATMs) {
                 myAtm.setFavorite(true);
             }
-            if (mMyATMs.size() > 0) {
-                mAdapter = new ATMListAdapter(mMyATMs, this);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.setMyOnClickFavoriteListener(this);
-            }
             return true;
         } else {
-            mAdapter = new ATMListAdapter(new ArrayList<MyATM>(), this);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setMyOnClickFavoriteListener(this);
             return false;
         }
     }

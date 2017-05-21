@@ -138,11 +138,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             case R.id.home:
                 if (mCheck) {
                     fragment = MapsFragment_.builder().build();
+                    mImgSearch.setVisibility(View.GONE);
                 } else {
                     fragment = HomeFragment_.builder().build();
+                    mImgSearch.setVisibility(View.VISIBLE);
                 }
                 mImgSwipe.setVisibility(View.VISIBLE);
-                mImgSearch.setVisibility(View.VISIBLE);
                 break;
             case R.id.favorite:
                 fragment = FavoriteFragment_.builder().build();
