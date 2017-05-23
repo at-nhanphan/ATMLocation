@@ -207,6 +207,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
+        askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())
                 && NetworkConnection.isInternetConnected(getContext())) {
             getAtmAroundCurrentLocation();
