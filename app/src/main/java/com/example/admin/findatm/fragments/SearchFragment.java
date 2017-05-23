@@ -123,7 +123,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             mAtms = new ArrayList<>();
             loadData();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            mAdapter = new ATMListAdapter(mAtms, this);
+            mAdapter = new ATMListAdapter(getContext(), mAtms, this);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setMyOnClickFavoriteListener(this);
         }

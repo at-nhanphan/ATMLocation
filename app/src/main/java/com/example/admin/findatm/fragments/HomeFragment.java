@@ -32,6 +32,7 @@ import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
 import com.example.admin.findatm.utils.MyCurrentLocation;
+import com.example.admin.findatm.utils.NetworkConnection;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
@@ -78,12 +79,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
-        mAdapter = new ATMListAdapter(mAtms, this);
+        mAdapter = new ATMListAdapter(getContext(), mAtms, this);
         mAtmServiceImpl = new ATMServiceImpl(getContext());
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
-        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+        if (MyCurrentLocation.checkLocationEnabled(getContext())
+                && NetworkConnection.isInternetConnected(getContext())) {
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             mTvReload.setVisibility(View.VISIBLE);
@@ -205,7 +207,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @Click(R.id.tvReload)
     void clickReload() {
-        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+        if (MyCurrentLocation.checkLocationEnabled(getContext())
+                && NetworkConnection.isInternetConnected(getContext())) {
             getAtmAroundCurrentLocation();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             mTvReload.setVisibility(View.INVISIBLE);

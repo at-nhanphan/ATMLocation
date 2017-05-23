@@ -139,7 +139,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
             mAtms = new ArrayList<>();
             loadData();
             new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            mAdapter = new ATMListAdapter(mAtms, this);
+            mAdapter = new ATMListAdapter(this, mAtms, this);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setMyOnClickFavoriteListener(this);
         }
