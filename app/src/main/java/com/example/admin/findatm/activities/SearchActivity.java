@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +31,6 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
-import dmax.dialog.SpotsDialog;
-
 /**
  * SearchActivity class
  * Created by naunem on 05/04/2017.
@@ -48,6 +47,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     RecyclerView mRecyclerView;
     @ViewById(R.id.tvMessage)
     TextView mTvMessage;
+    @ViewById(R.id.progressBar)
+    ProgressBar mProgressBar;
     @Extra
     int mCode;
     @Extra
@@ -63,7 +64,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
     private MyDatabase mMyDatabase;
-    private SpotsDialog mDialog;
     private boolean mCheck;
 
     @AfterViews
@@ -71,7 +71,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.INVISIBLE);
-        mDialog = new SpotsDialog(this, R.style.CustomDialog);
+        mProgressBar.setVisibility(View.GONE);
         mMyDatabase = new MyDatabase(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -204,7 +204,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog.show();
+            mProgressBar.setVisibility(View.VISIBLE);
             mTvMessage.setVisibility(View.INVISIBLE);
         }
 
@@ -230,8 +230,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            mDialog.dismiss();
             try {
+                mProgressBar.setVisibility(View.GONE);
                 if (mCheck) {
                     mTvMessage.setVisibility(View.VISIBLE);
                 } else {

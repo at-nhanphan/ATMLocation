@@ -67,9 +67,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Click(R.id.imgSearch)
     void clickSearch() {
+        mEdtSearch.setText("");
         if (!mClick) {
             mRlSearch.setVisibility(View.VISIBLE);
-            mEdtSearch.setText("");
             mClick = true;
         } else {
             mRlSearch.setVisibility(View.GONE);

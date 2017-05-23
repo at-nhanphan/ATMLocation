@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,8 +34,6 @@ import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
 
-import dmax.dialog.SpotsDialog;
-
 /**
  * SearchActivity class
  * Created by naunem on 05/04/2017.
@@ -51,6 +50,8 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     RecyclerView mRecyclerView;
     @ViewById(R.id.tvMessage)
     TextView mTvMessage;
+    @ViewById(R.id.progressBar)
+    ProgressBar mProgressBar;
 
     private int mPositionBank = -1;
     private int mPositionDistrict = -1;
@@ -60,13 +61,13 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
     private MyDatabase mMyDatabase;
-    private SpotsDialog mDialog;
     private boolean mCheck;
 
     @AfterViews
     void init() {
+        mProgressBar.setVisibility(View.GONE);
         mTvMessage.setVisibility(View.INVISIBLE);
-        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+//        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         mMyDatabase = new MyDatabase(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -122,7 +123,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             mTvMessage.setVisibility(View.INVISIBLE);
             mAtms = new ArrayList<>();
             loadData();
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new MyAsyncTask().execute();
             mAdapter = new ATMListAdapter(mAtms, this);
             mRecyclerView.setAdapter(mAdapter);
             mAdapter.setMyOnClickFavoriteListener(this);
@@ -188,7 +189,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog.show();
+            mProgressBar.setVisibility(View.VISIBLE);
             mTvMessage.setVisibility(View.INVISIBLE);
         }
 
@@ -198,12 +199,12 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             while (mAtms.size() <= 0) {
                 count++;
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     mCheck = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 3) {
+                if (count >= 10) {
                     mCheck = true;
                     break;
                 }
@@ -214,8 +215,8 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            mDialog.dismiss();
             try {
+                mProgressBar.setVisibility(View.GONE);
                 if (mCheck) {
                     mTvMessage.setVisibility(View.VISIBLE);
                 } else {

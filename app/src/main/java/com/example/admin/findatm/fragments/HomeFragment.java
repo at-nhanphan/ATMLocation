@@ -15,7 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
@@ -35,7 +35,6 @@ import com.example.admin.findatm.utils.MyCurrentLocation;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
@@ -44,8 +43,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import dmax.dialog.SpotsDialog;
 
 /**
  * HomeFragment class
@@ -57,11 +54,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private static final int REQUEST_CODE = 1;
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
-    @ViewById(R.id.tvReload)
-    TextView mTvReload;
+    @ViewById(R.id.progressBar)
+    ProgressBar mProgressBar;
     private ATMListAdapter mAdapter;
     private List<MyATM> mAtms;
-    private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
     private double mLat;
@@ -71,11 +67,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @AfterViews
     void init() {
-        mTvReload.setVisibility(View.INVISIBLE);
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mMyDatabase = new MyDatabase(getContext());
-        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+//        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(mAtms, this);
@@ -84,9 +79,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            mTvReload.setVisibility(View.VISIBLE);
+            new MyAsyncTask().execute();
         }
     }
 
@@ -108,11 +101,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 return;
             } else {
                 getAtmAroundCurrentLocation();
-                mTvReload.setVisibility(View.INVISIBLE);
             }
         } else {
             getAtmAroundCurrentLocation();
-            mTvReload.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -203,17 +194,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
-    @Click(R.id.tvReload)
-    void clickReload() {
-        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
-            getAtmAroundCurrentLocation();
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            mTvReload.setVisibility(View.INVISIBLE);
-        } else {
-            mTvReload.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     public void onClickFavorite(int position) {
         MyATM myATM = mAdapter.getResultFilter().get(position);
@@ -239,8 +219,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog.show();
-            mTvReload.setVisibility(View.INVISIBLE);
+//            mDialog.show();
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -254,10 +234,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 3) {
-                    mCheck = true;
-                    break;
-                }
             }
             return null;
         }
@@ -265,13 +241,11 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            mDialog.dismiss();
+//            mDialog.dismiss();
             try {
+                mProgressBar.setVisibility(View.GONE);
                 if (mCheck) {
-                    mTvReload.setVisibility(View.VISIBLE);
                     MainActivity.setListAtms(new ArrayList<MyATM>());
-                } else {
-                    mTvReload.setVisibility(View.INVISIBLE);
                 }
             } catch (NullPointerException ignored) {
                 Log.e("ddd", "onPostExecute: ", ignored);
