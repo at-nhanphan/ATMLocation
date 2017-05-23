@@ -1,12 +1,9 @@
 package com.example.admin.findatm.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,10 +27,8 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     private ValueFilterATM mValueFilter;
     private List<MyATM> mAtmsFilter;
     private MyOnClickFavoriteListener mMyOnClickFavoriteListener;
-    private Context mContext;
 
-    public ATMListAdapter(Context context, List<MyATM> atms, MyOnClickListener myOnClickListener) {
-        this.mContext = context;
+    public ATMListAdapter(List<MyATM> atms, MyOnClickListener myOnClickListener) {
         this.mAtms = atms;
         this.mMyOnClickListener = myOnClickListener;
         this.mAtmsFilter = atms;
@@ -73,8 +68,6 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.fade);
-                    v.setAnimation(animation);
                     mMyOnClickListener.onClick(getLayoutPosition());
                 }
             });

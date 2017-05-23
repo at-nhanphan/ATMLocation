@@ -14,18 +14,21 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.admin.findatm.activities.MainActivity_"
+            android:name=".activities.BeginActivity_"
             android:screenOrientation="portrait">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.admin.findatm.activities.MainActivity_"
+            android:screenOrientation="portrait" />
         <activity
             android:name="com.example.admin.findatm.activities.DetailActivity_"
             android:screenOrientation="portrait" />
@@ -38,5 +41,5 @@
         <activity
             android:name="com.example.admin.findatm.activities.ListBankDistrictActivity_"
             android:screenOrientation="portrait" />
-</application>
+    </application>
 </manifest>

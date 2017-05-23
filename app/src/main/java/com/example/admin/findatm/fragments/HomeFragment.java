@@ -15,7 +15,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
@@ -46,8 +49,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import dmax.dialog.SpotsDialog;
-
 /**
  * HomeFragment class
  * Created by naunem on 24/03/2017.
@@ -58,11 +59,12 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private static final int REQUEST_CODE = 1;
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
-    @ViewById(R.id.tvReload)
-    TextView mTvReload;
+    @ViewById(R.id.progressBar)
+    ProgressBar mProgressBar;
+    @ViewById(R.id.imgWifi)
+    ImageView mImgWifi;
     private ATMListAdapter mAdapter;
     private List<MyATM> mAtms;
-    private SpotsDialog mDialog;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
     private double mLat;
@@ -72,23 +74,20 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
     @AfterViews
     void init() {
-        mTvReload.setVisibility(View.INVISIBLE);
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mMyDatabase = new MyDatabase(getContext());
-        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+        mImgWifi.setVisibility(View.GONE);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
-        mAdapter = new ATMListAdapter(getContext(), mAtms, this);
+        mAdapter = new ATMListAdapter(mAtms, this);
         mAtmServiceImpl = new ATMServiceImpl(getContext());
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())
                 && NetworkConnection.isInternetConnected(getContext())) {
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            mTvReload.setVisibility(View.VISIBLE);
+            new MyAsyncTask().execute();
         }
     }
 
@@ -110,23 +109,27 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 return;
             } else {
                 getAtmAroundCurrentLocation();
-                mTvReload.setVisibility(View.INVISIBLE);
             }
         } else {
             getAtmAroundCurrentLocation();
-            mTvReload.setVisibility(View.INVISIBLE);
         }
     }
 
     public void getAtmAroundCurrentLocation() {
-        Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
-        if (currentLocation != null) {
-            mLat = currentLocation.getLatitude();
-            mLng = currentLocation.getLongitude();
-            MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
-            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+        if (NetworkConnection.isInternetConnected(getContext())) {
+            mImgWifi.setVisibility(View.GONE);
+            Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
+            if (currentLocation != null) {
+                mLat = currentLocation.getLatitude();
+                mLng = currentLocation.getLongitude();
+                MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
+                getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+            } else {
+                Toast.makeText(getContext(), "Finding your current location", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(getContext(), "Finding your current location", Toast.LENGTH_SHORT).show();
+            mImgWifi.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -178,6 +181,18 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         });
     }
 
+    @Click(R.id.imgWifi)
+    void clickImgWifi(View view) {
+        askPermissionsAccessLocation();
+        if (MyCurrentLocation.checkLocationEnabled(getContext())
+                && NetworkConnection.isInternetConnected(getContext())) {
+            new MyAsyncTask().execute();
+        } else {
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+            mImgWifi.startAnimation(animation);
+        }
+    }
+
     @Override
     public void onClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
@@ -202,19 +217,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     void onResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
-        }
-    }
-
-    @Click(R.id.tvReload)
-    void clickReload() {
-        askPermissionsAccessLocation();
-        if (MyCurrentLocation.checkLocationEnabled(getContext())
-                && NetworkConnection.isInternetConnected(getContext())) {
-            getAtmAroundCurrentLocation();
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            mTvReload.setVisibility(View.INVISIBLE);
-        } else {
-            mTvReload.setVisibility(View.VISIBLE);
         }
     }
 
@@ -243,8 +245,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mDialog.show();
-            mTvReload.setVisibility(View.INVISIBLE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -258,10 +259,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 3) {
-                    mCheck = true;
-                    break;
-                }
             }
             return null;
         }
@@ -269,13 +266,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            mDialog.dismiss();
             try {
+                mProgressBar.setVisibility(View.GONE);
                 if (mCheck) {
-                    mTvReload.setVisibility(View.VISIBLE);
                     MainActivity.setListAtms(new ArrayList<MyATM>());
-                } else {
-                    mTvReload.setVisibility(View.INVISIBLE);
                 }
             } catch (NullPointerException ignored) {
                 Log.e("ddd", "onPostExecute: ", ignored);
