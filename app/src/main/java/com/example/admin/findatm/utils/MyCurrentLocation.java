@@ -57,13 +57,13 @@ public class MyCurrentLocation {
             // TODO: Consider calling
         }
         try {
-//            if (Build.VERSION.SDK_INT >= 23) {
-//                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
-//                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-//            } else {
+            if (Build.VERSION.SDK_INT >= 23) {
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            } else {
                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//            }
+            }
         } catch (SecurityException ignored) {
             Log.e("ddd", "getCurrentLocation: ", ignored);
         }
