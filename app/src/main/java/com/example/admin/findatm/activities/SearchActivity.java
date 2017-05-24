@@ -167,9 +167,9 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     public void onClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
                 Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
-        DetailActivity_.intent(this)
+        MapsActivity_.intent(this)
                 .mAtm(mAdapter.getResultFilter().get(position))
-                .mMyLocation(myLocation)
+                .mAddressAtm(myLocation)
                 .start();
     }
 
