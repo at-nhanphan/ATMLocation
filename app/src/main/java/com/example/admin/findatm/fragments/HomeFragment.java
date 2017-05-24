@@ -87,7 +87,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())
                 && NetworkConnection.isInternetConnected(getContext())) {
-            new MyAsyncTask().execute();
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -144,9 +144,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getActivity(), "Permission granted!", Toast.LENGTH_LONG).show();
                     // Display current location.
-                }
-                // Cancel or refuse.
-                else {
+                } else { // Cancel or refuse.
                     Toast.makeText(getActivity(), "Permission denied!", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -186,7 +184,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())
                 && NetworkConnection.isInternetConnected(getContext())) {
-            new MyAsyncTask().execute();
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
             Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
             mImgWifi.startAnimation(animation);

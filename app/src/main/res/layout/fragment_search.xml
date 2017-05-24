@@ -59,6 +59,13 @@
         android:textColor="#BCAAA4"
         android:textSize="18sp" />
 
+    <ImageView
+        android:id="@+id/imgWifi"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_wifi_off_brown_200_48dp" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
