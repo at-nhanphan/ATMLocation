@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,6 +28,7 @@ import com.example.admin.findatm.interfaces.MyOnClickListener;
 import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
+import com.example.admin.findatm.utils.NetworkConnection;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -52,10 +56,11 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     TextView mTvMessage;
     @ViewById(R.id.progressBar)
     ProgressBar mProgressBar;
+    @ViewById(R.id.imgWifi)
+    ImageView mImgWifi;
 
     private int mPositionBank = -1;
     private int mPositionDistrict = -1;
-
     private static final int REQUEST_CODE_BANK = 1;
     private static final int REQUEST_CODE_AREA = 2;
     private ATMListAdapter mAdapter;
@@ -67,7 +72,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     void init() {
         mProgressBar.setVisibility(View.GONE);
         mTvMessage.setVisibility(View.INVISIBLE);
-//        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+        mImgWifi.setVisibility(View.GONE);
         mMyDatabase = new MyDatabase(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -117,17 +122,28 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
 
     @Click(R.id.tvSearch)
     void clickSearch() {
-        if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
-            Toast.makeText(getContext(), "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+        if (NetworkConnection.isInternetConnected(getContext())) {
+            mImgWifi.setVisibility(View.GONE);
+            if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
+                Toast.makeText(getContext(), "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+            } else {
+                mTvMessage.setVisibility(View.INVISIBLE);
+                mAtms = new ArrayList<>();
+                loadData();
+                new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                mAdapter = new ATMListAdapter(mAtms, this);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.setMyOnClickFavoriteListener(this);
+            }
         } else {
-            mTvMessage.setVisibility(View.INVISIBLE);
-            mAtms = new ArrayList<>();
-            loadData();
-            new MyAsyncTask().execute();
-            mAdapter = new ATMListAdapter(mAtms, this);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setMyOnClickFavoriteListener(this);
+            mImgWifi.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Click(R.id.imgWifi)
+    void clickImgWifi() {
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+        mImgWifi.startAnimation(animation);
     }
 
     @Override
@@ -199,12 +215,12 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             while (mAtms.size() <= 0) {
                 count++;
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     mCheck = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 10) {
+                if (count >= 5) {
                     mCheck = true;
                     break;
                 }

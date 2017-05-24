@@ -15,6 +15,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -32,9 +35,11 @@ import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
 import com.example.admin.findatm.utils.MyCurrentLocation;
+import com.example.admin.findatm.utils.NetworkConnection;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
@@ -56,6 +61,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     RecyclerView mRecyclerView;
     @ViewById(R.id.progressBar)
     ProgressBar mProgressBar;
+    @ViewById(R.id.imgWifi)
+    ImageView mImgWifi;
     private ATMListAdapter mAdapter;
     private List<MyATM> mAtms;
     private MyDatabase mMyDatabase;
@@ -70,7 +77,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
         mMyDatabase = new MyDatabase(getContext());
-//        mDialog = new SpotsDialog(getContext(), R.style.CustomDialog);
+        mImgWifi.setVisibility(View.GONE);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(mAtms, this);
@@ -78,8 +85,9 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
-        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
-            new MyAsyncTask().execute();
+        if (MyCurrentLocation.checkLocationEnabled(getContext())
+                && NetworkConnection.isInternetConnected(getContext())) {
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
     }
 
@@ -108,14 +116,20 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     public void getAtmAroundCurrentLocation() {
-        Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
-        if (currentLocation != null) {
-            mLat = currentLocation.getLatitude();
-            mLng = currentLocation.getLongitude();
-            MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
-            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+        if (NetworkConnection.isInternetConnected(getContext())) {
+            mImgWifi.setVisibility(View.GONE);
+            Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
+            if (currentLocation != null) {
+                mLat = currentLocation.getLatitude();
+                mLng = currentLocation.getLongitude();
+                MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
+                getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+            } else {
+                Toast.makeText(getContext(), "Finding your current location", Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(getContext(), "Finding your current location", Toast.LENGTH_SHORT).show();
+            mImgWifi.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -130,9 +144,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(getActivity(), "Permission granted!", Toast.LENGTH_LONG).show();
                     // Display current location.
-                }
-                // Cancel or refuse.
-                else {
+                } else { // Cancel or refuse.
                     Toast.makeText(getActivity(), "Permission denied!", Toast.LENGTH_LONG).show();
                 }
                 break;
@@ -165,6 +177,18 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 }
             }
         });
+    }
+
+    @Click(R.id.imgWifi)
+    void clickImgWifi(View view) {
+        askPermissionsAccessLocation();
+        if (MyCurrentLocation.checkLocationEnabled(getContext())
+                && NetworkConnection.isInternetConnected(getContext())) {
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        } else {
+            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+            mImgWifi.startAnimation(animation);
+        }
     }
 
     @Override
@@ -219,7 +243,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-//            mDialog.show();
             mProgressBar.setVisibility(View.VISIBLE);
         }
 
@@ -241,7 +264,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-//            mDialog.dismiss();
             try {
                 mProgressBar.setVisibility(View.GONE);
                 if (mCheck) {

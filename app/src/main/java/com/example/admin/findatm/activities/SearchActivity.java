@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +24,7 @@ import com.example.admin.findatm.interfaces.MyOnClickListener;
 import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
+import com.example.admin.findatm.utils.NetworkConnection;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -49,6 +53,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     TextView mTvMessage;
     @ViewById(R.id.progressBar)
     ProgressBar mProgressBar;
+    @ViewById(R.id.imgWifi)
+    ImageView mImgWifi;
     @Extra
     int mCode;
     @Extra
@@ -72,6 +78,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mTvMessage.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.GONE);
+        mImgWifi.setVisibility(View.GONE);
         mMyDatabase = new MyDatabase(this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -132,17 +139,28 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Click(R.id.tvSearch)
     void clickSearch() {
-        if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
-            Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+        if (NetworkConnection.isInternetConnected(this)) {
+            mImgWifi.setVisibility(View.GONE);
+            if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
+                Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+            } else {
+                mTvMessage.setVisibility(View.INVISIBLE);
+                mAtms = new ArrayList<>();
+                loadData();
+                new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                mAdapter = new ATMListAdapter(mAtms, this);
+                mRecyclerView.setAdapter(mAdapter);
+                mAdapter.setMyOnClickFavoriteListener(this);
+            }
         } else {
-            mTvMessage.setVisibility(View.INVISIBLE);
-            mAtms = new ArrayList<>();
-            loadData();
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            mAdapter = new ATMListAdapter(mAtms, this);
-            mRecyclerView.setAdapter(mAdapter);
-            mAdapter.setMyOnClickFavoriteListener(this);
+            mImgWifi.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Click(R.id.imgWifi)
+    void clickImgWifi() {
+        Animation animation = AnimationUtils.loadAnimation(this, R.anim.blink);
+        mImgWifi.startAnimation(animation);
     }
 
     @Override
