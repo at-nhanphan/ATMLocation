@@ -6,15 +6,18 @@ import android.location.Location;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.adapters.ATMListViewPagerAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
+import com.example.admin.findatm.interfaces.ATMService;
 import com.example.admin.findatm.models.MyATM;
+import com.example.admin.findatm.models.googleDirections.DirectionResult;
+import com.example.admin.findatm.services.ApiUtils;
 import com.example.admin.findatm.utils.MyCurrentLocation;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,6 +40,10 @@ import org.androidannotations.annotations.res.StringRes;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 /**
  * class MapsFragment
  * Created by naunem on 10/05/2017.
@@ -46,8 +53,14 @@ import java.util.List;
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationButtonClickListener {
     @StringRes(R.string.myLocation)
     String mStMyLocation;
+    @StringRes(R.string.direction_key)
+    String mStDirectionKey;
     @ViewById(R.id.viewPager)
     ViewPager mViewPager;
+    @ViewById(R.id.tvDistance)
+    TextView mTvDistance;
+    @ViewById(R.id.tvDuration)
+    TextView mTvDuration;
     private List<MyATM> mAtms;
     private GoogleMap mMap;
     private Location mCurrentLocation;
@@ -79,7 +92,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setOnMyLocationButtonClickListener(this);
         mAtms = MainActivity.getListAtms();
         MyDatabase myDatabase = new MyDatabase(getContext());
-        Log.d("dddd", "onMapReady: " + myDatabase.getAll().size() + "-----" + mAtms.size());
         if (mAtms.size() > 0) {
             for (int i = 0; i < mAtms.size(); i++) {
                 addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
@@ -87,7 +99,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     for (int j = 0; j < myDatabase.getAll().size(); j++) {
                         if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
                             mAtms.get(i).setFavorite(true);
-                            Log.d("ddd", "onMapReady: " + mAtms.get(i).getDiaChi());
                             break;
                         } else {
                             mAtms.get(i).setFavorite(false);
@@ -158,6 +169,28 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         if (position <= mMarkers.size() && position > 0) {
             mMap.animateCamera(CameraUpdateFactory.newLatLng(mMarkers.get(position - 1).getPosition()));
             mMarkers.get(position - 1).setIcon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose));
+
+            ATMService atmService = ApiUtils.getService();
+            Call<DirectionResult> result = atmService.getData(
+                    mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),
+                    mAtms.get(position - 1).getLat() + "," + mAtms.get(position - 1).getLng(), mStDirectionKey
+            );
+            result.enqueue(new Callback<DirectionResult>() {
+                @Override
+                public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
+                    if (response.isSuccessful()) {
+                        if (response.body().getRoutes() != null) {
+                            mTvDistance.setText(response.body().getRoutes().get(0).getLegs().get(0).getDistance().getText());
+                            mTvDuration.setText(response.body().getRoutes().get(0).getLegs().get(0).getDuration().getText());
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<DirectionResult> call, Throwable t) {
+
+                }
+            });
         }
         for (int i = 0; i < mMarkers.size(); i++) {
             if (i != (position - 1)) {
