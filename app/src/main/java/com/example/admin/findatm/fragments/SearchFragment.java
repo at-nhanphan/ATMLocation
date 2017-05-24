@@ -67,6 +67,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     private ArrayList<MyATM> mAtms;
     private MyDatabase mMyDatabase;
     private boolean mCheck;
+    private Animation mAnimation;
 
     @AfterViews
     void init() {
@@ -76,6 +77,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         mMyDatabase = new MyDatabase(getContext());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(layoutManager);
+        mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
     }
 
     @Click({R.id.tvBank, R.id.tvArea})
@@ -122,28 +124,26 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
 
     @Click(R.id.tvSearch)
     void clickSearch() {
-        if (NetworkConnection.isInternetConnected(getContext())) {
+        if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
+            Toast.makeText(getContext(), "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+        } else if (NetworkConnection.isInternetConnected(getContext())) {
             mImgWifi.setVisibility(View.GONE);
-            if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
-                Toast.makeText(getContext(), "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
-            } else {
-                mTvMessage.setVisibility(View.INVISIBLE);
-                mAtms = new ArrayList<>();
-                loadData();
-                new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                mAdapter = new ATMListAdapter(mAtms, this);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.setMyOnClickFavoriteListener(this);
-            }
+            mTvMessage.setVisibility(View.INVISIBLE);
+            mAtms = new ArrayList<>();
+            loadData();
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            mAdapter = new ATMListAdapter(mAtms, this);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setMyOnClickFavoriteListener(this);
         } else {
             mImgWifi.setVisibility(View.VISIBLE);
+            mImgWifi.startAnimation(mAnimation);
         }
     }
 
     @Click(R.id.imgWifi)
     void clickImgWifi() {
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
-        mImgWifi.startAnimation(animation);
+        mImgWifi.startAnimation(mAnimation);
     }
 
     @Override
@@ -192,8 +192,8 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     public void onClickFavorite(int position) {
         MyATM myATM = mAtms.get(position);
         if (myATM.isFavorite()) {
-                mMyDatabase.insertATM(myATM);
-                Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
+            mMyDatabase.insertATM(myATM);
+            Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
         } else {
             mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
             Toast.makeText(getContext(), "You're unfavorited this item", Toast.LENGTH_SHORT).show();

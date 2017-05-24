@@ -154,9 +154,11 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     public boolean onMyLocationButtonClick() {
         MyCurrentLocation.checkLocationEnabled(getContext());
         if (mCurrentLocation != null) {
-            mMap.addMarker(new MarkerOptions().position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()))
                     .title(mStMyLocation)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon))).showInfoWindow();
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())));
         } else {
             Toast.makeText(getContext(), "Location not found", Toast.LENGTH_SHORT).show();
         }

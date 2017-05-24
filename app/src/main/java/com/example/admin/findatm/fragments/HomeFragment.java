@@ -71,6 +71,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private double mLng;
     private boolean mCheck;
     private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
+    private Animation mAnimation;
 
     @AfterViews
     void init() {
@@ -85,9 +86,18 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.setMyOnClickFavoriteListener(this);
         askPermissionsAccessLocation();
-        if (MyCurrentLocation.checkLocationEnabled(getContext())
-                && NetworkConnection.isInternetConnected(getContext())) {
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+
+        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+            if (NetworkConnection.isInternetConnected(getContext())) {
+                mImgWifi.setVisibility(View.GONE);
+                new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                mImgWifi.setImageResource(R.drawable.ic_wifi_off_brown_200_48dp);
+                mImgWifi.startAnimation(mAnimation);
+            }
+        } else {
+            mImgWifi.setImageResource(R.drawable.ic_location_off_brown_200_48dp);
         }
     }
 
@@ -116,19 +126,22 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     public void getAtmAroundCurrentLocation() {
-        if (NetworkConnection.isInternetConnected(getContext())) {
-            mImgWifi.setVisibility(View.GONE);
-            Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
-            if (currentLocation != null) {
+        Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
+        if (currentLocation != null) {
+            if (NetworkConnection.isInternetConnected(getContext())) {
+                mImgWifi.setVisibility(View.GONE);
                 mLat = currentLocation.getLatitude();
                 mLng = currentLocation.getLongitude();
                 MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
                 getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
             } else {
-                Toast.makeText(getContext(), "Finding your current location", Toast.LENGTH_SHORT).show();
+                mImgWifi.setVisibility(View.VISIBLE);
+                mImgWifi.setImageResource(R.drawable.ic_wifi_off_brown_200_48dp);
+                mProgressBar.setVisibility(View.GONE);
             }
         } else {
             mImgWifi.setVisibility(View.VISIBLE);
+            mImgWifi.setImageResource(R.drawable.ic_location_off_brown_200_48dp);
             mProgressBar.setVisibility(View.GONE);
         }
     }
@@ -182,12 +195,16 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     @Click(R.id.imgWifi)
     void clickImgWifi(View view) {
         askPermissionsAccessLocation();
-        if (MyCurrentLocation.checkLocationEnabled(getContext())
-                && NetworkConnection.isInternetConnected(getContext())) {
-            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (MyCurrentLocation.checkLocationEnabled(getContext())) {
+            if (NetworkConnection.isInternetConnected(getContext())) {
+                mImgWifi.setVisibility(View.GONE);
+                new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                mImgWifi.setImageResource(R.drawable.ic_wifi_off_brown_200_48dp);
+                mImgWifi.startAnimation(mAnimation);
+            }
         } else {
-            Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
-            mImgWifi.startAnimation(animation);
+            mImgWifi.setImageResource(R.drawable.ic_location_off_brown_200_48dp);
         }
     }
 
