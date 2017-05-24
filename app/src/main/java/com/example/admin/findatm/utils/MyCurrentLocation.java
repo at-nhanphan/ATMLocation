@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
@@ -48,7 +47,7 @@ public class MyCurrentLocation {
 
             }
         };
-        Location location = null;
+        Location locationNetwork;
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -57,17 +56,19 @@ public class MyCurrentLocation {
             // TODO: Consider calling
         }
         try {
-            if (Build.VERSION.SDK_INT >= 23) {
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
-                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
+            locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            if (locationNetwork != null) {
+                Log.d("ddd", "getCurrentLocation: network");
+                return locationNetwork;
             } else {
-                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
-                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                Log.d("ddd", "getCurrentLocation: network null");
             }
         } catch (SecurityException ignored) {
             Log.e("ddd", "getCurrentLocation: ", ignored);
         }
-        return location;
+        return null;
     }
 
     public static boolean checkLocationEnabled(final Context context) {

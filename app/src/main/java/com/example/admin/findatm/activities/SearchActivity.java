@@ -71,6 +71,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     private ArrayList<MyATM> mAtms;
     private MyDatabase mMyDatabase;
     private boolean mCheck;
+    private Animation mAnimation;
 
     @AfterViews
     void init() {
@@ -91,6 +92,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         if (null != mResultDistrict) {
             mTvArea.setText(mResultDistrict);
         }
+
+        mAnimation = AnimationUtils.loadAnimation(this, R.anim.blink);
     }
 
     @Click({R.id.tvBank, R.id.tvArea, R.id.imgBack})
@@ -139,28 +142,26 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Click(R.id.tvSearch)
     void clickSearch() {
-        if (NetworkConnection.isInternetConnected(this)) {
+        if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
+            Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+        } else if (NetworkConnection.isInternetConnected(this)) {
             mImgWifi.setVisibility(View.GONE);
-            if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
-                Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
-            } else {
-                mTvMessage.setVisibility(View.INVISIBLE);
-                mAtms = new ArrayList<>();
-                loadData();
-                new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                mAdapter = new ATMListAdapter(mAtms, this);
-                mRecyclerView.setAdapter(mAdapter);
-                mAdapter.setMyOnClickFavoriteListener(this);
-            }
+            mTvMessage.setVisibility(View.INVISIBLE);
+            mAtms = new ArrayList<>();
+            loadData();
+            new MyAsyncTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            mAdapter = new ATMListAdapter(mAtms, this);
+            mRecyclerView.setAdapter(mAdapter);
+            mAdapter.setMyOnClickFavoriteListener(this);
         } else {
             mImgWifi.setVisibility(View.VISIBLE);
+            mImgWifi.startAnimation(mAnimation);
         }
     }
 
     @Click(R.id.imgWifi)
     void clickImgWifi() {
-        Animation animation = AnimationUtils.loadAnimation(this, R.anim.blink);
-        mImgWifi.startAnimation(animation);
+        mImgWifi.startAnimation(mAnimation);
     }
 
     @Override
@@ -237,7 +238,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                if (count >= 3) {
+                if (count >= 5) {
                     mCheck = true;
                     break;
                 }
