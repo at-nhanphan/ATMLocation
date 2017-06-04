@@ -11,9 +11,9 @@ import java.util.ArrayList;
 
 public class APIResponse {
     @SerializedName("size")
-    private int size;
+    private final int size;
     @SerializedName("data")
-    private ArrayList<MyATM> myATMs;
+    private final ArrayList<MyATM> myATMs;
 
     public APIResponse(ArrayList<MyATM> myATMs, int size) {
         this.myATMs = myATMs;

@@ -65,10 +65,10 @@ public class ItemATMFragment extends Fragment implements View.OnClickListener {
         mImgFavorite.setSelected(mMyATM.isFavorite());
         if (mMyATM.isFavorite()) {
             mMyDatabase.insertATM(mMyATM);
-            Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
             mMyDatabase.deleteATM(Integer.parseInt(mMyATM.getMaDiaDiem()));
-            Toast.makeText(getContext(), "You're unfavorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }
 }

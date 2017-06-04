@@ -23,9 +23,9 @@ import java.util.List;
 
 public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> {
     private List<MyATM> mAtms;
-    private MyOnClickListener mMyOnClickListener;
+    private final MyOnClickListener mMyOnClickListener;
     private ValueFilterATM mValueFilter;
-    private List<MyATM> mAtmsFilter;
+    private final List<MyATM> mAtmsFilter;
     private MyOnClickFavoriteListener mMyOnClickFavoriteListener;
 
     public ATMListAdapter(List<MyATM> atms, MyOnClickListener myOnClickListener) {
@@ -54,10 +54,10 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mImgLogo;
-        private TextView mTvName;
-        private TextView mTvAddress;
-        private ImageView mImgFavorite;
+        private final ImageView mImgLogo;
+        private final TextView mTvName;
+        private final TextView mTvAddress;
+        private final ImageView mImgFavorite;
 
         MyViewHolder(View itemView) {
             super(itemView);

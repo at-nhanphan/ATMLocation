@@ -79,9 +79,9 @@ public class DetailActivity extends AppCompatActivity {
         mAtm.setFavorite(!mAtm.isFavorite());
         if (mImgFavorite.isSelected()) {
             mMyDatabase.insertATM(mAtm);
-            Toast.makeText(this, "You're favorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "You're unfavorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
             mMyDatabase.deleteATM(Integer.parseInt(mAtm.getMaDiaDiem()));
         }
     }

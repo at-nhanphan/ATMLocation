@@ -64,7 +64,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private List<MyATM> mAtms;
     private GoogleMap mMap;
     private Location mCurrentLocation;
-    private ArrayList<Marker> mMarkers = new ArrayList<>();
+    private final ArrayList<Marker> mMarkers = new ArrayList<>();
     private int mCurrentPage;
 
     @AfterViews
@@ -160,7 +160,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_icon))).showInfoWindow();
             mMap.animateCamera(CameraUpdateFactory.newLatLng(new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude())));
         } else {
-            Toast.makeText(getContext(), "Location not found", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.location_not_found, Toast.LENGTH_SHORT).show();
         }
         return false;
     }

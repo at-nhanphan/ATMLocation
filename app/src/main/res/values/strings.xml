@@ -44,6 +44,10 @@
     <string name="textView.text.nameUniversity">Da Nang University of Science and Technology</string>
     <string name="textView.text.id">ID</string>
     <string name="myLocation">My Location</string>
+    <string name="favorite_item">You\'re favorited this item</string>
+    <string name="unfavorite_item">You\'re unfavorited this item</string>
+    <string name="location_not_found">Location not found</string>
+    <string name="validate">Please choose bank and district correctly</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

@@ -10,9 +10,8 @@ import android.support.v7.app.AlertDialog;
 
 public class MyDialog {
     public static AlertDialog.Builder createAlertDialog(Context context, String title, String message) {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context)
+        return new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(message);
-        return alertDialog;
     }
 }

@@ -193,7 +193,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     @Click(R.id.imgWifi)
-    void clickImgWifi(View view) {
+    void clickImgWifi() {
         askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
             if (NetworkConnection.isInternetConnected(getContext())) {
@@ -240,10 +240,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         MyATM myATM = mAdapter.getResultFilter().get(position);
         if (myATM.isFavorite()) {
             mMyDatabase.insertATM(myATM);
-            Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
             mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
-            Toast.makeText(getContext(), "You're unfavorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }
 

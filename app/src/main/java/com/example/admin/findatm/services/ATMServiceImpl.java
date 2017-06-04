@@ -22,14 +22,14 @@ import retrofit2.Response;
 
 public class ATMServiceImpl {
 
-    private Context mContext;
+    private final Context mContext;
     private static final String BASE_URL = "http://at-nhanphan.890m.com/";
 
     public ATMServiceImpl(Context context) {
         this.mContext = context;
     }
 
-    private ATMService mService = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
+    private final ATMService mService = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
 
 
     public void getATM(double lat, double lng, int radius, final CallBack<ArrayList<MyATM>> callBack) {

@@ -143,7 +143,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @Click(R.id.tvSearch)
     void clickSearch() {
         if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
-            Toast.makeText(this, "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.validate, Toast.LENGTH_SHORT).show();
         } else if (NetworkConnection.isInternetConnected(this)) {
             mImgWifi.setVisibility(View.GONE);
             mTvMessage.setVisibility(View.INVISIBLE);
@@ -211,10 +211,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         MyATM myATM = mAtms.get(position);
         if (myATM.isFavorite()) {
             mMyDatabase.insertATM(myATM);
-            Toast.makeText(this, "You're favorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
             mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
-            Toast.makeText(this, "You're unfavorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }
 

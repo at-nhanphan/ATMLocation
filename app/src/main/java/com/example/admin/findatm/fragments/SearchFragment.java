@@ -125,7 +125,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
     @Click(R.id.tvSearch)
     void clickSearch() {
         if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
-            Toast.makeText(getContext(), "Please choose bank and district correctly", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.validate, Toast.LENGTH_SHORT).show();
         } else if (NetworkConnection.isInternetConnected(getContext())) {
             mImgWifi.setVisibility(View.GONE);
             mTvMessage.setVisibility(View.INVISIBLE);
@@ -193,10 +193,10 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         MyATM myATM = mAtms.get(position);
         if (myATM.isFavorite()) {
             mMyDatabase.insertATM(myATM);
-            Toast.makeText(getContext(), "You're favorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
             mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
-            Toast.makeText(getContext(), "You're unfavorited this item", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }
 

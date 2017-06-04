@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHolder> {
     private List<ItemListBank> mBanks = new ArrayList<>();
-    private MyOnClickListener mMyOnClickListener;
+    private final MyOnClickListener mMyOnClickListener;
     public List<ItemListBank> mBankFilters = new ArrayList<>();
     private ValueFilter mValueFilter;
 
@@ -49,8 +49,8 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView mTvName;
-        private ImageView mImgCheck;
+        private final TextView mTvName;
+        private final ImageView mImgCheck;
 
         ViewHolder(View itemView) {
             super(itemView);
