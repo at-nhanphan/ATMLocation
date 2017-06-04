@@ -64,7 +64,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     private List<MyATM> mAtms;
     private GoogleMap mMap;
     private Location mCurrentLocation;
-    private ArrayList<Marker> mMarkers = new ArrayList<>();
+    private final ArrayList<Marker> mMarkers = new ArrayList<>();
     private int mCurrentPage;
 
     @AfterViews

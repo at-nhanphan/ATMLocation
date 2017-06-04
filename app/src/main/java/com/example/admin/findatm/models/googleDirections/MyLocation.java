@@ -65,6 +65,7 @@ public class MyLocation implements Parcelable {
         this.lng = lng;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static Creator<MyLocation> getCREATOR() {
         return CREATOR;
     }

@@ -16,12 +16,13 @@ import java.util.ArrayList;
  */
 
 public class MyDatabase {
-    private SqliteDBHandler mDbHandler;
+    private final SqliteDBHandler mDbHandler;
 
     public MyDatabase(Context context) {
         mDbHandler = new SqliteDBHandler(context);
     }
 
+    @SuppressWarnings("SameReturnValue")
     public boolean insertATM(MyATM myATM) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
         ContentValues values = new ContentValues();

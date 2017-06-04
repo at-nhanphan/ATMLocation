@@ -127,6 +127,7 @@ public class MyATM implements Parcelable {
         this.favorite = favorite;
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static Creator<MyATM> getCREATOR() {
         return CREATOR;
     }

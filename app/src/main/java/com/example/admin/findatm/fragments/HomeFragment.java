@@ -193,7 +193,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     @Click(R.id.imgWifi)
-    void clickImgWifi(View view) {
+    void clickImgWifi() {
         askPermissionsAccessLocation();
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
             if (NetworkConnection.isInternetConnected(getContext())) {

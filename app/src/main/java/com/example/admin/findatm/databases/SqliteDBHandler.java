@@ -44,9 +44,4 @@ public class SqliteDBHandler extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_TABLE);
         onCreate(db);
     }
-
-    @Override
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        super.onDowngrade(db, oldVersion, newVersion);
-    }
 }
