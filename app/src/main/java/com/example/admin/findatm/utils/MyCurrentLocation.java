@@ -56,8 +56,8 @@ public class MyCurrentLocation {
             // TODO: Consider calling
         }
         try {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
-            locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
+            locationNetwork = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             if (locationNetwork != null) {
                 Log.d("ddd", "getCurrentLocation: network");
