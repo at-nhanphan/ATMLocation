@@ -20,6 +20,9 @@ import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.item_steps)
 public class ItemStartEndFragment extends Fragment {
+    private static final String LEG_KEY = "leg";
+    private static final String MYATM_KEY = "myATM";
+    private static final String POSITION_KEY = "position";
     @ViewById(R.id.imgLogo)
     ImageView mImgLogo;
     @ViewById(R.id.tvName)
@@ -31,13 +34,15 @@ public class ItemStartEndFragment extends Fragment {
 
     @AfterViews
     void init() {
-        int position = getArguments().getInt("position");
-        Leg leg = getArguments().getParcelable("leg");
-        MyATM myATM = getArguments().getParcelable("myATM");
+        int position = getArguments().getInt(POSITION_KEY);
+        Leg leg = getArguments().getParcelable(LEG_KEY);
+        MyATM myATM = getArguments().getParcelable(MYATM_KEY);
+        assert leg != null;
         if (position == 1 || position == (leg.getSteps().size() + 2)) {
             mTvName.setText(leg.getStartAddress());
             mImgLogo.setImageResource(R.drawable.ic_flag_start);
         } else {
+            assert myATM != null;
             mTvName.setText(myATM.getDiaChi());
             mImgLogo.setImageResource(R.drawable.ic_flag_end);
         }
@@ -46,9 +51,9 @@ public class ItemStartEndFragment extends Fragment {
     public ItemStartEndFragment_ newInstance(Leg leg, MyATM myATM, int position) {
         ItemStartEndFragment_ fragment = new ItemStartEndFragment_();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("leg", leg);
-        bundle.putParcelable("myATM", myATM);
-        bundle.putInt("position", position);
+        bundle.putParcelable(LEG_KEY, leg);
+        bundle.putParcelable(MYATM_KEY, myATM);
+        bundle.putInt(POSITION_KEY, position);
         fragment.setArguments(bundle);
         return fragment;
     }

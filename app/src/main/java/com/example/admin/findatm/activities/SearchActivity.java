@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -32,6 +31,7 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.Extra;
 import org.androidannotations.annotations.OnActivityResult;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.annotations.res.StringRes;
 
 import java.util.ArrayList;
 
@@ -41,6 +41,9 @@ import java.util.ArrayList;
  */
 @EActivity(R.layout.activity_search)
 public class SearchActivity extends AppCompatActivity implements MyOnClickListener, MyOnClickFavoriteListener {
+
+    private static final int REQUEST_CODE_BANK = 1;
+    private static final int REQUEST_CODE_AREA = 2;
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvBank)
@@ -65,8 +68,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     int mPositionBank;
     @Extra
     int mPositionDistrict;
-    private static final int REQUEST_CODE_BANK = 1;
-    private static final int REQUEST_CODE_AREA = 2;
+    @StringRes(R.string.bank)
+    String mStBank;
+    @StringRes(R.string.district)
+    String mStDistrict;
     private ATMListAdapter mAdapter;
     private ArrayList<MyATM> mAtms;
     private MyDatabase mMyDatabase;
@@ -76,7 +81,9 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if(getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         mTvMessage.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.GONE);
         mImgWifi.setVisibility(View.GONE);
@@ -119,8 +126,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @OnActivityResult(REQUEST_CODE_BANK)
     void onResultBank(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            String resultBank = data.getStringExtra("resultBank");
-            int position = data.getIntExtra("positionBank", -1);
+            String resultBank = data.getStringExtra(ListBankDistrictActivity_.RESULT_BANK);
+            int position = data.getIntExtra(ListBankDistrictActivity_.POSITION_BANK, -1);
             if (position != -1) {
                 mTvBank.setText(resultBank);
                 mPositionBank = position;
@@ -131,8 +138,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     @OnActivityResult(REQUEST_CODE_AREA)
     void onResultDistrict(int resultCode, Intent data) {
         if (resultCode == RESULT_OK && data != null) {
-            String resultDistrict = data.getStringExtra("resultDistrict");
-            int position = data.getIntExtra("positionDistrict", -1);
+            String resultDistrict = data.getStringExtra(ListBankDistrictActivity_.RESULT_DISTRICT);
+            int position = data.getIntExtra(ListBankDistrictActivity_.POSITION_DISTRICT, -1);
             if (position != -1) {
                 mPositionDistrict = position;
                 mTvArea.setText(resultDistrict);
@@ -142,7 +149,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     @Click(R.id.tvSearch)
     void clickSearch() {
-        if (mTvBank.getText().equals("Bank") || mTvArea.getText().equals("District")) {
+        if (mTvBank.getText().equals(mStBank) || mTvArea.getText().equals(mStDistrict)) {
             Toast.makeText(this, R.string.validate, Toast.LENGTH_SHORT).show();
         } else if (NetworkConnection.isInternetConnected(this)) {
             mImgWifi.setVisibility(View.GONE);
@@ -185,7 +192,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
     }
 
 
-    public void loadData() {
+    private void loadData() {
         ATMServiceImpl atmServiceImpl = new ATMServiceImpl(this);
         atmServiceImpl.getAtmSearch(String.valueOf(mTvBank.getText()), String.valueOf(mTvArea.getText()), new CallBack<ArrayList<MyATM>>() {
             @Override
@@ -257,7 +264,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
                     mTvMessage.setVisibility(View.INVISIBLE);
                 }
             } catch (NullPointerException ignored) {
-                Log.e("dddd", "onPostExecute: ", ignored);
             }
         }
     }

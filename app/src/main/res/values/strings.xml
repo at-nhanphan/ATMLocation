@@ -48,6 +48,11 @@
     <string name="unfavorite_item">You\'re unfavorited this item</string>
     <string name="location_not_found">Location not found</string>
     <string name="validate">Please choose bank and district correctly</string>
+    <string name="bank">Bank</string>
+    <string name="district">District</string>
+    <string name="delete_message">Do you want deleted this item ?</string>
+    <string name="permission_granted">Permission granted!</string>
+    <string name="permission_denied">Permission denied!</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

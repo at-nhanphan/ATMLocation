@@ -22,7 +22,6 @@ public class MyDatabase {
         mDbHandler = new SqliteDBHandler(context);
     }
 
-    @SuppressWarnings("SameReturnValue")
     public boolean insertATM(MyATM myATM) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
         ContentValues values = new ContentValues();

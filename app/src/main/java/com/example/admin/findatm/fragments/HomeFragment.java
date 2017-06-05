@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -36,7 +35,6 @@ import com.example.admin.findatm.models.googleDirections.MyLocation;
 import com.example.admin.findatm.services.ATMServiceImpl;
 import com.example.admin.findatm.utils.MyCurrentLocation;
 import com.example.admin.findatm.utils.NetworkConnection;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -56,7 +54,8 @@ import java.util.List;
 @EFragment(R.layout.fragment_home)
 public class HomeFragment extends Fragment implements MyOnClickListener, MyOnClickFavoriteListener, OnQueryTextChange {
 
-    private static final int REQUEST_CODE = 1;
+    private static final int REQUEST_CODE_DETAIL = 1111;
+    private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
     @ViewById(R.id.recyclerView)
     RecyclerView mRecyclerView;
     @ViewById(R.id.progressBar)
@@ -70,7 +69,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private double mLat;
     private double mLng;
     private boolean mCheck;
-    private static final int ACCESS_FINE_LOCATION_AND_COARSE_LOCATION = 123;
     private Animation mAnimation;
 
     @AfterViews
@@ -101,7 +99,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
-    public void askPermissionsAccessLocation() {
+    private void askPermissionsAccessLocation() {
         // Ask for permission with API >= 23.
         if (Build.VERSION.SDK_INT >= 23) {
             int accessCoarsePermission = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -116,7 +114,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
                 // Dialog.
                 ActivityCompat.requestPermissions(getActivity(), permissions, ACCESS_FINE_LOCATION_AND_COARSE_LOCATION);
-                return;
             } else {
                 getAtmAroundCurrentLocation();
             }
@@ -125,14 +122,13 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
-    public void getAtmAroundCurrentLocation() {
+    private void getAtmAroundCurrentLocation() {
         Location currentLocation = MyCurrentLocation.getCurrentLocation(getContext());
         if (currentLocation != null) {
             if (NetworkConnection.isInternetConnected(getContext())) {
                 mImgWifi.setVisibility(View.GONE);
                 mLat = currentLocation.getLatitude();
                 mLng = currentLocation.getLongitude();
-                MainActivity.setCurrentLocation(new LatLng(mLat, mLng));
                 getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
             } else {
                 mImgWifi.setVisibility(View.VISIBLE);
@@ -155,16 +151,16 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 if (grantResults.length > 1
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getActivity(), "Permission granted!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.permission_granted, Toast.LENGTH_LONG).show();
                     // Display current location.
                 } else { // Cancel or refuse.
-                    Toast.makeText(getActivity(), "Permission denied!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), R.string.permission_denied, Toast.LENGTH_LONG).show();
                 }
                 break;
         }
     }
 
-    public void getDataResponse(ATMServiceImpl atmServiceImpl, double lat, double lng, int radius) {
+    private void getDataResponse(ATMServiceImpl atmServiceImpl, double lat, double lng, int radius) {
         atmServiceImpl.getATM(lat, lng, radius, new CallBack<ArrayList<MyATM>>() {
             @Override
             public void next(ArrayList<MyATM> myATMs) {
@@ -186,7 +182,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                     });
                     MainActivity.setListAtms(mAtms);
                     mAdapter.notifyDataSetChanged();
-                    Log.d("dddd", "next: " + MainActivity.getListAtms().size());
                 }
             }
         });
@@ -225,10 +220,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         DetailActivity_.intent(this)
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
-                .startForResult(REQUEST_CODE);
+                .startForResult(REQUEST_CODE_DETAIL);
     }
 
-    @OnActivityResult(REQUEST_CODE)
+    @OnActivityResult(REQUEST_CODE_DETAIL)
     void onResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
             getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
@@ -265,9 +260,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
 
         @Override
         protected Void doInBackground(Void... params) {
-            int count = 0;
             while (mAtms.size() <= 0) {
-                count++;
                 try {
                     Thread.sleep(1000);
                     mCheck = false;
@@ -287,7 +280,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                     MainActivity.setListAtms(new ArrayList<MyATM>());
                 }
             } catch (NullPointerException ignored) {
-                Log.e("ddd", "onPostExecute: ", ignored);
             }
         }
     }

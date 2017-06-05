@@ -21,7 +21,6 @@ import com.example.admin.findatm.fragments.MapsFragment_;
 import com.example.admin.findatm.fragments.SearchFragment_;
 import com.example.admin.findatm.interfaces.OnQueryTextChange;
 import com.example.admin.findatm.models.MyATM;
-import com.google.android.gms.maps.model.LatLng;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -48,11 +47,9 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     EditText mEdtSearch;
 
     private OnQueryTextChange mOnQueryTextChange;
-    private boolean mCheck = false;
+    private boolean mIsCheck;
     private FragmentManager mManager;
-    private boolean mFlag;
-    private boolean mClick;
-    private static LatLng mCurrentLocation;
+    private boolean mIsClick;
     private static List<MyATM> mListAtms = new ArrayList<>();
 
     @AfterViews
@@ -68,46 +65,38 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Click(R.id.imgSearch)
     void clickSearch() {
         mEdtSearch.setText("");
-        if (!mClick) {
+        if (!mIsClick) {
             mRlSearch.setVisibility(View.VISIBLE);
-            mClick = true;
+            mIsClick = true;
         } else {
             mRlSearch.setVisibility(View.GONE);
-            mClick = false;
+            mIsClick = false;
         }
     }
 
     @Click(R.id.imgSwipe)
     void clickSwipe() {
         Fragment fragment;
-        if (!mCheck) {
+        if (!mIsCheck) {
             fragment = MapsFragment_.builder().build();
             mImgSwipe.setBackgroundResource(R.drawable.ic_view_list_white_24dp);
             mImgSearch.setVisibility(View.GONE);
             mRlSearch.setVisibility(View.GONE);
-            mCheck = true;
+            mIsCheck = true;
         } else {
             fragment = HomeFragment_.builder().build();
             mImgSwipe.setBackgroundResource(R.drawable.ic_google_maps);
             mImgSearch.setVisibility(View.VISIBLE);
-            mCheck = false;
+            mIsCheck = false;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-    }
-
-    public static LatLng getCurrentLocation() {
-        return mCurrentLocation;
-    }
-
-    public static void setCurrentLocation(LatLng currentLocation) {
-        mCurrentLocation = currentLocation;
     }
 
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
         this.mOnQueryTextChange = onQueryTextChange;
     }
 
-    public void addSearchListener() {
+    private void addSearchListener() {
         mEdtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -128,7 +117,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
     @Click(R.id.imgDelete)
     void clickDelete() {
-        mEdtSearch.setText("");
+        if (mEdtSearch.getText().toString().isEmpty()) {
+            mRlSearch.setVisibility(View.GONE);
+            mIsClick = false;
+        } else {
+            mEdtSearch.setText("");
+        }
     }
 
     @Override
@@ -136,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         Fragment fragment = null;
         switch (item.getItemId()) {
             case R.id.home:
-                if (mCheck) {
+                if (mIsCheck) {
                     fragment = MapsFragment_.builder().build();
                     mImgSearch.setVisibility(View.GONE);
                 } else {
@@ -156,14 +150,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
                 mRlSearch.setVisibility(View.GONE);
-                mClick = false;
+                mIsClick = false;
                 break;
             case R.id.about:
                 fragment = AboutFragment_.builder().build();
                 mImgSwipe.setVisibility(View.GONE);
                 mImgSearch.setVisibility(View.GONE);
                 mRlSearch.setVisibility(View.GONE);
-                mClick = false;
+                mIsClick = false;
                 break;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();

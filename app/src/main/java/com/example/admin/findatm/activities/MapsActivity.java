@@ -8,7 +8,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,14 +27,12 @@ import com.example.admin.findatm.models.googleDirections.RouteDecode;
 import com.example.admin.findatm.models.googleDirections.Step;
 import com.example.admin.findatm.services.ApiUtils;
 import com.example.admin.findatm.utils.MyCurrentLocation;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -52,6 +49,7 @@ import org.androidannotations.annotations.ViewById;
 import org.androidannotations.annotations.res.StringRes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,6 +62,7 @@ import retrofit2.Response;
 @EActivity(R.layout.acitivity_maps)
 @OptionsMenu(R.menu.map_menu)
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMarkerClickListener {
+
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvDistance)
@@ -85,26 +84,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     private PolylineOptions mPolylineOptions;
     private ATMService mService;
-    private ArrayList<Step> mSteps;
-    private ArrayList<Leg> mLegs;
+    private List<Step> mSteps;
+    private List<Leg> mLegs;
     private LatLng mLocation;
     private int mCurrentPage;
-    private ArrayList<Marker> mMarkers;
+    private List<Marker> mMarkers;
     private Location mCurrentLocation;
 
     @AfterViews
     void init() {
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
         mLlTimeDistance.setVisibility(View.GONE);
         mViewPager.setPageMargin(10);
         mService = ApiUtils.getService();
         mPolylineOptions = new PolylineOptions();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        double mAtmLatitude = mAddressAtm.getLat();
-        double mAtmLongitude = mAddressAtm.getLng();
-        mLocation = new LatLng(mAtmLatitude, mAtmLongitude);
+        double atmLatitude = mAddressAtm.getLat();
+        double atmLongitude = mAddressAtm.getLng();
+        mLocation = new LatLng(atmLatitude, atmLongitude);
         mCurrentLocation = MyCurrentLocation.getCurrentLocation(this);
     }
 
@@ -154,12 +155,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             mMap.addMarker(marker).showInfoWindow();
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16));
         } else {
-            Toast.makeText(this, "Location null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.location_not_found, Toast.LENGTH_SHORT).show();
         }
         return true;
     }
 
-    public void addMarker(LatLng latLng) {
+    private void addMarker(LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin)));
@@ -174,7 +175,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             results.enqueue(new Callback<DirectionResult>() {
                 @Override
                 public void onResponse(Call<DirectionResult> call, Response<DirectionResult> response) {
-                    ArrayList<LatLng> routeList = new ArrayList<>();
+                    List<LatLng> routeList = new ArrayList<>();
                     mCurrentPage = 0;
                     mMap.clear();
                     mMarkers = new ArrayList<>();
@@ -182,7 +183,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         mLegs.clear();
                     }
                     if (response.body().getRoutes().size() > 0) {
-                        ArrayList<LatLng> decodeList;
+                        List<LatLng> decodeList;
                         Route routeA = response.body().getRoutes().get(0);
                         mLegs = routeA.getLegs();
                         if (mLegs.size() > 0) {
@@ -196,11 +197,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                             mSteps = new ArrayList<>();
                             mSteps = routeA.getLegs().get(0).getSteps();
-                            Step step;
                             MyLocation location;
                             String polyline;
                             for (int i = 0; i < mSteps.size(); i++) {
-                                step = mSteps.get(i);
+                                Step step = mSteps.get(i);
                                 location = step.getStartLocation();
                                 routeList.add(new LatLng(location.getLat(), location.getLng()));
                                 polyline = step.getPolyline().getPoints();
@@ -240,26 +240,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 @Override
                 public void onFailure(Call<DirectionResult> call, Throwable t) {
-                    Log.d("aaa", "onFailure: " + t.getMessage());
                 }
             });
         }
     }
 
-    public void zoomMapFitMarkers(ArrayList<Marker> markers) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (Marker marker : markers) {
-            builder.include(marker.getPosition());
-        }
-        LatLngBounds bounds = builder.build();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 100);
-        mMap.animateCamera(cameraUpdate);
-    }
-
     @PageSelected(R.id.viewPager)
     void onItemAtmSelected(int position) {
         mCurrentPage = position;
-        Log.d("ddd", "onItemAtmSelected: " + position);
         double lat;
         double lng;
         if (position == 0) {
@@ -305,13 +293,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (marker.equals(mMarkers.get(i))) {
                     if (i == 0) {
                         mViewPager.setCurrentItem(1);
-                        Log.d("dddd", "onMarkerClick: 000");
                     } else if (i == 1) {
                         mViewPager.setCurrentItem(2);
-                        Log.d("dddd", "onMarkerClick: 111");
                     } else {
                         mViewPager.setCurrentItem(i);
-                        Log.d("dddd", "onMarkerClick: " + i);
                     }
                 }
             }

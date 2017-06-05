@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
  */
 
 public class NetworkConnection {
+    @SuppressWarnings("deprecation")
     public static boolean isInternetConnected(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifi = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);

@@ -24,6 +24,7 @@ import org.androidannotations.annotations.res.ColorRes;
 
 @EFragment(R.layout.item_list)
 public class ItemATMFragment extends Fragment implements View.OnClickListener {
+    private static final String RESULT_ATM = "atm";
     @ViewById(R.id.tvName)
     TextView mTvName;
     @ViewById(R.id.tvAddress)
@@ -42,7 +43,7 @@ public class ItemATMFragment extends Fragment implements View.OnClickListener {
     void init() {
         mMyDatabase = new MyDatabase(getContext());
         mCardView.setCardBackgroundColor(mColorItem);
-        mMyATM = getArguments().getParcelable("atm");
+        mMyATM = getArguments().getParcelable(RESULT_ATM);
         if (mMyATM != null) {
             mTvName.setText(mMyATM.getTenDiaDiem());
             mTvAddress.setText(mMyATM.getDiaChi());
@@ -54,7 +55,7 @@ public class ItemATMFragment extends Fragment implements View.OnClickListener {
     public ItemATMFragment_ newInstance(MyATM myATM) {
         ItemATMFragment_ fragment = new ItemATMFragment_();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("atm", myATM);
+        bundle.putParcelable(RESULT_ATM, myATM);
         fragment.setArguments(bundle);
         return fragment;
     }

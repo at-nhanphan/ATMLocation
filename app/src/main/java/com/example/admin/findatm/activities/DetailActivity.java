@@ -24,6 +24,8 @@ import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_detail)
 public class DetailActivity extends AppCompatActivity {
+
+    public static final String IS_FAVORITE = "isFavorite";
     @ViewById(R.id.tvName)
     TextView mTvName;
     @ViewById(R.id.tvId)
@@ -60,7 +62,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     @Click(R.id.btnShowMap)
-    public void onClickShowMap() {
+    void onClickShowMap() {
         MapsActivity_.intent(this).mAtm(mAtm).mAddressAtm(mMyLocation).start();
         finish();
     }
@@ -68,7 +70,7 @@ public class DetailActivity extends AppCompatActivity {
     @Click(R.id.imgBack)
     void clickBack() {
         Intent intent = new Intent();
-        intent.putExtra("isFavorite", mAtm.isFavorite());
+        intent.putExtra(IS_FAVORITE, mAtm.isFavorite());
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -88,10 +90,6 @@ public class DetailActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent();
-        intent.putExtra("isFavorite", mAtm.isFavorite());
-        setResult(RESULT_OK, intent);
-        finish();
+        clickBack();
     }
 }

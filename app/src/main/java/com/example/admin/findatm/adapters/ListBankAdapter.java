@@ -23,7 +23,7 @@ import java.util.List;
 public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHolder> {
     private List<ItemListBank> mBanks = new ArrayList<>();
     private final MyOnClickListener mMyOnClickListener;
-    public List<ItemListBank> mBankFilters = new ArrayList<>();
+    private List<ItemListBank> mBankFilters = new ArrayList<>();
     private ValueFilter mValueFilter;
 
     public ListBankAdapter(List<ItemListBank> banks, MyOnClickListener myOnClickListener) {
@@ -90,7 +90,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
 
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
-            mBanks = (ArrayList<ItemListBank>) results.values;
+            mBanks = (List<ItemListBank>) results.values;
             notifyDataSetChanged();
         }
     }

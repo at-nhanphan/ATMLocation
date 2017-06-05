@@ -119,14 +119,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         zoomMapFitMarkers(mMarkers);
     }
 
-    public void addMarker(LatLng latLng) {
+    private void addMarker(LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose)));
         mMarkers.add(marker);
     }
 
-    public void zoomMapFitMarkers(ArrayList<Marker> markers) {
+    private void zoomMapFitMarkers(ArrayList<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         if (markers.size() > 0) {
             for (Marker marker : markers) {
@@ -140,11 +140,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (mMarkers != null) {
-            for (int i = 0; i < mMarkers.size(); i++) {
-                if (marker.equals(mMarkers.get(i))) {
-                    mViewPager.setCurrentItem(i + 1);
-                }
+        for (int i = 0; i < mMarkers.size(); i++) {
+            if (marker.equals(mMarkers.get(i))) {
+                mViewPager.setCurrentItem(i + 1);
             }
         }
         return false;

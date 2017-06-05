@@ -19,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
  */
 @EFragment(R.layout.item_steps)
 public class ItemStepFragment extends Fragment {
+    private static final String STEP_KEY = "step";
     @ViewById(R.id.imgLogo)
     ImageView mImgLogo;
     @ViewById(R.id.tvName)
@@ -28,9 +29,11 @@ public class ItemStepFragment extends Fragment {
     @ViewById(R.id.tvDistance)
     TextView mTvDistance;
 
+    @SuppressWarnings("deprecation")
     @AfterViews
     void init() {
-        Step step = getArguments().getParcelable("step");
+        Step step = getArguments().getParcelable(STEP_KEY);
+        assert step != null;
         mTvName.setText(Html.fromHtml(step.getHtmlInstructions()));
         mTvDistance.setText(step.getDistance().getText());
 
@@ -56,7 +59,7 @@ public class ItemStepFragment extends Fragment {
     public ItemStepFragment_ newInstance(Step step) {
         ItemStepFragment_ fragment = new ItemStepFragment_();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("step", step);
+        bundle.putParcelable(STEP_KEY, step);
         fragment.setArguments(bundle);
         return fragment;
     }
