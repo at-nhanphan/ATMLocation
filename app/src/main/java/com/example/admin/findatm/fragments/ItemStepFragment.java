@@ -19,6 +19,7 @@ import org.androidannotations.annotations.ViewById;
  */
 @EFragment(R.layout.item_steps)
 public class ItemStepFragment extends Fragment {
+
     private static final String STEP_KEY = "step";
     @ViewById(R.id.imgLogo)
     ImageView mImgLogo;

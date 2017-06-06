@@ -20,6 +20,7 @@ import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.item_steps)
 public class ItemStartEndFragment extends Fragment {
+
     private static final String LEG_KEY = "leg";
     private static final String MYATM_KEY = "myATM";
     private static final String POSITION_KEY = "position";

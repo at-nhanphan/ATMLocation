@@ -5,8 +5,8 @@
     android:id="@+id/llContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/colorGray"
+    android:orientation="vertical"
     tools:ignore="Overdraw">
 
     <android.support.v7.widget.Toolbar
@@ -34,7 +34,7 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <include layout="@layout/item_search"/>
+    <include layout="@layout/item_search" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"

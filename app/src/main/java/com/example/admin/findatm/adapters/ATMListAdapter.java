@@ -22,6 +22,7 @@ import java.util.List;
  */
 
 public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> {
+
     private List<MyATM> mAtms;
     private final MyOnClickListener mMyOnClickListener;
     private ValueFilterATM mValueFilter;

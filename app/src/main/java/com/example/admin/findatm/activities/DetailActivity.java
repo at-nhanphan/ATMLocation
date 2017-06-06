@@ -68,8 +68,7 @@ public class DetailActivity extends AppCompatActivity {
 
     @Click(R.id.imgBack)
     void clickBack() {
-        Intent intent = new Intent();
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_OK, new Intent());
         finish();
     }
 

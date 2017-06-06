@@ -24,6 +24,7 @@ import org.androidannotations.annotations.res.ColorRes;
 
 @EFragment(R.layout.item_list)
 public class ItemATMFragment extends Fragment implements View.OnClickListener {
+
     private static final String RESULT_ATM = "atm";
     @ViewById(R.id.tvName)
     TextView mTvName;

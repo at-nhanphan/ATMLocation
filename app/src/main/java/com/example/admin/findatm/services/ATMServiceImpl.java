@@ -22,9 +22,9 @@ import retrofit2.Response;
 
 public class ATMServiceImpl {
 
-    private final Context mContext;
     public static final String BASE_URL = "http://at-nhanphan.890m.com/";
     private ATMService mService;
+    private final Context mContext;
 
     public ATMServiceImpl(Context context) {
         this.mContext = context;

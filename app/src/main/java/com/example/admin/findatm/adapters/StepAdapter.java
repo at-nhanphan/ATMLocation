@@ -18,8 +18,10 @@ import java.util.List;
  */
 
 public class StepAdapter extends FragmentStatePagerAdapter {
+
     private List<Leg> mLegs = new ArrayList<>();
     private final MyATM mMyATM;
+
     public StepAdapter(FragmentManager fm, List<Leg> legs, MyATM myATM) {
         super(fm);
         this.mLegs = legs;

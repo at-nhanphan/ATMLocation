@@ -51,6 +51,7 @@ import retrofit2.Response;
 
 @EFragment(R.layout.fragment_maps)
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationButtonClickListener {
+
     @StringRes(R.string.myLocation)
     String mStMyLocation;
     @StringRes(R.string.direction_key)

@@ -15,6 +15,7 @@ import java.util.List;
  */
 
 public class ATMListViewPagerAdapter extends FragmentStatePagerAdapter {
+
     private final List<MyATM> mLists;
 
     public ATMListViewPagerAdapter(FragmentManager fm, List<MyATM> lists) {

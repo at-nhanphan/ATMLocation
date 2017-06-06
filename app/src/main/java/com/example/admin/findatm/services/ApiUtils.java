@@ -9,6 +9,7 @@ import com.example.admin.findatm.interfaces.ATMService;
  */
 
 public class ApiUtils {
+
     public static final String URL = "https://maps.googleapis.com/";
 
     public static ATMService getService() {
