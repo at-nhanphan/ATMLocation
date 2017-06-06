@@ -5,15 +5,20 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * MyLocation class
  * Created by Admin on 3/11/2017.
  */
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class MyLocation implements Parcelable {
-    @SerializedName("lat")
     private double lat;
-    @SerializedName("lng")
     private double lng;
 
     private MyLocation(Parcel in) {
@@ -33,11 +38,6 @@ public class MyLocation implements Parcelable {
         }
     };
 
-    public MyLocation(double latitude, double longitude) {
-        this.lat = latitude;
-        this.lng = longitude;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -47,26 +47,5 @@ public class MyLocation implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(lat);
         dest.writeDouble(lng);
-    }
-
-    public double getLat() {
-        return lat;
-    }
-
-    public void setLat(double lat) {
-        this.lat = lat;
-    }
-
-    public double getLng() {
-        return lng;
-    }
-
-    public void setLng(double lng) {
-        this.lng = lng;
-    }
-
-    @SuppressWarnings("SameReturnValue")
-    public static Creator<MyLocation> getCREATOR() {
-        return CREATOR;
     }
 }

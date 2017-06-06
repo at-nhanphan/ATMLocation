@@ -61,7 +61,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     mMyOnClickListener.onClick(getLayoutPosition());
-                    mBanks.get(getLayoutPosition()).setCheck();
+                    mBanks.get(getLayoutPosition()).setCheck(true);
                     mImgCheck.setSelected(mBanks.get(getLayoutPosition()).isCheck());
                 }
             });

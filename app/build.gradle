@@ -44,4 +44,5 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.github.d-max:spots-dialog:0.4@aar'
     compile 'pub.devrel:easypermissions:0.4.0'
+    provided "org.projectlombok:lombok:1.16.16"
 }

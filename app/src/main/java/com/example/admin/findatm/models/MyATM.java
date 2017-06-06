@@ -5,11 +5,18 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * MyATM class model
  * Created by naunem on 19/04/2017.
  */
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class MyATM implements Parcelable {
     @SerializedName("madiadiem")
     private String addressId;
@@ -21,9 +28,7 @@ public class MyATM implements Parcelable {
     private String districtId;
     @SerializedName("manganhang")
     private String bankId;
-    @SerializedName("lat")
     private String lat;
-    @SerializedName("lng")
     private String lng;
     private boolean favorite;
     private int id;
@@ -41,18 +46,6 @@ public class MyATM implements Parcelable {
 
     public MyATM() {
 
-    }
-
-    public MyATM(int id, String addressId, String addressName, String address, String districtId, String bankId, String lat, String lng, boolean favorite) {
-        this.id = id;
-        this.addressId = addressId;
-        this.addressName = addressName;
-        this.address = address;
-        this.districtId = districtId;
-        this.bankId = bankId;
-        this.lat = lat;
-        this.lng = lng;
-        this.favorite = favorite;
     }
 
     private MyATM(Parcel in) {
@@ -78,78 +71,6 @@ public class MyATM implements Parcelable {
             return new MyATM[size];
         }
     };
-
-    public String getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(String addressId) {
-        this.addressId = addressId;
-    }
-
-    public void setAddressName(String addressName) {
-        this.addressName = addressName;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getDistrictId() {
-        return districtId;
-    }
-
-    public void setDistrictId(String districtId) {
-        this.districtId = districtId;
-    }
-
-    public String getBankId() {
-        return bankId;
-    }
-
-    public void setBankId(String bankId) {
-        this.bankId = bankId;
-    }
-
-    public void setLat(String lat) {
-        this.lat = lat;
-    }
-
-    public void setLng(String lng) {
-        this.lng = lng;
-    }
-
-    public boolean isFavorite() {
-        return favorite;
-    }
-
-    public void setFavorite(boolean favorite) {
-        this.favorite = favorite;
-    }
-
-    public String getAddressName() {
-        return addressName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getLat() {
-        return lat;
-    }
-
-    public String getLng() {
-        return lng;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     @Override
     public int describeContents() {

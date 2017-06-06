@@ -1,20 +1,17 @@
 package com.example.admin.findatm.models.googleDirections;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * DirectionResult class
  * Created by naunem on 12/04/2017.
  */
 
+@Getter
+@Setter
 public class DirectionResult {
-    @SerializedName("routes")
     private ArrayList<Route> routes;
-
-    public ArrayList<Route> getRoutes() {
-        return routes;
-    }
-
 }
