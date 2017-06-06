@@ -9,9 +9,9 @@ import com.example.admin.findatm.interfaces.ATMService;
  */
 
 public class ApiUtils {
-    private static final String URL = "https://maps.googleapis.com/";
+    public static final String URL = "https://maps.googleapis.com/";
 
     public static ATMService getService() {
-        return DirectionRetrofit.getClient(URL).create(ATMService.class);
+        return DirectionRetrofit.getClient().create(ATMService.class);
     }
 }

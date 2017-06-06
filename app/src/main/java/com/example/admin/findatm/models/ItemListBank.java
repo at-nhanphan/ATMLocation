@@ -25,7 +25,7 @@ public class ItemListBank {
         return check;
     }
 
-    public void setCheck(boolean check) {
-        this.check = check;
+    public void setCheck() {
+        this.check = true;
     }
 }

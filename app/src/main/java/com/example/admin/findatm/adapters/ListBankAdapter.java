@@ -21,6 +21,7 @@ import java.util.List;
  */
 
 public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHolder> {
+
     private List<ItemListBank> mBanks = new ArrayList<>();
     private final MyOnClickListener mMyOnClickListener;
     private List<ItemListBank> mBankFilters = new ArrayList<>();
@@ -60,7 +61,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     mMyOnClickListener.onClick(getLayoutPosition());
-                    mBanks.get(getLayoutPosition()).setCheck(true);
+                    mBanks.get(getLayoutPosition()).setCheck();
                     mImgCheck.setSelected(mBanks.get(getLayoutPosition()).isCheck());
                 }
             });

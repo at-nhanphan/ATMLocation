@@ -100,7 +100,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         dialog.show();
     }
 
-    public void reloadFragment() {
+    private void reloadFragment() {
         mMyATMs = mMyDatabase.getAll();
         mAdapter = new ATMListAdapter(mMyATMs, this);
         mRecyclerView.setAdapter(mAdapter);

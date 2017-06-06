@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by naunem on 11/04/2017.
  */
 
-public class PolyLine {
+class PolyLine {
     @SerializedName("points")
     private String point;
 

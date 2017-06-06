@@ -102,7 +102,7 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
                 mLists.add(new ItemListBank(array));
             }
             if (mPositionBank != -1) {
-                mLists.get(mPositionBank).setCheck(true);
+                mLists.get(mPositionBank).setCheck();
             }
         } else {
             mTvTitle.setText(R.string.toolbar_title_chooseDistrict);
@@ -112,7 +112,7 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
                 mLists.add(new ItemListBank(array));
             }
             if (mPositionDistrict != -1) {
-                mLists.get(mPositionDistrict).setCheck(true);
+                mLists.get(mPositionDistrict).setCheck();
             }
         }
     }
@@ -147,7 +147,7 @@ public class ListBankDistrictActivity extends AppCompatActivity implements MyOnC
         finish();
     }
 
-    public void addSearchListener() {
+    private void addSearchListener() {
         mEdtSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

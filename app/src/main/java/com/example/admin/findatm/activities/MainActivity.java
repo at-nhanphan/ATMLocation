@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     EditText mEdtSearch;
 
     private OnQueryTextChange mOnQueryTextChange;
-    private boolean mIsCheck;
     private FragmentManager mManager;
+    private boolean mIsCheck;
     private boolean mIsClick;
     private static List<MyATM> mListAtms = new ArrayList<>();
 

@@ -26,7 +26,7 @@ public class Step implements Parcelable {
     @SerializedName("duration")
     private Duration duration;
 
-    protected Step(Parcel in) {
+    private Step(Parcel in) {
         startLocation = in.readParcelable(MyLocation.class.getClassLoader());
         endLocation = in.readParcelable(MyLocation.class.getClassLoader());
         htmlInstructions = in.readString();

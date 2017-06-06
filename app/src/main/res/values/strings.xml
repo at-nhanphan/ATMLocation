@@ -1,15 +1,10 @@
 <resources>
     <string name="app_name">Find ATM</string>
-    <string name="searchView.text.queryHint">Type your keyword here</string>
     <string name="search_hint">Search</string>
-    <string name="textView.text.start">start</string>
-    <string name="textView.text.end">end</string>
     <string name="button.text.drawRoute">Draw Route</string>
     <string name="textView.text.defaultDistance">0 km</string>
     <string name="textView.text.defaultDuration">0 min</string>
     <string name="direction.key">AIzaSyBLrLg8ydwDTVHQUbgFT0sqCG3Rn5Bczy0</string>
-    <string name="toolbar.title.setting">Setting</string>
-    <string name="textView.text.filter">FILTER</string>
     <string name="gps_network_not_enabled">Enable GPS ?</string>
     <string name="positiveButton">Enable</string>
     <string name="OkButton">OK</string>
@@ -21,8 +16,6 @@
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
     <string name="about">About</string>
-    <string name="message">result empty</string>
-    <string name="textView.text.rating">Rating</string>
     <string name="toolbar.title.detail">Detail</string>
     <string name="show_map">Show Map</string>
     <string name="textView.text.name">Bank</string>
@@ -30,7 +23,6 @@
     <string name="textView.text.id_district">ID District</string>
     <string name="textView.text.id_bank">ID Bank</string>
     <string name="textView.text.location">Location</string>
-    <string name="textView.text.reload">Reload this page</string>
     <string name="textView.text.map">Maps</string>
     <string name="textView.text.appName">App Name</string>
     <string name="textView.text.author">Author</string>

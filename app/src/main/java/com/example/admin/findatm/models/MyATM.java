@@ -55,7 +55,7 @@ public class MyATM implements Parcelable {
         this.favorite = favorite;
     }
 
-    protected MyATM(Parcel in) {
+    private MyATM(Parcel in) {
         addressId = in.readString();
         addressName = in.readString();
         address = in.readString();

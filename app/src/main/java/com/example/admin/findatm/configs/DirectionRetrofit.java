@@ -17,14 +17,14 @@ public class DirectionRetrofit {
 
     private static Retrofit retrofit = null;
 
-    public static Retrofit getClient(String baseUrl) {
+    public static Retrofit getClient() {
         if (retrofit == null) {
             Gson gson = new GsonBuilder().setLenient().create();
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
             OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
             retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
+                    .baseUrl(com.example.admin.findatm.services.ApiUtils.URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client)
                     .build();

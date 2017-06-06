@@ -4,7 +4,8 @@
     android:id="@+id/rlSearch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorToolbar">
+    android:background="@color/colorToolbar"
+    tools:ignore="Overdraw">
 
     <EditText
         android:id="@+id/edtSearch"

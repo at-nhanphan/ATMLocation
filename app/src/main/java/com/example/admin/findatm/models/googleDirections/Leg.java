@@ -28,7 +28,7 @@ public class Leg implements Parcelable{
     @SerializedName("steps")
     private ArrayList<Step> steps;
 
-    protected Leg(Parcel in) {
+    private Leg(Parcel in) {
         startAddress = in.readString();
         endAddress = in.readString();
         startLocation = in.readParcelable(MyLocation.class.getClassLoader());

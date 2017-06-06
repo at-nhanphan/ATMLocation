@@ -22,7 +22,7 @@ public class MyDatabase {
         mDbHandler = new SqliteDBHandler(context);
     }
 
-    public boolean insertATM(MyATM myATM) {
+    public void insertATM(MyATM myATM) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(AtmColumns.ADDRESS_ID, myATM.getAddressId());
@@ -34,12 +34,12 @@ public class MyDatabase {
         values.put(AtmColumns.LNG, myATM.getLng());
         db.insert(SqliteDBHandler.TABLE_NAME, null, values);
         db.close();
-        return true;
     }
 
-    public int deleteATM(int id) {
+    public void deleteATM(int id) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
-        return db.delete(SqliteDBHandler.TABLE_NAME, AtmColumns.ADDRESS_ID + " = ? ", new String[]{Integer.toString(id)});
+        db.delete(SqliteDBHandler.TABLE_NAME, AtmColumns.ADDRESS_ID + " = ? ", new String[]{Integer.toString(id)});
+        db.close();
     }
 
     public ArrayList<MyATM> getAll() {
