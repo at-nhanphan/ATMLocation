@@ -51,6 +51,7 @@ import retrofit2.Response;
 
 @EFragment(R.layout.fragment_maps)
 public class MapsFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMyLocationButtonClickListener {
+
     @StringRes(R.string.myLocation)
     String mStMyLocation;
     @StringRes(R.string.direction_key)
@@ -97,7 +98,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
                 if (myDatabase.getAll().size() > 0) {
                     for (int j = 0; j < myDatabase.getAll().size(); j++) {
-                        if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
+                        if (mAtms.get(i).getAddressId().equals(myDatabase.getAll().get(j).getAddressId())) {
                             mAtms.get(i).setFavorite(true);
                             break;
                         } else {
@@ -119,14 +120,14 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         zoomMapFitMarkers(mMarkers);
     }
 
-    public void addMarker(LatLng latLng) {
+    private void addMarker(LatLng latLng) {
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose)));
         mMarkers.add(marker);
     }
 
-    public void zoomMapFitMarkers(ArrayList<Marker> markers) {
+    private void zoomMapFitMarkers(ArrayList<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         if (markers.size() > 0) {
             for (Marker marker : markers) {
@@ -140,11 +141,9 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (mMarkers != null) {
-            for (int i = 0; i < mMarkers.size(); i++) {
-                if (marker.equals(mMarkers.get(i))) {
-                    mViewPager.setCurrentItem(i + 1);
-                }
+        for (int i = 0; i < mMarkers.size(); i++) {
+            if (marker.equals(mMarkers.get(i))) {
+                mViewPager.setCurrentItem(i + 1);
             }
         }
         return false;

@@ -22,25 +22,24 @@ public class MyDatabase {
         mDbHandler = new SqliteDBHandler(context);
     }
 
-    @SuppressWarnings("SameReturnValue")
-    public boolean insertATM(MyATM myATM) {
+    public void insertATM(MyATM myATM) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(AtmColumns.MA_DIA_DIEM, myATM.getMaDiaDiem());
-        values.put(AtmColumns.TEN_DIA_DIEM, myATM.getTenDiaDiem());
-        values.put(AtmColumns.DIA_CHI, myATM.getDiaChi());
-        values.put(AtmColumns.MA_QUAN, myATM.getMaQuan());
-        values.put(AtmColumns.MA_NGAN_HANG, myATM.getMaNganHang());
+        values.put(AtmColumns.ADDRESS_ID, myATM.getAddressId());
+        values.put(AtmColumns.ADDRESS_NAME, myATM.getAddressName());
+        values.put(AtmColumns.ADDRESS, myATM.getAddress());
+        values.put(AtmColumns.DISTRICT_ID, myATM.getDistrictId());
+        values.put(AtmColumns.BANK_ID, myATM.getBankId());
         values.put(AtmColumns.LAT, myATM.getLat());
         values.put(AtmColumns.LNG, myATM.getLng());
         db.insert(SqliteDBHandler.TABLE_NAME, null, values);
         db.close();
-        return true;
     }
 
-    public int deleteATM(int id) {
+    public void deleteATM(int id) {
         SQLiteDatabase db = mDbHandler.getWritableDatabase();
-        return db.delete(SqliteDBHandler.TABLE_NAME, AtmColumns.MA_DIA_DIEM + " = ? ", new String[]{Integer.toString(id)});
+        db.delete(SqliteDBHandler.TABLE_NAME, AtmColumns.ADDRESS_ID + " = ? ", new String[]{Integer.toString(id)});
+        db.close();
     }
 
     public ArrayList<MyATM> getAll() {
@@ -52,17 +51,18 @@ public class MyDatabase {
             do {
                 MyATM myATM = new MyATM();
                 myATM.setId(Integer.parseInt(cursor.getString(0)));
-                myATM.setMaDiaDiem(cursor.getString(1));
-                myATM.setTenDiaDiem(cursor.getString(2));
-                myATM.setDiaChi(cursor.getString(3));
-                myATM.setMaQuan(cursor.getString(4));
-                myATM.setMaNganHang(cursor.getString(5));
+                myATM.setAddressId(cursor.getString(1));
+                myATM.setAddressName(cursor.getString(2));
+                myATM.setAddress(cursor.getString(3));
+                myATM.setDistrictId(cursor.getString(4));
+                myATM.setBankId(cursor.getString(5));
                 myATM.setLat(cursor.getString(6));
                 myATM.setLng(cursor.getString(7));
 
                 results.add(myATM);
             } while (cursor.moveToNext());
         }
+        cursor.close();
         return results;
     }
 }

@@ -7,28 +7,30 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Leg class
  * Created by naunem on 12/04/2017.
  */
 
+@Getter
+@Setter
 public class Leg implements Parcelable{
     @SerializedName("start_address")
     private String startAddress;
     @SerializedName("end_address")
     private String endAddress;
-    @SerializedName("distance")
     private Distance distance;
-    @SerializedName("duration")
     private Duration duration;
     @SerializedName("start_location")
     private MyLocation startLocation;
     @SerializedName("end_location")
     private MyLocation endLocation;
-    @SerializedName("steps")
     private ArrayList<Step> steps;
 
-    protected Leg(Parcel in) {
+    private Leg(Parcel in) {
         startAddress = in.readString();
         endAddress = in.readString();
         startLocation = in.readParcelable(MyLocation.class.getClassLoader());
@@ -47,62 +49,6 @@ public class Leg implements Parcelable{
             return new Leg[size];
         }
     };
-
-    public String getStartAddress() {
-        return startAddress;
-    }
-
-    public void setStartAddress(String startAddress) {
-        this.startAddress = startAddress;
-    }
-
-    public String getEndAddress() {
-        return endAddress;
-    }
-
-    public void setEndAddress(String endAddress) {
-        this.endAddress = endAddress;
-    }
-
-    public Distance getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Distance distance) {
-        this.distance = distance;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
-
-    public MyLocation getStartLocation() {
-        return startLocation;
-    }
-
-    public void setStartLocation(MyLocation startLocation) {
-        this.startLocation = startLocation;
-    }
-
-    public MyLocation getEndLocation() {
-        return endLocation;
-    }
-
-    public void setEndLocation(MyLocation endLocation) {
-        this.endLocation = endLocation;
-    }
-
-    public void setSteps(ArrayList<Step> steps) {
-        this.steps = steps;
-    }
-
-    public ArrayList<Step> getSteps() {
-        return steps;
-    }
 
     @Override
     public int describeContents() {

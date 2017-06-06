@@ -24,6 +24,7 @@ import org.androidannotations.annotations.ViewById;
 
 @EActivity(R.layout.activity_detail)
 public class DetailActivity extends AppCompatActivity {
+
     @ViewById(R.id.tvName)
     TextView mTvName;
     @ViewById(R.id.tvId)
@@ -49,27 +50,25 @@ public class DetailActivity extends AppCompatActivity {
     @AfterViews
     void init() {
         mMyDatabase = new MyDatabase(this);
-        mTvName.setText(mAtm.getTenDiaDiem());
-        mTvId.setText(mAtm.getMaDiaDiem());
-        mTvBank.setText(mAtm.getTenDiaDiem());
-        mTvAddress.setText(mAtm.getDiaChi());
-        mTvDistrict.setText(mAtm.getMaQuan());
-        mTvIdBank.setText(mAtm.getMaNganHang());
+        mTvName.setText(mAtm.getAddressName());
+        mTvId.setText(mAtm.getAddressId());
+        mTvBank.setText(mAtm.getAddressName());
+        mTvAddress.setText(mAtm.getAddress());
+        mTvDistrict.setText(mAtm.getDistrictId());
+        mTvIdBank.setText(mAtm.getBankId());
         mTvLatLng.setText(mAtm.getLat() + " , " + mAtm.getLng());
         mImgFavorite.setSelected(mAtm.isFavorite());
     }
 
     @Click(R.id.btnShowMap)
-    public void onClickShowMap() {
+    void onClickShowMap() {
         MapsActivity_.intent(this).mAtm(mAtm).mAddressAtm(mMyLocation).start();
         finish();
     }
 
     @Click(R.id.imgBack)
     void clickBack() {
-        Intent intent = new Intent();
-        intent.putExtra("isFavorite", mAtm.isFavorite());
-        setResult(RESULT_OK, intent);
+        setResult(RESULT_OK, new Intent());
         finish();
     }
 
@@ -82,16 +81,12 @@ public class DetailActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
-            mMyDatabase.deleteATM(Integer.parseInt(mAtm.getMaDiaDiem()));
+            mMyDatabase.deleteATM(Integer.parseInt(mAtm.getAddressId()));
         }
     }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent intent = new Intent();
-        intent.putExtra("isFavorite", mAtm.isFavorite());
-        setResult(RESULT_OK, intent);
-        finish();
+        clickBack();
     }
 }

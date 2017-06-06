@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="IconLocation">
+        <ignore path="src/main/res/drawable/ic_flag_end.png" />
+        <ignore path="src/main/res/drawable/ic_flag_start.png" />
+        <ignore path="src/main/res/drawable/ic_google_maps.png" />
+        <ignore path="src/main/res/drawable/ic_icon.png" />
+        <ignore path="src/main/res/drawable/ic_logo.png" />
+        <ignore path="src/main/res/drawable/ic_logo_launcher.png" />
+        <ignore path="src/main/res/drawable/ic_pin.png" />
+        <ignore path="src/main/res/drawable/ic_pin_choose.png" />
+    </issue>
+</lint>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,7 +10,6 @@
     app:cardCornerRadius="5dp">
 
     <RelativeLayout
-        android:id="@+id/rlContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -20,15 +20,18 @@
             android:layout_centerVertical="true"
             android:layout_margin="15dp"
             android:adjustViewBounds="true"
-            android:src="@drawable/ic_logo" />
+            android:src="@drawable/ic_logo"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/imgLogo"
+            android:layout_toEndOf="@+id/imgLogo"
             android:layout_toLeftOf="@+id/imgFavorite"
             android:layout_toRightOf="@+id/imgLogo"
+            android:layout_toStartOf="@+id/imgFavorite"
             android:text="@string/app_name"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -39,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tvName"
             android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/imgLogo"
             android:layout_toRightOf="@+id/imgLogo"
             android:ellipsize="end"
             android:maxLines="2"
@@ -50,8 +54,10 @@
             android:id="@+id/imgFavorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_margin="10dp"
-            android:src="@drawable/custom_favorite_selected" />
+            android:src="@drawable/custom_favorite_selected"
+            tools:ignore="ContentDescription" />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -10,6 +10,7 @@ import com.example.admin.findatm.models.MyATM;
 import com.example.admin.findatm.models.googleDirections.Leg;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * StepAdapter class
@@ -17,9 +18,11 @@ import java.util.ArrayList;
  */
 
 public class StepAdapter extends FragmentStatePagerAdapter {
-    private ArrayList<Leg> mLegs = new ArrayList<>();
+
+    private List<Leg> mLegs = new ArrayList<>();
     private final MyATM mMyATM;
-    public StepAdapter(FragmentManager fm, ArrayList<Leg> legs, MyATM myATM) {
+
+    public StepAdapter(FragmentManager fm, List<Leg> legs, MyATM myATM) {
         super(fm);
         this.mLegs = legs;
         this.mMyATM = myATM;

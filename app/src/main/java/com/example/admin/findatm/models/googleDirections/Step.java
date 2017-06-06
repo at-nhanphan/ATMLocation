@@ -5,11 +5,16 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Step class
  * Created by naunem on 12/04/2017.
  */
 
+@Setter
+@Getter
 public class Step implements Parcelable {
     @SerializedName("start_location")
     private MyLocation startLocation;
@@ -17,16 +22,12 @@ public class Step implements Parcelable {
     private MyLocation endLocation;
     @SerializedName("html_instructions")
     private String htmlInstructions;
-    @SerializedName("maneuver")
     private String maneuver;
-    @SerializedName("polyline")
     private OverviewPolyLine polyline;
-    @SerializedName("distance")
     private Distance distance;
-    @SerializedName("duration")
     private Duration duration;
 
-    protected Step(Parcel in) {
+    private Step(Parcel in) {
         startLocation = in.readParcelable(MyLocation.class.getClassLoader());
         endLocation = in.readParcelable(MyLocation.class.getClassLoader());
         htmlInstructions = in.readString();
@@ -44,62 +45,6 @@ public class Step implements Parcelable {
             return new Step[size];
         }
     };
-
-    public MyLocation getStartLocation() {
-        return startLocation;
-    }
-
-    public void setStartLocation(MyLocation startLocation) {
-        this.startLocation = startLocation;
-    }
-
-    public MyLocation getEndLocation() {
-        return endLocation;
-    }
-
-    public void setEndLocation(MyLocation endLocation) {
-        this.endLocation = endLocation;
-    }
-
-    public String getHtmlInstructions() {
-        return htmlInstructions;
-    }
-
-    public void setHtmlInstructions(String htmlInstructions) {
-        this.htmlInstructions = htmlInstructions;
-    }
-
-    public String getManeuver() {
-        return maneuver;
-    }
-
-    public void setManeuver(String maneuver) {
-        this.maneuver = maneuver;
-    }
-
-    public OverviewPolyLine getPolyline() {
-        return polyline;
-    }
-
-    public void setPolyline(OverviewPolyLine polyline) {
-        this.polyline = polyline;
-    }
-
-    public Distance getDistance() {
-        return distance;
-    }
-
-    public void setDistance(Distance distance) {
-        this.distance = distance;
-    }
-
-    public Duration getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Duration duration) {
-        this.duration = duration;
-    }
 
     @Override
     public int describeContents() {

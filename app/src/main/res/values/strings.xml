@@ -1,15 +1,10 @@
 <resources>
     <string name="app_name">Find ATM</string>
-    <string name="searchView.text.queryHint">Type your keyword here</string>
     <string name="search_hint">Search</string>
-    <string name="textView.text.start">start</string>
-    <string name="textView.text.end">end</string>
     <string name="button.text.drawRoute">Draw Route</string>
     <string name="textView.text.defaultDistance">0 km</string>
     <string name="textView.text.defaultDuration">0 min</string>
     <string name="direction.key">AIzaSyBLrLg8ydwDTVHQUbgFT0sqCG3Rn5Bczy0</string>
-    <string name="toolbar.title.setting">Setting</string>
-    <string name="textView.text.filter">FILTER</string>
     <string name="gps_network_not_enabled">Enable GPS ?</string>
     <string name="positiveButton">Enable</string>
     <string name="OkButton">OK</string>
@@ -21,8 +16,6 @@
     <string name="home">Home</string>
     <string name="favorite">Favorite</string>
     <string name="about">About</string>
-    <string name="message">result empty</string>
-    <string name="textView.text.rating">Rating</string>
     <string name="toolbar.title.detail">Detail</string>
     <string name="show_map">Show Map</string>
     <string name="textView.text.name">Bank</string>
@@ -30,24 +23,28 @@
     <string name="textView.text.id_district">ID District</string>
     <string name="textView.text.id_bank">ID Bank</string>
     <string name="textView.text.location">Location</string>
-    <string name="textView.text.reload">Reload this page</string>
     <string name="textView.text.map">Maps</string>
     <string name="textView.text.appName">App Name</string>
     <string name="textView.text.author">Author</string>
-    <string name="textView.text.authorName">Phan Trọng Nhân</string>
+    <string name="textView.text.authorName">Phan Trong Nhan</string>
     <string name="textView.text.version">Version</string>
     <string name="textView.text.valueVersion">1.0</string>
     <string name="textView.text.null">Result is empty</string>
     <string name="textView.text.company">Company</string>
     <string name="textView.text.nameCompany">Asian Tech inc.</string>
     <string name="textView.text.school">University</string>
-    <string name="textView.text.nameUniversity">Da Nang University of Science and Technology</string>
+    <string name="textView.text.nameUniversity">DaNang University of Science and Technology</string>
     <string name="textView.text.id">ID</string>
     <string name="myLocation">My Location</string>
     <string name="favorite_item">You\'re favorited this item</string>
     <string name="unfavorite_item">You\'re unfavorited this item</string>
     <string name="location_not_found">Location not found</string>
     <string name="validate">Please choose bank and district correctly</string>
+    <string name="bank">Bank</string>
+    <string name="district">District</string>
+    <string name="delete_message">Do you want deleted this item ?</string>
+    <string name="permission_granted">Permission granted!</string>
+    <string name="permission_denied">Permission denied!</string>
 
     <string-array name="list_banks">
         <item>PVcom Bank</item>

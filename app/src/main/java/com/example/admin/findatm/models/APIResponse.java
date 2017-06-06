@@ -4,27 +4,20 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * Created by Admin on 3/11/2017.
  */
 
+@Getter
+@Setter
+@AllArgsConstructor
 public class APIResponse {
-    @SerializedName("size")
-    private final int size;
+    private int size;
     @SerializedName("data")
-    private final ArrayList<MyATM> myATMs;
-
-    public APIResponse(ArrayList<MyATM> myATMs, int size) {
-        this.myATMs = myATMs;
-        this.size = size;
-    }
-
-    public ArrayList<MyATM> getMyATMs() {
-        return myATMs;
-    }
-
-    public int getSize() {
-        return size;
-    }
+    private ArrayList<MyATM> myATMs;
 }

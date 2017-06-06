@@ -1,18 +1,14 @@
 package com.example.admin.findatm.utils;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import com.example.admin.findatm.R;
 
@@ -49,39 +45,28 @@ public class MyCurrentLocation {
         };
         Location locationNetwork;
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context,
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-        }
         try {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
-            locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
+            locationNetwork = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
             if (locationNetwork != null) {
-                Log.d("ddd", "getCurrentLocation: network");
                 return locationNetwork;
-            } else {
-                Log.d("ddd", "getCurrentLocation: network null");
             }
         } catch (SecurityException ignored) {
-            Log.e("ddd", "getCurrentLocation: ", ignored);
         }
         return null;
     }
 
     public static boolean checkLocationEnabled(final Context context) {
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean check;
+        boolean isGpsEnabled = false;
+        boolean isCheck;
         try {
-            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ignored) {
-            Log.e("ddd", "checkLocationEnabled: ", ignored);
         }
 
-        if (!gps_enabled) {
+        if (!isGpsEnabled) {
             AlertDialog.Builder dialog = new AlertDialog.Builder(context);
             dialog.setCancelable(false);
             dialog.setMessage(context.getResources().getString(R.string.gps_network_not_enabled));
@@ -101,10 +86,10 @@ public class MyCurrentLocation {
                 }
             });
             dialog.show();
-            check = false;
+            isCheck = false;
         } else {
-            check = true;
+            isCheck = true;
         }
-        return check;
+        return isCheck;
     }
 }

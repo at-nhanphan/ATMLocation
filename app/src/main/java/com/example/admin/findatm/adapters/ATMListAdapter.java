@@ -22,6 +22,7 @@ import java.util.List;
  */
 
 public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHolder> {
+
     private List<MyATM> mAtms;
     private final MyOnClickListener mMyOnClickListener;
     private ValueFilterATM mValueFilter;
@@ -43,8 +44,8 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MyATM atm = mAtms.get(position);
-        holder.mTvName.setText(atm.getTenDiaDiem());
-        holder.mTvAddress.setText(atm.getDiaChi());
+        holder.mTvName.setText(atm.getAddressName());
+        holder.mTvAddress.setText(atm.getAddress());
         holder.mImgFavorite.setSelected(atm.isFavorite());
     }
 
@@ -54,14 +55,12 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private final ImageView mImgLogo;
         private final TextView mTvName;
         private final TextView mTvAddress;
         private final ImageView mImgFavorite;
 
         MyViewHolder(View itemView) {
             super(itemView);
-            mImgLogo = (ImageView) itemView.findViewById(R.id.imgLogo);
             mTvName = (TextView) itemView.findViewById(R.id.tvName);
             mTvAddress = (TextView) itemView.findViewById(R.id.tvAddress);
             mImgFavorite = (ImageView) itemView.findViewById(R.id.imgFavorite);
@@ -97,15 +96,16 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         this.mMyOnClickFavoriteListener = mMyOnClickFavoriteListener;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public class ValueFilterATM extends Filter {
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             if (constraint != null && constraint.length() > 0) {
-                List<MyATM> filterLists = new ArrayList();
+                List<MyATM> filterLists = new ArrayList<>();
                 for (int i = 0; i < mAtmsFilter.size(); i++) {
-                    if ((mAtmsFilter.get(i).getTenDiaDiem().toUpperCase()).contains(constraint.toString().toUpperCase())) {
+                    if ((mAtmsFilter.get(i).getAddressName().toUpperCase()).contains(constraint.toString().toUpperCase())) {
                         filterLists.add(mAtmsFilter.get(i));
                     }
                 }
@@ -118,6 +118,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             return results;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mAtms = (List<MyATM>) results.values;

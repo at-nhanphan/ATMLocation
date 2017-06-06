@@ -41,7 +41,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
     private MyDatabase mMyDatabase;
     private ATMListAdapter mAdapter;
-    ArrayList<MyATM> mMyATMs;
+    private ArrayList<MyATM> mMyATMs;
 
     @AfterViews
     void init() {
@@ -82,12 +82,12 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
     public void onClickFavorite(int position) {
         final MyATM myATM = mAdapter.getResultFilter().get(position);
         AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
-        dialog.setMessage("Do you want deleted this item ?");
+        dialog.setMessage(R.string.delete_message);
         dialog.setCancelable(false);
         dialog.setPositiveButton(mOkButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+                mMyDatabase.deleteATM(Integer.parseInt(myATM.getAddressId()));
                 reloadFragment();
             }
         });
@@ -100,7 +100,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         dialog.show();
     }
 
-    public void reloadFragment() {
+    private void reloadFragment() {
         mMyATMs = mMyDatabase.getAll();
         mAdapter = new ATMListAdapter(mMyATMs, this);
         mRecyclerView.setAdapter(mAdapter);
@@ -109,9 +109,6 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
             for (MyATM myAtm : mMyATMs) {
                 myAtm.setFavorite(true);
             }
-            return;
-        } else {
-            return;
         }
     }
 

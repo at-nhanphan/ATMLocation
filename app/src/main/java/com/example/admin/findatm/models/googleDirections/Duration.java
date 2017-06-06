@@ -1,36 +1,18 @@
 package com.example.admin.findatm.models.googleDirections;
 
-import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Duration class
  * Created by naunem on 11/04/2017.
  */
 
+@Setter
+@Getter
+@AllArgsConstructor
 public class Duration {
-    @SerializedName("text")
     private String text;
-    @SerializedName("value")
     private String value;
-
-    public Duration(String text, String mValue) {
-        this.text = text;
-        this.value = mValue;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
 }
