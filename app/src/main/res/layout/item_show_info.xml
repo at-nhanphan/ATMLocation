@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llTimeDistance"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,42 +8,40 @@
     android:baselineAligned="false"
     android:padding="10dp">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_marginLeft="50dp"
+        android:layout_marginStart="50dp"
+        android:src="@drawable/ic_directions_car_white_24dp"
+        tools:ignore="ContentDescription" />
 
-        <TextView
-            android:id="@+id/tvDistance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:drawableLeft="@drawable/ic_directions_car_white_24dp"
-            android:drawableStart="@drawable/ic_directions_car_white_24dp"
-            android:gravity="center"
-            android:text="@string/textView.text.defaultDistance"
-            android:textColor="#EF6C00" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:text="@string/textView.text.defaultDistance"
+        android:textColor="#EF6C00" />
 
-        <TextView
-            android:id="@+id/tvDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginStart="20dp"
-            android:drawableLeft="@drawable/ic_time"
-            android:drawableStart="@drawable/ic_time"
-            android:gravity="center"
-            android:text="@string/textView.text.defaultDuration"
-            android:textColor="#EF6C00" />
-    </LinearLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginStart="100dp"
+        android:src="@drawable/ic_time"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tvDuration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:text="@string/textView.text.defaultDuration"
+        android:textColor="#EF6C00" />
 
 </LinearLayout>

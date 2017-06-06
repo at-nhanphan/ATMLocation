@@ -34,14 +34,14 @@
     <string name="textView.text.map">Maps</string>
     <string name="textView.text.appName">App Name</string>
     <string name="textView.text.author">Author</string>
-    <string name="textView.text.authorName">Phan Trọng Nhân</string>
+    <string name="textView.text.authorName">Phan Trong Nhan</string>
     <string name="textView.text.version">Version</string>
     <string name="textView.text.valueVersion">1.0</string>
     <string name="textView.text.null">Result is empty</string>
     <string name="textView.text.company">Company</string>
     <string name="textView.text.nameCompany">Asian Tech inc.</string>
     <string name="textView.text.school">University</string>
-    <string name="textView.text.nameUniversity">Da Nang University of Science and Technology</string>
+    <string name="textView.text.nameUniversity">DaNang University of Science and Technology</string>
     <string name="textView.text.id">ID</string>
     <string name="myLocation">My Location</string>
     <string name="favorite_item">You\'re favorited this item</string>

@@ -7,13 +7,13 @@
         android:enabled="true"
         android:icon="@drawable/ic_home_brown_200_36dp"
         android:title="@string/home"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/favorite"
         android:enabled="true"
         android:icon="@drawable/ic_favorite_36dp"
         android:title="@string/favorite"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/search"
         android:enabled="true"
