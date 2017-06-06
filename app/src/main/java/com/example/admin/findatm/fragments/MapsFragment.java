@@ -11,11 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
-import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.adapters.ATMListViewPagerAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.interfaces.ATMService;
 import com.example.admin.findatm.models.MyATM;
+import com.example.admin.findatm.models.ObjectData;
 import com.example.admin.findatm.models.googleDirections.DirectionResult;
 import com.example.admin.findatm.services.ApiUtils;
 import com.example.admin.findatm.utils.MyCurrentLocation;
@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.PageScrollStateChanged;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
@@ -62,15 +63,17 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     TextView mTvDistance;
     @ViewById(R.id.tvDuration)
     TextView mTvDuration;
+    @FragmentArg
+    ObjectData mData;
     private List<MyATM> mAtms;
     private GoogleMap mMap;
     private Location mCurrentLocation;
-    private final ArrayList<Marker> mMarkers = new ArrayList<>();
+    private final List<Marker> mMarkers = new ArrayList<>();
     private int mCurrentPage;
 
     @AfterViews
     void init() {
-        mAtms = new ArrayList<>();
+        mAtms = mData == null ? null : mData.getMMyATMs();
         mViewPager.setPageMargin(10);
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.mapView, mapFragment).commit();
@@ -91,7 +94,6 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-        mAtms = MainActivity.getListAtms();
         MyDatabase myDatabase = new MyDatabase(getContext());
         if (mAtms.size() > 0) {
             for (int i = 0; i < mAtms.size(); i++) {
@@ -127,7 +129,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMarkers.add(marker);
     }
 
-    private void zoomMapFitMarkers(ArrayList<Marker> markers) {
+    private void zoomMapFitMarkers(List<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         if (markers.size() > 0) {
             for (Marker marker : markers) {

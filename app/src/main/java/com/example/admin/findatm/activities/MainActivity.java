@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -16,11 +17,13 @@ import android.widget.RelativeLayout;
 import com.example.admin.findatm.R;
 import com.example.admin.findatm.fragments.AboutFragment_;
 import com.example.admin.findatm.fragments.FavoriteFragment_;
+import com.example.admin.findatm.fragments.HomeFragment;
 import com.example.admin.findatm.fragments.HomeFragment_;
 import com.example.admin.findatm.fragments.MapsFragment_;
 import com.example.admin.findatm.fragments.SearchFragment_;
 import com.example.admin.findatm.interfaces.OnQueryTextChange;
 import com.example.admin.findatm.models.MyATM;
+import com.example.admin.findatm.models.ObjectData;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -50,13 +53,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private FragmentManager mManager;
     private boolean mIsCheck;
     private boolean mIsClick;
-    private static List<MyATM> mListAtms = new ArrayList<>();
 
     @AfterViews
     void init() {
         mRlSearch.setVisibility(View.GONE);
         mManager = getSupportFragmentManager();
-        mManager.beginTransaction().replace(R.id.flContainer, new HomeFragment_()).commit();
+        mManager.beginTransaction().replace(R.id.flContainer, HomeFragment_.builder().build()).commit();
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
         addSearchListener();
@@ -77,8 +79,14 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Click(R.id.imgSwipe)
     void clickSwipe() {
         Fragment fragment;
+        List<MyATM> lists = new ArrayList<>();
+        Fragment frag = mManager.findFragmentById(R.id.flContainer);
+        if (frag != null && frag instanceof HomeFragment) {
+            lists = ((HomeFragment) frag).getListATMs();
+            Log.d("ddd", "clickSwipe: " + lists.size());
+        }
         if (!mIsCheck) {
-            fragment = MapsFragment_.builder().build();
+            fragment = MapsFragment_.builder().mData(new ObjectData(lists)).build();
             mImgSwipe.setBackgroundResource(R.drawable.ic_view_list_white_24dp);
             mImgSearch.setVisibility(View.GONE);
             mRlSearch.setVisibility(View.GONE);
@@ -90,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
             mIsCheck = false;
         }
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+
     }
 
     public void setOnQueryTextChange(OnQueryTextChange onQueryTextChange) {
@@ -163,13 +172,4 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         mManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
         return true;
     }
-
-    public static List<MyATM> getListAtms() {
-        return mListAtms;
-    }
-
-    public static void setListAtms(List<MyATM> listAtms) {
-        mListAtms = listAtms;
-    }
-
 }

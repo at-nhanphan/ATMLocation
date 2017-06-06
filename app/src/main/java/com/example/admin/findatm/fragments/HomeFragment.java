@@ -62,14 +62,15 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     ProgressBar mProgressBar;
     @ViewById(R.id.imgWifi)
     ImageView mImgWifi;
+
     private ATMListAdapter mAdapter;
     private List<MyATM> mAtms;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
     private double mLat;
     private double mLng;
-    private boolean mCheck;
     private Animation mAnimation;
+    private List<MyATM> mListATMs = new ArrayList<>();
 
     @AfterViews
     void init() {
@@ -167,6 +168,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 if (myATMs != null) {
                     mAtms.clear();
                     mAtms.addAll(myATMs);
+                    mListATMs.addAll(myATMs);
                     for (int i = 0; i < mAtms.size(); i++) {
                         for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
                             if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
@@ -180,7 +182,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                             return o1.getAddressName().compareTo(o2.getAddressName());
                         }
                     });
-                    MainActivity.setListAtms(mAtms);
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -249,7 +250,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
-    //=============================================================//
+    public List<MyATM> getListATMs() {
+        return mListATMs;
+    }
+
     private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -263,7 +267,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             while (mAtms.size() <= 0) {
                 try {
                     Thread.sleep(1000);
-                    mCheck = false;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -276,12 +279,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             super.onPostExecute(aVoid);
             try {
                 mProgressBar.setVisibility(View.GONE);
-                if (mCheck) {
-                    MainActivity.setListAtms(new ArrayList<MyATM>());
-                }
             } catch (NullPointerException ignored) {
             }
         }
     }
-    //=============================================================//
 }
