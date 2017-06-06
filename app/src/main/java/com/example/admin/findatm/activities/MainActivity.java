@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -79,14 +78,13 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     @Click(R.id.imgSwipe)
     void clickSwipe() {
         Fragment fragment;
-        List<MyATM> lists = new ArrayList<>();
+        ArrayList<MyATM> lists = new ArrayList<>();
         Fragment frag = mManager.findFragmentById(R.id.flContainer);
         if (frag != null && frag instanceof HomeFragment) {
             lists = ((HomeFragment) frag).getListATMs();
-            Log.d("ddd", "clickSwipe: " + lists.size());
         }
         if (!mIsCheck) {
-            fragment = MapsFragment_.builder().mData(new ObjectData(lists)).build();
+            fragment = MapsFragment_.builder().mMyATMs(lists).build();
             mImgSwipe.setBackgroundResource(R.drawable.ic_view_list_white_24dp);
             mImgSearch.setVisibility(View.GONE);
             mRlSearch.setVisibility(View.GONE);

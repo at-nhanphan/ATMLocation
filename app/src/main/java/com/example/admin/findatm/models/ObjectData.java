@@ -8,6 +8,7 @@ import java.util.List;
 import lombok.Getter;
 
 /**
+ * This class used to contain list data
  * Created by naunem on 06/06/2017.
  */
 
@@ -15,7 +16,7 @@ import lombok.Getter;
 public class ObjectData implements Parcelable{
     private List<MyATM> mMyATMs;
 
-    public ObjectData(Parcel in) {
+    private ObjectData(Parcel in) {
         mMyATMs = in.createTypedArrayList(MyATM.CREATOR);
     }
 

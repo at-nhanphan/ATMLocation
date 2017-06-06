@@ -67,10 +67,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     private List<MyATM> mAtms;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
-    private double mLat;
-    private double mLng;
     private Animation mAnimation;
-    private List<MyATM> mListATMs = new ArrayList<>();
+    private ArrayList<MyATM> mListATMs = new ArrayList<>();
 
     @AfterViews
     void init() {
@@ -128,9 +126,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         if (currentLocation != null) {
             if (NetworkConnection.isInternetConnected(getContext())) {
                 mImgWifi.setVisibility(View.GONE);
-                mLat = currentLocation.getLatitude();
-                mLng = currentLocation.getLongitude();
-                getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+                getDataResponse(mAtmServiceImpl, currentLocation.getLatitude(), currentLocation.getLongitude(), 2);
             } else {
                 mImgWifi.setVisibility(View.VISIBLE);
                 mImgWifi.setImageResource(R.drawable.ic_wifi_off_brown_200_48dp);
@@ -227,7 +223,14 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     @OnActivityResult(REQUEST_CODE_DETAIL)
     void onResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+            for (int i = 0; i < mAtms.size(); i++) {
+                for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                    if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
+                        mAtms.get(i).setFavorite(true);
+                    }
+                }
+            }
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -250,7 +253,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
-    public List<MyATM> getListATMs() {
+    public ArrayList<MyATM> getListATMs() {
         return mListATMs;
     }
 

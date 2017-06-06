@@ -68,7 +68,8 @@ public class DetailActivity extends AppCompatActivity {
 
     @Click(R.id.imgBack)
     void clickBack() {
-        setResult(RESULT_OK, new Intent());
+        Intent intent = new Intent();
+        setResult(RESULT_OK, intent);
         finish();
     }
 
@@ -80,8 +81,8 @@ public class DetailActivity extends AppCompatActivity {
             mMyDatabase.insertATM(mAtm);
             Toast.makeText(this, R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
             mMyDatabase.deleteATM(Integer.parseInt(mAtm.getAddressId()));
+            Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }
 
