@@ -12,15 +12,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class MyATM implements Parcelable {
     @SerializedName("madiadiem")
-    private String maDiaDiem;
+    private String addressId;
     @SerializedName("tendiadiem")
-    private String tenDiaDiem;
+    private String addressName;
     @SerializedName("diachi")
-    private String diaChi;
+    private String address;
     @SerializedName("maquan")
-    private String maQuan;
+    private String districtId;
     @SerializedName("manganhang")
-    private String maNganHang;
+    private String bankId;
     @SerializedName("lat")
     private String lat;
     @SerializedName("lng")
@@ -28,12 +28,12 @@ public class MyATM implements Parcelable {
     private boolean favorite;
     private int id;
 
-    public MyATM(String maDiaDiem, String tenDiaDiem, String diaChi, String maQuan, String maNganHang, String lat, String lng, int id) {
-        this.maDiaDiem = maDiaDiem;
-        this.tenDiaDiem = tenDiaDiem;
-        this.diaChi = diaChi;
-        this.maQuan = maQuan;
-        this.maNganHang = maNganHang;
+    public MyATM(String addressId, String addressName, String address, String districtId, String bankId, String lat, String lng, int id) {
+        this.addressId = addressId;
+        this.addressName = addressName;
+        this.address = address;
+        this.districtId = districtId;
+        this.bankId = bankId;
         this.lat = lat;
         this.lng = lng;
         this.id = id;
@@ -43,24 +43,24 @@ public class MyATM implements Parcelable {
 
     }
 
-    public MyATM(int id, String maDiaDiem, String tenDiaDiem, String diaChi, String maQuan, String maNganHang, String lat, String lng, boolean favorite) {
+    public MyATM(int id, String addressId, String addressName, String address, String districtId, String bankId, String lat, String lng, boolean favorite) {
         this.id = id;
-        this.maDiaDiem = maDiaDiem;
-        this.tenDiaDiem = tenDiaDiem;
-        this.diaChi = diaChi;
-        this.maQuan = maQuan;
-        this.maNganHang = maNganHang;
+        this.addressId = addressId;
+        this.addressName = addressName;
+        this.address = address;
+        this.districtId = districtId;
+        this.bankId = bankId;
         this.lat = lat;
         this.lng = lng;
         this.favorite = favorite;
     }
 
     protected MyATM(Parcel in) {
-        maDiaDiem = in.readString();
-        tenDiaDiem = in.readString();
-        diaChi = in.readString();
-        maQuan = in.readString();
-        maNganHang = in.readString();
+        addressId = in.readString();
+        addressName = in.readString();
+        address = in.readString();
+        districtId = in.readString();
+        bankId = in.readString();
         lat = in.readString();
         lng = in.readString();
         favorite = in.readByte() != 0;
@@ -79,36 +79,36 @@ public class MyATM implements Parcelable {
         }
     };
 
-    public String getMaDiaDiem() {
-        return maDiaDiem;
+    public String getAddressId() {
+        return addressId;
     }
 
-    public void setMaDiaDiem(String maDiaDiem) {
-        this.maDiaDiem = maDiaDiem;
+    public void setAddressId(String addressId) {
+        this.addressId = addressId;
     }
 
-    public void setTenDiaDiem(String tenDiaDiem) {
-        this.tenDiaDiem = tenDiaDiem;
+    public void setAddressName(String addressName) {
+        this.addressName = addressName;
     }
 
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getMaQuan() {
-        return maQuan;
+    public String getDistrictId() {
+        return districtId;
     }
 
-    public void setMaQuan(String maQuan) {
-        this.maQuan = maQuan;
+    public void setDistrictId(String districtId) {
+        this.districtId = districtId;
     }
 
-    public String getMaNganHang() {
-        return maNganHang;
+    public String getBankId() {
+        return bankId;
     }
 
-    public void setMaNganHang(String maNganHang) {
-        this.maNganHang = maNganHang;
+    public void setBankId(String bankId) {
+        this.bankId = bankId;
     }
 
     public void setLat(String lat) {
@@ -127,17 +127,12 @@ public class MyATM implements Parcelable {
         this.favorite = favorite;
     }
 
-    @SuppressWarnings("SameReturnValue")
-    public static Creator<MyATM> getCREATOR() {
-        return CREATOR;
+    public String getAddressName() {
+        return addressName;
     }
 
-    public String getTenDiaDiem() {
-        return tenDiaDiem;
-    }
-
-    public String getDiaChi() {
-        return diaChi;
+    public String getAddress() {
+        return address;
     }
 
     public String getLat() {
@@ -163,11 +158,11 @@ public class MyATM implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(maDiaDiem);
-        dest.writeString(tenDiaDiem);
-        dest.writeString(diaChi);
-        dest.writeString(maQuan);
-        dest.writeString(maNganHang);
+        dest.writeString(addressId);
+        dest.writeString(addressName);
+        dest.writeString(address);
+        dest.writeString(districtId);
+        dest.writeString(bankId);
         dest.writeString(lat);
         dest.writeString(lng);
         dest.writeByte((byte) (favorite ? 1 : 0));

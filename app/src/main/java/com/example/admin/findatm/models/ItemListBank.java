@@ -6,16 +6,11 @@ package com.example.admin.findatm.models;
  */
 
 public class ItemListBank {
-    String name;
-    boolean check;
+    private String name;
+    private boolean check;
 
     public ItemListBank(String name) {
         this.name = name;
-    }
-
-    public ItemListBank(String name, boolean check) {
-        this.name = name;
-        this.check = check;
     }
 
     public String getName() {

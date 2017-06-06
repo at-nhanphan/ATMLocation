@@ -97,7 +97,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
                 addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
                 if (myDatabase.getAll().size() > 0) {
                     for (int j = 0; j < myDatabase.getAll().size(); j++) {
-                        if (mAtms.get(i).getMaDiaDiem().equals(myDatabase.getAll().get(j).getMaDiaDiem())) {
+                        if (mAtms.get(i).getAddressId().equals(myDatabase.getAll().get(j).getAddressId())) {
                             mAtms.get(i).setFavorite(true);
                             break;
                         } else {

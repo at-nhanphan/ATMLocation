@@ -67,6 +67,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     public class ValueFilter extends Filter {
 
         @Override
@@ -88,6 +89,7 @@ public class ListBankAdapter extends RecyclerView.Adapter<ListBankAdapter.ViewHo
             return results;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mBanks = (List<ItemListBank>) results.values;

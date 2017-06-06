@@ -15,8 +15,8 @@ class SqliteDBHandler extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "MyDatabase";
     static final String TABLE_NAME = "ATM";
     private static final String SQL_CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" + AtmColumns._ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AtmColumns.MA_DIA_DIEM + " INTEGER, " + AtmColumns.TEN_DIA_DIEM
-            + " TEXT, " + AtmColumns.DIA_CHI + " TEXT, " + AtmColumns.MA_QUAN + " TEXT, " + AtmColumns.MA_NGAN_HANG + " TEXT, "
+            + " INTEGER PRIMARY KEY AUTOINCREMENT, " + AtmColumns.ADDRESS_ID + " INTEGER, " + AtmColumns.ADDRESS_NAME
+            + " TEXT, " + AtmColumns.ADDRESS + " TEXT, " + AtmColumns.DISTRICT_ID + " TEXT, " + AtmColumns.BANK_ID + " TEXT, "
             + AtmColumns.LAT + " TEXT, " + AtmColumns.LNG + " TEXT)";
     private static final String SQL_DELETE_TABLE = "DROP TABLE IF EXISTS " + TABLE_NAME;
 
@@ -25,11 +25,11 @@ class SqliteDBHandler extends SQLiteOpenHelper {
     }
 
     class AtmColumns implements BaseColumns {
-        static final String MA_DIA_DIEM = "madiadiem";
-        static final String TEN_DIA_DIEM = "tendiadiem";
-        static final String DIA_CHI = "diachi";
-        static final String MA_QUAN = "maquan";
-        static final String MA_NGAN_HANG = "manganhang";
+        static final String ADDRESS_ID = "addressId";
+        static final String ADDRESS_NAME = "addressName";
+        static final String ADDRESS = "address";
+        static final String DISTRICT_ID = "districtId";
+        static final String BANK_ID = "bankId";
         static final String LAT = "lat";
         static final String LNG = "lng";
     }

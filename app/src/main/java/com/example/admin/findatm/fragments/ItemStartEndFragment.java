@@ -43,7 +43,7 @@ public class ItemStartEndFragment extends Fragment {
             mImgLogo.setImageResource(R.drawable.ic_flag_start);
         } else {
             assert myATM != null;
-            mTvName.setText(myATM.getDiaChi());
+            mTvName.setText(myATM.getAddress());
             mImgLogo.setImageResource(R.drawable.ic_flag_end);
         }
     }

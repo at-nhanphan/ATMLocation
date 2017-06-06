@@ -43,8 +43,8 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MyATM atm = mAtms.get(position);
-        holder.mTvName.setText(atm.getTenDiaDiem());
-        holder.mTvAddress.setText(atm.getDiaChi());
+        holder.mTvName.setText(atm.getAddressName());
+        holder.mTvAddress.setText(atm.getAddress());
         holder.mImgFavorite.setSelected(atm.isFavorite());
     }
 
@@ -95,6 +95,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         this.mMyOnClickFavoriteListener = mMyOnClickFavoriteListener;
     }
 
+    @SuppressWarnings("WeakerAccess")
     public class ValueFilterATM extends Filter {
 
         @Override
@@ -103,7 +104,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             if (constraint != null && constraint.length() > 0) {
                 List<MyATM> filterLists = new ArrayList<>();
                 for (int i = 0; i < mAtmsFilter.size(); i++) {
-                    if ((mAtmsFilter.get(i).getTenDiaDiem().toUpperCase()).contains(constraint.toString().toUpperCase())) {
+                    if ((mAtmsFilter.get(i).getAddressName().toUpperCase()).contains(constraint.toString().toUpperCase())) {
                         filterLists.add(mAtmsFilter.get(i));
                     }
                 }
@@ -116,6 +117,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
             return results;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             mAtms = (List<MyATM>) results.values;

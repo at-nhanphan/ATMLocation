@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGray"
@@ -15,9 +16,11 @@
             android:id="@+id/tvBank"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:background="@drawable/custom_button"
+            android:drawableEnd="@drawable/ic_drop_down_white_24dp"
             android:drawableRight="@drawable/ic_drop_down_white_24dp"
             android:gravity="center"
             android:text="@string/textView.text.chooseBank"
@@ -27,9 +30,11 @@
             android:id="@+id/tvArea"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginEnd="2dp"
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:background="@drawable/custom_button"
+            android:drawableEnd="@drawable/ic_drop_down_white_24dp"
             android:drawableRight="@drawable/ic_drop_down_white_24dp"
             android:gravity="center"
             android:text="@string/textView.text.district"
@@ -42,8 +47,12 @@
             android:layout_weight="1"
             android:background="@drawable/custom_button"
             android:drawableLeft="@drawable/ic_search_white_24dp"
+            android:drawableStart="@drawable/ic_search_white_24dp"
             android:gravity="center"
+            android:paddingEnd="5dp"
             android:paddingLeft="15dp"
+            android:paddingRight="5dp"
+            android:paddingStart="15dp"
             android:text="@string/search_hint"
             android:textAllCaps="false"
             android:textColor="@android:color/white" />
@@ -64,7 +73,8 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_centerInParent="true"
-        android:src="@drawable/ic_wifi_off_brown_200_48dp" />
+        android:src="@drawable/ic_wifi_off_brown_200_48dp"
+        tools:ignore="ContentDescription" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -74,8 +84,8 @@
 
     <ProgressBar
         android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleSmall"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 </RelativeLayout>

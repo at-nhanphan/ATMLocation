@@ -182,7 +182,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
                     mAtms.addAll(myATMs);
                     for (int i = 0; i < mAtms.size(); i++) {
                         for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
-                            if (mAtms.get(i).getMaDiaDiem().equals(mMyDatabase.getAll().get(j).getMaDiaDiem())) {
+                            if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
                                 mAtms.get(i).setFavorite(true);
                             }
                         }
@@ -200,7 +200,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             mMyDatabase.insertATM(myATM);
             Toast.makeText(getContext(), R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
-            mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+            mMyDatabase.deleteATM(Integer.parseInt(myATM.getAddressId()));
             Toast.makeText(getContext(), R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }

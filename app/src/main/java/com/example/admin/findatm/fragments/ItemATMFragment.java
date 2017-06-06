@@ -45,8 +45,8 @@ public class ItemATMFragment extends Fragment implements View.OnClickListener {
         mCardView.setCardBackgroundColor(mColorItem);
         mMyATM = getArguments().getParcelable(RESULT_ATM);
         if (mMyATM != null) {
-            mTvName.setText(mMyATM.getTenDiaDiem());
-            mTvAddress.setText(mMyATM.getDiaChi());
+            mTvName.setText(mMyATM.getAddressName());
+            mTvAddress.setText(mMyATM.getAddress());
             mImgFavorite.setSelected(mMyATM.isFavorite());
         }
         mImgFavorite.setOnClickListener(this);
@@ -68,7 +68,7 @@ public class ItemATMFragment extends Fragment implements View.OnClickListener {
             mMyDatabase.insertATM(mMyATM);
             Toast.makeText(getContext(), R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
-            mMyDatabase.deleteATM(Integer.parseInt(mMyATM.getMaDiaDiem()));
+            mMyDatabase.deleteATM(Integer.parseInt(mMyATM.getAddressId()));
             Toast.makeText(getContext(), R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }

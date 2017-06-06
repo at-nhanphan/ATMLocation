@@ -121,8 +121,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mPolylineOptions.add(mLocation);
         mMap.addMarker(new MarkerOptions()
                 .position(mLocation)
-                .title(mAtm.getTenDiaDiem())
-                .snippet(mAtm.getDiaChi())
+                .title(mAtm.getAddressName())
+                .snippet(mAtm.getAddress())
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_pin_choose)))
                 .showInfoWindow();
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mLocation, 16));

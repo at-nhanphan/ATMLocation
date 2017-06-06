@@ -14,6 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class DirectionRetrofit {
+
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient(String baseUrl) {

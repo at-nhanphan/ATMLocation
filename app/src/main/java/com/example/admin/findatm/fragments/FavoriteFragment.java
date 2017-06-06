@@ -87,7 +87,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         dialog.setPositiveButton(mOkButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mMyDatabase.deleteATM(Integer.parseInt(myATM.getMaDiaDiem()));
+                mMyDatabase.deleteATM(Integer.parseInt(myATM.getAddressId()));
                 reloadFragment();
             }
         });

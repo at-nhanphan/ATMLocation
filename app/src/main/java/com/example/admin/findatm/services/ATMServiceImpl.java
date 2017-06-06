@@ -24,15 +24,14 @@ public class ATMServiceImpl {
 
     private final Context mContext;
     private static final String BASE_URL = "http://at-nhanphan.890m.com/";
+    private ATMService mService;
 
     public ATMServiceImpl(Context context) {
         this.mContext = context;
     }
 
-    private final ATMService mService = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
-
-
     public void getATM(double lat, double lng, int radius, final CallBack<ArrayList<MyATM>> callBack) {
+        mService = ConfigRetrofit.getClient(BASE_URL).create(ATMService.class);
         Call<APIResponse> atms = mService.getAllATM(lat, lng, radius);
         atms.enqueue(new Callback<APIResponse>() {
             @Override
