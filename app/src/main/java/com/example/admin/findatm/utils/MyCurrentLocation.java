@@ -46,8 +46,8 @@ public class MyCurrentLocation {
         Location locationNetwork;
         LocationManager locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         try {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 10, locationListener);
-            locationNetwork = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 10, locationListener);
+            locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
             if (locationNetwork != null) {
                 return locationNetwork;
