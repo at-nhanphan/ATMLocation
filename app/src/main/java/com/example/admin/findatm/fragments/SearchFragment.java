@@ -3,6 +3,7 @@ package com.example.admin.findatm.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -233,12 +234,8 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
             int count = 0;
             while (mAtms.size() <= 0) {
                 count++;
-                try {
-                    Thread.sleep(1000);
-                    mCheck = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                SystemClock.sleep(1000);
+                mCheck = false;
                 if (count >= 5) {
                     mCheck = true;
                     break;

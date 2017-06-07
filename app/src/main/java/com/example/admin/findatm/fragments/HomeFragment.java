@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -274,11 +275,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected Void doInBackground(Void... params) {
             while (mAtms.size() <= 0) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                SystemClock.sleep(1000);
             }
             return null;
         }

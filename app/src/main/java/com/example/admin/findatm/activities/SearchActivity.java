@@ -3,6 +3,7 @@ package com.example.admin.findatm.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -253,12 +254,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
             int count = 0;
             while (mAtms.size() <= 0) {
                 count++;
-                try {
-                    Thread.sleep(1000);
-                    mIsCheck = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                SystemClock.sleep(1000);
+                mIsCheck = false;
                 if (count >= 5) {
                     mIsCheck = true;
                     break;
