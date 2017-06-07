@@ -80,8 +80,8 @@ public class DetailActivity extends AppCompatActivity {
             mMyDatabase.insertATM(mAtm);
             Toast.makeText(this, R.string.favorite_item, Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
             mMyDatabase.deleteATM(Integer.parseInt(mAtm.getAddressId()));
+            Toast.makeText(this, R.string.unfavorite_item, Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +15,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class MyATM implements Parcelable {
     @SerializedName("madiadiem")
     private String addressId;
@@ -48,7 +46,7 @@ public class MyATM implements Parcelable {
 
     }
 
-    private MyATM(Parcel in) {
+    protected MyATM(Parcel in) {
         addressId = in.readString();
         addressName = in.readString();
         address = in.readString();

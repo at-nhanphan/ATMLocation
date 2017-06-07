@@ -11,7 +11,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
-import com.example.admin.findatm.activities.MainActivity;
 import com.example.admin.findatm.adapters.ATMListViewPagerAdapter;
 import com.example.admin.findatm.databases.MyDatabase;
 import com.example.admin.findatm.interfaces.ATMService;
@@ -32,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
+import org.androidannotations.annotations.FragmentArg;
 import org.androidannotations.annotations.PageScrollStateChanged;
 import org.androidannotations.annotations.PageSelected;
 import org.androidannotations.annotations.ViewById;
@@ -62,15 +62,15 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     TextView mTvDistance;
     @ViewById(R.id.tvDuration)
     TextView mTvDuration;
-    private List<MyATM> mAtms;
+    @FragmentArg
+    ArrayList<MyATM> mMyATMs;
     private GoogleMap mMap;
     private Location mCurrentLocation;
-    private final ArrayList<Marker> mMarkers = new ArrayList<>();
+    private final List<Marker> mMarkers = new ArrayList<>();
     private int mCurrentPage;
 
     @AfterViews
     void init() {
-        mAtms = new ArrayList<>();
         mViewPager.setPageMargin(10);
         SupportMapFragment mapFragment = SupportMapFragment.newInstance();
         getChildFragmentManager().beginTransaction().replace(R.id.mapView, mapFragment).commit();
@@ -91,26 +91,25 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMyLocationButtonClickListener(this);
-        mAtms = MainActivity.getListAtms();
         MyDatabase myDatabase = new MyDatabase(getContext());
-        if (mAtms.size() > 0) {
-            for (int i = 0; i < mAtms.size(); i++) {
-                addMarker(new LatLng(Double.parseDouble(mAtms.get(i).getLat()), Double.parseDouble(mAtms.get(i).getLng())));
+        if (mMyATMs.size() > 0) {
+            for (int i = 0; i < mMyATMs.size(); i++) {
+                addMarker(new LatLng(Double.parseDouble(mMyATMs.get(i).getLat()), Double.parseDouble(mMyATMs.get(i).getLng())));
                 if (myDatabase.getAll().size() > 0) {
                     for (int j = 0; j < myDatabase.getAll().size(); j++) {
-                        if (mAtms.get(i).getAddressId().equals(myDatabase.getAll().get(j).getAddressId())) {
-                            mAtms.get(i).setFavorite(true);
+                        if (mMyATMs.get(i).getAddressId().equals(myDatabase.getAll().get(j).getAddressId())) {
+                            mMyATMs.get(i).setFavorite(true);
                             break;
                         } else {
-                            mAtms.get(i).setFavorite(false);
+                            mMyATMs.get(i).setFavorite(false);
                         }
                     }
                 } else {
-                    mAtms.get(i).setFavorite(false);
+                    mMyATMs.get(i).setFavorite(false);
                 }
             }
             mViewPager.setVisibility(View.VISIBLE);
-            ATMListViewPagerAdapter adapter = new ATMListViewPagerAdapter(getFragmentManager(), mAtms);
+            ATMListViewPagerAdapter adapter = new ATMListViewPagerAdapter(getFragmentManager(), mMyATMs);
             mViewPager.setAdapter(adapter);
             mViewPager.setCurrentItem(mCurrentPage + 1);
         } else {
@@ -127,7 +126,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
         mMarkers.add(marker);
     }
 
-    private void zoomMapFitMarkers(ArrayList<Marker> markers) {
+    private void zoomMapFitMarkers(List<Marker> markers) {
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         if (markers.size() > 0) {
             for (Marker marker : markers) {
@@ -174,7 +173,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
             ATMService atmService = ApiUtils.getService();
             Call<DirectionResult> result = atmService.getData(
                     mCurrentLocation.getLatitude() + "," + mCurrentLocation.getLongitude(),
-                    mAtms.get(position - 1).getLat() + "," + mAtms.get(position - 1).getLng(), mStDirectionKey
+                    mMyATMs.get(position - 1).getLat() + "," + mMyATMs.get(position - 1).getLng(), mStDirectionKey
             );
             result.enqueue(new Callback<DirectionResult>() {
                 @Override
@@ -203,7 +202,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback, Google
     @PageScrollStateChanged(R.id.viewPager)
     void onPageScrollChanged(int state) {
         if (state == ViewPager.SCROLL_STATE_IDLE) {
-            int pageCount = mAtms.size() + 2;
+            int pageCount = mMyATMs.size() + 2;
             if (mCurrentPage == 0) {
                 mViewPager.setCurrentItem(pageCount - 2, false);
             } else if (mCurrentPage == pageCount - 1) {

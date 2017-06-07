@@ -2,11 +2,11 @@ package com.example.admin.findatm.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -62,30 +62,36 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     ProgressBar mProgressBar;
     @ViewById(R.id.imgWifi)
     ImageView mImgWifi;
+
     private ATMListAdapter mAdapter;
     private List<MyATM> mAtms;
     private MyDatabase mMyDatabase;
     private ATMServiceImpl mAtmServiceImpl;
-    private double mLat;
-    private double mLng;
-    private boolean mCheck;
     private Animation mAnimation;
+    private ArrayList<MyATM> mListATMs = new ArrayList<>();
 
     @AfterViews
     void init() {
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
+        initAfterView();
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
+        askPermissionsAccessLocation();
+        checkWifiAndLocation();
+    }
+
+    private void initAfterView() {
         mMyDatabase = new MyDatabase(getContext());
         mImgWifi.setVisibility(View.GONE);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(mAtms, this);
         mAtmServiceImpl = new ATMServiceImpl(getContext());
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setMyOnClickFavoriteListener(this);
-        askPermissionsAccessLocation();
         mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+    }
 
+    private void checkWifiAndLocation() {
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
             if (NetworkConnection.isInternetConnected(getContext())) {
                 mImgWifi.setVisibility(View.GONE);
@@ -127,9 +133,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         if (currentLocation != null) {
             if (NetworkConnection.isInternetConnected(getContext())) {
                 mImgWifi.setVisibility(View.GONE);
-                mLat = currentLocation.getLatitude();
-                mLng = currentLocation.getLongitude();
-                getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+                getDataResponse(mAtmServiceImpl, currentLocation.getLatitude(), currentLocation.getLongitude(), 2);
             } else {
                 mImgWifi.setVisibility(View.VISIBLE);
                 mImgWifi.setImageResource(R.drawable.ic_wifi_off_brown_200_48dp);
@@ -167,6 +171,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                 if (myATMs != null) {
                     mAtms.clear();
                     mAtms.addAll(myATMs);
+                    mListATMs.addAll(myATMs);
                     for (int i = 0; i < mAtms.size(); i++) {
                         for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
                             if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
@@ -180,7 +185,6 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
                             return o1.getAddressName().compareTo(o2.getAddressName());
                         }
                     });
-                    MainActivity.setListAtms(mAtms);
                     mAdapter.notifyDataSetChanged();
                 }
             }
@@ -224,9 +228,16 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     @OnActivityResult(REQUEST_CODE_DETAIL)
-    void onResult(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
-            getDataResponse(mAtmServiceImpl, mLat, mLng, 2);
+    void onResult(int resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            for (int i = 0; i < mAtms.size(); i++) {
+                for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                    if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
+                        mAtms.get(i).setFavorite(true);
+                    }
+                }
+            }
+            mAdapter.notifyDataSetChanged();
         }
     }
 
@@ -249,7 +260,10 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         }
     }
 
-    //=============================================================//
+    public ArrayList<MyATM> getListATMs() {
+        return mListATMs;
+    }
+
     private class MyAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -261,12 +275,7 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
         @Override
         protected Void doInBackground(Void... params) {
             while (mAtms.size() <= 0) {
-                try {
-                    Thread.sleep(1000);
-                    mCheck = false;
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                SystemClock.sleep(1000);
             }
             return null;
         }
@@ -276,12 +285,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
             super.onPostExecute(aVoid);
             try {
                 mProgressBar.setVisibility(View.GONE);
-                if (mCheck) {
-                    MainActivity.setListAtms(new ArrayList<MyATM>());
-                }
             } catch (NullPointerException ignored) {
             }
         }
     }
-    //=============================================================//
 }
