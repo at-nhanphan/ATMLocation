@@ -5,6 +5,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.example.admin.findatm.R;
@@ -54,7 +56,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
         mMyDatabase = new MyDatabase(getActivity());
         mMyATMs = mMyDatabase.getAll();
         if (mMyATMs != null) {
-            for(MyATM myATM : mMyATMs) {
+            for (MyATM myATM : mMyATMs) {
                 myATM.setFavorite(true);
             }
             mAdapter = new ATMListAdapter(mMyATMs, this);
@@ -87,15 +89,30 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
     @Override
     public void onClickFavorite(final int position) {
         final MyATM myATM = mAdapter.getResultFilter().get(position);
-        AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setMessage(R.string.delete_message);
         dialog.setCancelable(false);
         dialog.setPositiveButton(mOkButton, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mMyDatabase.deleteATM(Integer.parseInt(myATM.getAddressId()));
-                mMyATMs.remove(position);
-                mAdapter.notifyDataSetChanged();
+                Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.collapse);
+                mRecyclerView.getLayoutManager().findViewByPosition(position).startAnimation(animation);
+                animation.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mMyATMs.remove(position);
+                        mAdapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
                 Toast.makeText(getContext(), mMessageDelete, Toast.LENGTH_SHORT).show();
             }
         });

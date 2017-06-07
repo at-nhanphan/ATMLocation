@@ -73,7 +73,6 @@ public class MyCurrentLocation {
             dialog.setPositiveButton(context.getResources().getString(R.string.positiveButton), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
                     Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     context.startActivity(myIntent);
                 }
@@ -82,7 +81,6 @@ public class MyCurrentLocation {
 
                 @Override
                 public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
                 }
             });
             dialog.show();
