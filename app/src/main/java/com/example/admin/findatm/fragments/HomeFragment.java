@@ -73,17 +73,24 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     void init() {
         LinearLayoutManager ln = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecyclerView.setLayoutManager(ln);
+        initAfterView();
+        mRecyclerView.setAdapter(mAdapter);
+        mAdapter.setMyOnClickFavoriteListener(this);
+        askPermissionsAccessLocation();
+        checkWifiAndLocation();
+    }
+
+    private void initAfterView() {
         mMyDatabase = new MyDatabase(getContext());
         mImgWifi.setVisibility(View.GONE);
         ((MainActivity) getContext()).setOnQueryTextChange(this);
         mAtms = new ArrayList<>();
         mAdapter = new ATMListAdapter(mAtms, this);
         mAtmServiceImpl = new ATMServiceImpl(getContext());
-        mRecyclerView.setAdapter(mAdapter);
-        mAdapter.setMyOnClickFavoriteListener(this);
-        askPermissionsAccessLocation();
         mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.blink);
+    }
 
+    private void checkWifiAndLocation() {
         if (MyCurrentLocation.checkLocationEnabled(getContext())) {
             if (NetworkConnection.isInternetConnected(getContext())) {
                 mImgWifi.setVisibility(View.GONE);
