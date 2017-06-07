@@ -111,7 +111,6 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-
                     }
                 });
                 Toast.makeText(getContext(), mMessageDelete, Toast.LENGTH_SHORT).show();
