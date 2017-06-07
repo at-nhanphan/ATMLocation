@@ -1,5 +1,6 @@
 package com.example.admin.findatm.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -44,6 +45,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
 
     private static final int REQUEST_CODE_BANK = 1;
     private static final int REQUEST_CODE_AREA = 2;
+    private static final int REQUEST_CODE_SEARCH = 2222;
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvBank)
@@ -187,9 +189,22 @@ public class SearchActivity extends AppCompatActivity implements MyOnClickListen
         DetailActivity_.intent(this)
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
-                .start();
+                .startForResult(REQUEST_CODE_SEARCH);
     }
 
+    @OnActivityResult(REQUEST_CODE_SEARCH)
+    void onResultDetail(int resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            for (int i = 0; i < mAtms.size(); i++) {
+                for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                    if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
+                        mAtms.get(i).setFavorite(true);
+                    }
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
     private void loadData() {
         ATMServiceImpl atmServiceImpl = new ATMServiceImpl(this);

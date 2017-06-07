@@ -22,7 +22,6 @@ import com.example.admin.findatm.fragments.MapsFragment_;
 import com.example.admin.findatm.fragments.SearchFragment_;
 import com.example.admin.findatm.interfaces.OnQueryTextChange;
 import com.example.admin.findatm.models.MyATM;
-import com.example.admin.findatm.models.ObjectData;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Click;
@@ -30,7 +29,6 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * MainActivity class

@@ -103,6 +103,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mMyATMs.get(position).setFavorite(true);
+                mAdapter.notifyDataSetChanged();
             }
         });
         dialog.show();

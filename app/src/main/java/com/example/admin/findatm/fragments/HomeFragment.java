@@ -2,7 +2,6 @@ package com.example.admin.findatm.fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.AsyncTask;
@@ -221,8 +220,8 @@ public class HomeFragment extends Fragment implements MyOnClickListener, MyOnCli
     }
 
     @OnActivityResult(REQUEST_CODE_DETAIL)
-    void onResult(int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && data != null) {
+    void onResult(int resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
             for (int i = 0; i < mAtms.size(); i++) {
                 for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
                     if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {

@@ -47,6 +47,7 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
 
     private static final int REQUEST_CODE_BANK = 1;
     private static final int REQUEST_CODE_AREA = 2;
+    private static final int REQUEST_CODE_SEARCH = 555;
     @ViewById(R.id.toolbar)
     Toolbar mToolbar;
     @ViewById(R.id.tvBank)
@@ -168,9 +169,22 @@ public class SearchFragment extends Fragment implements MyOnClickListener, MyOnC
         DetailActivity_.intent(this)
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .mMyLocation(myLocation)
-                .start();
+                .startForResult(REQUEST_CODE_SEARCH);
     }
 
+    @OnActivityResult(REQUEST_CODE_SEARCH)
+    void onResultDetail(int resultCode) {
+        if (resultCode == Activity.RESULT_OK) {
+            for (int i = 0; i < mAtms.size(); i++) {
+                for (int j = 0; j < mMyDatabase.getAll().size(); j++) {
+                    if (mAtms.get(i).getAddressId().equals(mMyDatabase.getAll().get(j).getAddressId())) {
+                        mAtms.get(i).setFavorite(true);
+                    }
+                }
+            }
+            mAdapter.notifyDataSetChanged();
+        }
+    }
 
     private void loadData() {
         ATMServiceImpl atmServiceImpl = new ATMServiceImpl(getContext());
