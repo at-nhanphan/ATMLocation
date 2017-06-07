@@ -59,7 +59,7 @@ public class ATMListAdapter extends RecyclerView.Adapter<ATMListAdapter.MyViewHo
         private final TextView mTvAddress;
         private final ImageView mImgFavorite;
 
-        MyViewHolder(View itemView) {
+        MyViewHolder(final View itemView) {
             super(itemView);
             mTvName = (TextView) itemView.findViewById(R.id.tvName);
             mTvAddress = (TextView) itemView.findViewById(R.id.tvAddress);
