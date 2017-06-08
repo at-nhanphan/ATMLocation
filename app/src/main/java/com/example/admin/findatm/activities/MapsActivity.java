@@ -215,7 +215,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                             addMarker(new LatLng(mLegs.get(0).getEndLocation().getLat(), mLegs.get(0).getEndLocation().getLng()));
                         }
                     }
-
                     // Draw line
                     drawLine(routeList);
                     // Show detail route in viewPager
@@ -226,6 +225,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 public void onFailure(Call<DirectionResult> call, Throwable t) {
                 }
             });
+        } else {
+            Toast.makeText(this, getString(R.string.location_not_found), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -251,8 +252,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
             // Adding route on the map
             mMap.addPolyline(rectLine);
-            // Zoom map fit all markers
-//                        zoomMapFitMarkers(mMarkers);
         }
     }
 

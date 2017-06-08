@@ -70,7 +70,7 @@ public class FavoriteFragment extends Fragment implements MyOnClickListener, MyO
     public void onClick(int position) {
         MyLocation myLocation = new MyLocation(Double.parseDouble(mAdapter.getResultFilter().get(position).getLat()),
                 Double.parseDouble(mAdapter.getResultFilter().get(position).getLng()));
-        MapsActivity_.intent(this)
+        MapsActivity_.intent(getActivity())
                 .mAddressAtm(myLocation)
                 .mAtm(mAdapter.getResultFilter().get(position))
                 .start();
